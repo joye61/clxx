@@ -1,10 +1,13 @@
 {
-  "name": "@cl/cl-util",
+  "name": "@cl/util",
   "version": "0.0.1",
   "description": "common used utility for web develop",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:scss": "node-sass -w ./src -o ./lib",
+    "watch:babel": "babel src -d lib -w",
+    "watch": "concurrently -k \"yarn watch:babel\" \"yarn watch:scss\"",
+    "build": "rm -rfv ./lib && babel src -d lib && node-sass ./src -o ./lib"
   },
   "repository": {
     "type": "git",
@@ -19,5 +22,29 @@
   "bugs": {
     "url": "https://github.com/joye61/cl-util/issues"
   },
-  "homepage": "https://github.com/joye61/cl-util#readme"
+  "homepage": "https://github.com/joye61/cl-util#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.6",
+    "@babel/preset-react": "^7.0.0",
+    "concurrently": "^4.1.0"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ],
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "promise": "^8.0.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "whatwg-fetch": "^3.0.0"
+  }
 }

@@ -1,0 +1,31 @@
+@function vw($size) {
+  @return 100vw * $size / 375;
+}
+
+.cl-Toast {
+  position: fixed;
+  z-index: 9;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 500ms;
+  font-size: vw(14);
+  line-height: vw(40);
+  padding: 0 vw(20);
+  border-radius: vw(5);
+  @media screen and (min-width: 576px) {
+    font-size: 16px;
+    line-height: 44px;
+    padding: 0 20px;
+    border-radius: 5px;
+  }
+  &.cl-Toast-show {
+    opacity: 1;
+  }
+  &.cl-Toast-hide {
+    opacity: 0;
+  }
+}

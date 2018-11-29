@@ -1,0 +1,60 @@
+@keyframes cl-Loading-animation {
+  from {
+    transform: scale3d(1, 1, 1);
+    opacity: 1; }
+  to {
+    transform: scale3d(1, 0.2, 1);
+    opacity: 0.1; } }
+
+.cl-Loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.cl-Loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 16vw;
+  height: 16vw;
+  border-radius: 1.33333vw; }
+  @media screen and (min-width: 576px) {
+    .cl-Loading {
+      width: 60px;
+      height: 60px;
+      border-radius: 5px; } }
+
+.cl-Loading-container {
+  font-size: 0; }
+  .cl-Loading-container span {
+    display: inline-block;
+    background-color: #fff;
+    width: 0.53333vw;
+    height: 6.4vw;
+    margin-right: 1.06667vw;
+    border-radius: 0.4vw;
+    animation: cl-Loading-animation 500ms linear infinite alternate; }
+    @media screen and (min-width: 576px) {
+      .cl-Loading-container span {
+        width: 2px;
+        height: 24px;
+        margin-right: 4px;
+        border-radius: 1px; } }
+    .cl-Loading-container span:last-child {
+      margin-right: 0; }
+    .cl-Loading-container span:nth-child(2) {
+      animation-delay: 100ms; }
+    .cl-Loading-container span:nth-child(3) {
+      animation-delay: 200ms; }
+    .cl-Loading-container span:nth-child(4) {
+      animation-delay: 300ms; }
+    .cl-Loading-container span:nth-child(5) {
+      animation-delay: 400ms; }
+    .cl-Loading-container span:nth-child(6) {
+      animation-delay: 500ms; }

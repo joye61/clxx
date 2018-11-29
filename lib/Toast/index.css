@@ -1,0 +1,24 @@
+.cl-Toast {
+  position: fixed;
+  z-index: 9;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 500ms;
+  font-size: 3.73333vw;
+  line-height: 10.66667vw;
+  padding: 0 5.33333vw;
+  border-radius: 1.33333vw; }
+  @media screen and (min-width: 576px) {
+    .cl-Toast {
+      font-size: 16px;
+      line-height: 44px;
+      padding: 0 20px;
+      border-radius: 5px; } }
+  .cl-Toast.cl-Toast-show {
+    opacity: 1; }
+  .cl-Toast.cl-Toast-hide {
+    opacity: 0; }
