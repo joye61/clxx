@@ -1,0 +1,23 @@
+{
+  "name": "@cl/cl-util",
+  "version": "0.0.1",
+  "description": "common used utility for web develop",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joye61/cl-util.git"
+  },
+  "keywords": [
+    "javascript",
+    "library"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joye61/cl-util/issues"
+  },
+  "homepage": "https://github.com/joye61/cl-util#readme"
+}
