@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joye61/cl-util.git"
+    "url": "git+https://github.com/joye61/cl-utils.git"
   },
   "keywords": [
     "javascript",
@@ -21,9 +21,9 @@
   "author": "joye",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joye61/cl-util/issues"
+    "url": "https://github.com/joye61/cl-utils/issues"
   },
-  "homepage": "https://github.com/joye61/cl-util#readme",
+  "homepage": "https://github.com/joye61/cl-utils#readme",
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
