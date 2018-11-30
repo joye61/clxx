@@ -1,11 +1,17 @@
 import querystring from "querystring";
 import isPlainObject from "lodash/isPlainObject";
-import { URL, URLSearchParams } from "url";
 import Loading from "./Loading";
 
-if (typeof window.URL === "undefined") {
-  window.URL = URL;
-  window.URLSearchParams = URLSearchParams;
+// 强行注入Polyfill，尽可能扩大兼容
+if (typeof URL === "undefined") {
+  require("url-polyfill");
+}
+if (typeof fetch === "undefined") {
+  require("whatwg-fetch");
+}
+if (typeof Promise === "undefined") {
+  require("promise/lib/rejection-tracking").enable();
+  window.Promise = require("promise/lib/es6-extensions.js");
 }
 
 /**

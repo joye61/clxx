@@ -1,13 +1,14 @@
 {
-  "name": "@cl/util",
+  "name": "cl-utils",
   "version": "0.0.1",
   "description": "common used utility for web develop",
   "main": "./lib/index.js",
   "scripts": {
     "watch:scss": "node-sass -w ./src -o ./lib",
-    "watch:babel": "babel src -d lib -w",
-    "watch": "concurrently -k \"yarn watch:babel\" \"yarn watch:scss\"",
-    "build": "rm -rfv ./lib && babel src -d lib && node-sass ./src -o ./lib"
+    "watch:babel": "babel src -d lib -w --no-comments",
+    "babel": "babel -h",
+    "watch": "concurrently -k \"npm run watch:babel\" \"npm run watch:scss\"",
+    "build": "rm -rfv ./lib && babel src -d lib --no-comments && node-sass ./src -o ./lib && node scripts/package.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,8 @@
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
-    "concurrently": "^4.1.0"
+    "concurrently": "^4.1.0",
+    "fs-extra": "^7.0.1"
   },
   "babel": {
     "plugins": [
@@ -45,6 +47,7 @@
     "promise": "^8.0.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "url-polyfill": "^1.1.2",
     "whatwg-fetch": "^3.0.0"
   }
 }

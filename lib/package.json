@@ -1,0 +1,31 @@
+{
+  "name": "cl-utils",
+  "version": "0.0.1",
+  "description": "common used utility for web develop",
+  "main": "./index.js",
+  "author": "joye",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joye61/cl-util/issues"
+  },
+  "homepage": "https://github.com/joye61/cl-util#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joye61/cl-util.git"
+  },
+  "keywords": [
+    "javascript",
+    "library"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "promise": "^8.0.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "url-polyfill": "^1.1.2",
+    "whatwg-fetch": "^3.0.0"
+  }
+}
