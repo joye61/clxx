@@ -48,7 +48,7 @@ export default function ajax(option) {
     timeLimit: 15000,
     onTimeOut: () => {},
     onLoad: () => {},
-    // onError: () => {},
+    // onError: () => {}, // 如果没有错误处理函数，则错误会抛出
     transmitParam: false
   };
   option = { ...defaultOption, ...option };
@@ -60,15 +60,16 @@ export default function ajax(option) {
   let destroyLoading;
   if (option.showLoading) {
     loading = new Loading();
-    // loadingStartTime = Date.now();
-    destroyLoading = () => {
+    destroyLoading = (ondestroy = () => {}) => {
       let now = Date.now();
       let diff = now - loadingStartTime;
       if (diff > option.loadingTimeLimit) {
         loading.destroy();
+        ondestroy();
       } else {
         window.setTimeout(() => {
           loading.destroy();
+          ondestroy();
         }, option.loadingTimeLimit - diff);
       }
     };
@@ -147,19 +148,27 @@ export default function ajax(option) {
     })
     .then(result => {
       if (loading instanceof Loading) {
-        destroyLoading();
+        // 如果有loading，需要等到loading销毁才执行回调
+        destroyLoading(() => {
+          option.onLoad(result);
+        });
+      } else {
+        option.onLoad(result);
       }
-      option.onLoad(result);
     })
     .catch(error => {
+      const hasErrorHandler = typeof option.onError === "function";
+
       if (loading instanceof Loading) {
-        destroyLoading();
-      }
-      if (typeof option.onError === "function") {
-        option.onError();
+        // 如果有loading，需要等到loading销毁才执行回调
+        destroyLoading(() => {
+          hasErrorHandler && option.onError();
+        });
       } else {
-        return Promise.reject(error);
+        hasErrorHandler && option.onError();
       }
+
+      return !hasErrorHandler && Promise.reject(error);
     });
 }
 

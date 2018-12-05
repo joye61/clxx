@@ -5,19 +5,23 @@
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 500ms;
   font-size: 3.73333vw;
-  line-height: 10.66667vw;
+  line-height: 13.33333vw;
   padding: 0 5.33333vw;
-  border-radius: 1.33333vw; }
+  border-radius: 2.66667vw;
+  white-space: nowrap;
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis; }
   @media screen and (min-width: 576px) {
     .cl-Toast {
       font-size: 16px;
-      line-height: 44px;
+      line-height: 57.14286px;
       padding: 0 20px;
-      border-radius: 5px; } }
+      border-radius: 10px; } }
   .cl-Toast.cl-Toast-show {
     opacity: 1; }
   .cl-Toast.cl-Toast-hide {

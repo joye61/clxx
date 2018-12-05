@@ -8,6 +8,9 @@
   justify-content: center;
   align-items: center; }
 
+.cl-Alert-mask {
+  background-color: rgba(0, 0, 0, 0.5); }
+
 @keyframes cl-Alert-show {
   from {
     opacity: 0;
@@ -27,9 +30,9 @@
 .cl-Alert-container {
   background-color: #fff;
   width: 66.66667vw;
-  border-radius: 1.33333vw;
+  border-radius: 2.66667vw;
   overflow: hidden;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3); }
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2); }
   .cl-Alert-container.cl-Alert-show {
     animation: cl-Alert-show 100ms ease-in; }
   .cl-Alert-container.cl-Alert-hide {
@@ -37,10 +40,10 @@
   @media screen and (min-width: 576px) {
     .cl-Alert-container {
       width: 300px;
-      border-radius: 5px; } }
+      border-radius: 10px; } }
 
 .cl-Alert-content {
-  font-size: 4vw;
+  font-size: 3.73333vw;
   margin: 0;
   padding: 5.33333vw;
   text-align: center;
@@ -49,7 +52,7 @@
   @media screen and (min-width: 576px) {
     .cl-Alert-content {
       font-size: 16px;
-      padding: 20px; } }
+      padding: 30px; } }
 
 .cl-Alert-btn {
   display: flex;
@@ -59,8 +62,8 @@
     cursor: pointer;
     flex: 1;
     background: transparent;
-    font-size: 4vw;
-    line-height: 10.66667vw;
+    font-size: 3.73333vw;
+    line-height: 11.73333vw;
     text-align: center;
     box-sizing: border-box;
     user-select: none;
@@ -69,7 +72,7 @@
     @media screen and (min-width: 576px) {
       .cl-Alert-btn div {
         font-size: 16px;
-        line-height: 44px; } }
+        line-height: 50px; } }
 
 .cl-Alert-cancel {
   border: none;
@@ -81,7 +84,7 @@
 
 .cl-Alert-confirm {
   border: none;
-  color: #008bff; }
+  color: #007bff; }
   .cl-Alert-confirm:active {
-    color: #0058cc;
+    color: #0048cc;
     background-color: #f5f5f5; }

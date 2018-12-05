@@ -9,18 +9,22 @@
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 500ms;
   font-size: vw(14);
-  line-height: vw(40);
+  line-height: vw(50);
   padding: 0 vw(20);
-  border-radius: vw(5);
+  border-radius: vw(10);
+  white-space: nowrap;
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
   @media screen and (min-width: 576px) {
     font-size: 16px;
-    line-height: 44px;
+    line-height: (50px*16/14);
     padding: 0 20px;
-    border-radius: 5px;
+    border-radius: 10px;
   }
   &.cl-Toast-show {
     opacity: 1;

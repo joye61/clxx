@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 export class AlertComponent extends React.Component {
   static defaultProps = {
     content: "",
+    showMask: true,
     showCancel: false,
     cancelText: "取消",
     confirmText: "确定",
@@ -42,8 +43,12 @@ export class AlertComponent extends React.Component {
   }
 
   render() {
+    let className = "cl-Alert";
+    if(this.props.showMask) {
+      className = "cl-Alert cl-Alert-mask";
+    }
     return (
-      <div className="cl-Alert">
+      <div className={className}>
         <div
           className={`cl-Alert-container ${this.state.animationClass}`}
           onAnimationEnd={this.onAnimationEnd.bind(this)}

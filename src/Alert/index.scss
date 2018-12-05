@@ -11,7 +11,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  // background-color: rgba(0, 0, 0, 0.5);
+}
+.cl-Alert-mask {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 @keyframes cl-Alert-show {
@@ -39,9 +41,9 @@
 .cl-Alert-container {
   background-color: #fff;
   width: vw(250);
-  border-radius: vw(5);
+  border-radius: vw(10);
   overflow: hidden;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   &.cl-Alert-show {
     animation: cl-Alert-show 100ms ease-in;
   }
@@ -51,12 +53,12 @@
 
   @media screen and (min-width: 576px) {
     width: 300px;
-    border-radius: 5px;
+    border-radius: 10px;
   }
 }
 
 .cl-Alert-content {
-  font-size: vw(15);
+  font-size: vw(14);
   margin: 0;
   padding: vw(20);
   text-align: center;
@@ -64,7 +66,7 @@
   line-height: 1.6;
   @media screen and (min-width: 576px) {
     font-size: 16px;
-    padding: 20px;
+    padding: 30px;
   }
 }
 
@@ -76,8 +78,8 @@
     cursor: pointer;
     flex: 1;
     background: transparent;
-    font-size: vw(15);
-    line-height: vw(40);
+    font-size: vw(14);
+    line-height: vw(44);
     text-align: center;
     box-sizing: border-box;
     user-select: none;
@@ -85,7 +87,7 @@
     font-weight: 500;
     @media screen and (min-width: 576px) {
       font-size: 16px;
-      line-height: 44px;
+      line-height: 50px;
     }
   }
 }
@@ -102,9 +104,9 @@
 
 .cl-Alert-confirm {
   border: none;
-  color: #008bff;
+  color: #007bff;
   &:active {
-    color: #008bff - #333;
+    color: #007bff - #333;
     background-color: #f5f5f5;
   }
 }

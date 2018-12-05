@@ -1,0 +1,51 @@
+@import "./Alert/index.scss";
+@import "./Loading/index.scss";
+@import "./Toast/index.scss";
+
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-size: initial; // 全局默认字体尺寸
+  margin: 0;
+}
+
+a,
+input,
+button {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+ul {
+  list-style-type: none;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+.cl-clickable {
+  cursor: pointer;
+  user-select: none;
+  &:active {
+    opacity: 0.5;
+  }
+}
