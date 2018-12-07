@@ -1,16 +1,25 @@
 @function vw($size) {
   @return 100vw * $size / 375;
 }
-@keyframes cl-Loading-animation {
+@keyframes cl-Loading-wave-animation {
   from {
     transform: scale3d(1, 1, 1);
     opacity: 1;
   }
   to {
-    transform: scale3d(1, 0.2, 1);
-    opacity: 0.1;
+    transform: scale3d(1, 0.1, 1);
+    opacity: 0;
   }
 }
+@keyframes cl-Loading-helix-animation {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .cl-Loading-mask {
   position: fixed;
   top: 0;
@@ -23,64 +32,107 @@
 }
 .cl-Loading {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  width: vw(80);
-  height: vw(80);
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: vw(80);
+  min-height: vw(80);
   border-radius: vw(10);
   @media screen and (min-width: 576px) {
-    width: 80px;
-    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
     border-radius: 10px;
   }
 }
-
-@keyframes cl-Loading-animation-1 {
-  from {
-    transform: scale3d(1, 1, 1);
-    opacity: 1;
-  }
-  to {
-    transform: scale3d(1, 0.2, 1);
-    opacity: 0.1;
+.cl-Loading-hint {
+  color: #fff;
+  padding: 0;
+  margin: 0;
+  font-size: vw(12);
+  margin-top: vw(10);
+  @media screen and (min-width: 576px) {
+    font-size: 12px;
+    margin-top: 10px;
   }
 }
 
-.cl-Loading-container {
+.cl-Loading-wave-container {
   font-size: 0;
-  span {
-    display: inline-block;
-    background-color: #fff;
+  transform: rotate(180deg);
+}
+.cl-Loading-wave-item {
+  $duration: 500ms;
+  $count: 6;
+
+  display: inline-block;
+  background-color: #fff;
+  width: vw(2);
+  height: vw(25);
+  margin-right: vw(4);
+  border-radius: vw(1);
+  @media screen and (min-width: 576px) {
+    width: 2px;
+    height: 25px;
+    margin-right: 4px;
+    border-radius: 1px;
+  }
+  animation: cl-Loading-wave-animation #{$duration} linear infinite alternate;
+  &:last-child {
+    margin-right: 0;
+  }
+  @for $i from 2 through $count {
+    &:nth-child(#{$i}) {
+      animation-delay: -$duration / $count * ($i - 1);
+    }
+  }
+}
+
+.cl-Loading-helix-container {
+  font-size: 0;
+  width: vw(28);
+  height: vw(28);
+  @media screen and (min-width: 576px) {
+    width: 28px;
+    height: 28px;
+  }
+  position: relative;
+}
+.cl-Loading-helix-item {
+  $duration: 1.2s;
+  $count: 12;
+
+  position: absolute;
+  top: 0;
+  width: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  &::after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    background: #fff;
+    animation: cl-Loading-helix-animation #{$duration} linear infinite;
+
     width: vw(2);
-    height: vw(25);
-    margin-right: vw(4);
+    height: vw(8);
     border-radius: vw(1);
-    opacity: 0;
     @media screen and (min-width: 576px) {
       width: 2px;
-      height: 25px;
-      margin-right: 4px;
+      height: 8px;
       border-radius: 1px;
     }
-    animation: cl-Loading-animation 500ms linear infinite alternate;
-    &:last-child {
-      margin-right: 0;
+  }
+  @for $i from 2 through 12 {
+    &:nth-child(#{$i}) {
+      transform: rotate(360deg / $count * ($i - 1));
     }
-    &:nth-child(2) {
-      animation-delay: 100ms;
-    }
-    &:nth-child(3) {
-      animation-delay: 200ms;
-    }
-    &:nth-child(4) {
-      animation-delay: 300ms;
-    }
-    &:nth-child(5) {
-      animation-delay: 400ms;
-    }
-    &:nth-child(6) {
-      animation-delay: 500ms;
+  }
+
+  @for $i from 2 through $count {
+    &:nth-child(#{$i})::after {
+      animation-delay: -$duration + $duration / $count * ($i - 1);
     }
   }
 }

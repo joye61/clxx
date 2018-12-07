@@ -1,6 +1,6 @@
 {
   "name": "cl-utils",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "common used utility for web develop",
   "main": "./lib/index.js",
   "scripts": {
@@ -49,5 +49,6 @@
     "react-dom": "^16.6.3",
     "url-polyfill": "^1.1.2",
     "whatwg-fetch": "^3.0.0"
-  }
+  },
+  "registry": "https://registry.npmjs.org"
 }

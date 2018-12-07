@@ -9,8 +9,13 @@ export default function rem(option) {
   };
 
   // 参数和默认选项合并
+
+  if(typeof option === "number") {
+    config.designWidth = option
+  }
+
   if (isPlainObject(option)) {
-    config = { ...config, option };
+    config = { ...config, ...option };
   }
 
   const reset = () => {
