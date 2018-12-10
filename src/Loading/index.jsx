@@ -46,10 +46,13 @@ export function HelixLoading({ color = "#fff" }) {
       </div>
     );
   }
-
   return <div className="cl-Loading-helix-container">{list}</div>;
 }
 
+/**
+ * 三点起伏式Loading
+ * @param {*} color 颜色
+ */
 export function DottedLoading({ color = "#fff" }) {
   const list = [];
   for (let i = 0; i < 3; i++) {

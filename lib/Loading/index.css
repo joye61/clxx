@@ -89,6 +89,7 @@
     animation-delay: -416.66667ms; }
 
 .cl-Loading-helix-container {
+  display: inline-block;
   font-size: 0;
   width: 6.93333vw;
   height: 6.93333vw;

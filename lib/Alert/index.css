@@ -43,7 +43,7 @@
       border-radius: 10px; } }
 
 .cl-Alert-content {
-  font-size: 3.73333vw;
+  font-size: 4.26667vw;
   margin: 0;
   padding: 5.33333vw;
   text-align: center;
@@ -62,7 +62,7 @@
     cursor: pointer;
     flex: 1;
     background: transparent;
-    font-size: 3.73333vw;
+    font-size: 4.26667vw;
     line-height: 11.73333vw;
     text-align: center;
     box-sizing: border-box;
