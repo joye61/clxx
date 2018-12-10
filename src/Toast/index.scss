@@ -2,16 +2,51 @@
   @return 100vw * $size / 375;
 }
 
-.cl-Toast {
+.cl-Toast-container {
   position: fixed;
   z-index: 9;
-  top: 50%;
   left: 50%;
+}
+
+.cl-Toast-container-middle {
+  top: 50%;
   transform: translate3d(-50%, -50%, 0);
+}
+.cl-Toast-container-top {
+  top: vw(24);
+  transform: translate3d(-50%, 0, 0);
+  @media screen and (min-width: 576px) {
+    top: 24px;
+  }
+}
+.cl-Toast-container-bottom {
+  bottom: vw(24);
+  transform: translate3d(-50%, 0, 0);
+  @media screen and (min-width: 576px) {
+    bottom: 24px;
+  }
+}
+
+@keyframes cl-Toast-show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cl-Toast-hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.cl-Toast {
   color: #fff;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 500ms;
   font-size: vw(14);
   line-height: vw(50);
   padding: 0 vw(20);
@@ -21,15 +56,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   @media screen and (min-width: 576px) {
-    font-size: 16px;
-    line-height: (50px*16/14);
+    font-size: 14px;
+    line-height: 50px;
     padding: 0 20px;
     border-radius: 10px;
   }
-  &.cl-Toast-show {
-    opacity: 1;
-  }
-  &.cl-Toast-hide {
-    opacity: 0;
-  }
+}
+
+.cl-Toast-show {
+  animation: cl-Toast-show 200ms ease-in;
+}
+.cl-Toast-hide {
+  animation: cl-Toast-hide 500ms ease-out;
 }

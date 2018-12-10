@@ -19,6 +19,16 @@
     opacity: 0;
   }
 }
+@keyframes cl-Loading-dotted-animation {
+  from {
+    transform: scale3d(1.2, 1.2, 1);
+    opacity: 1;
+  }
+  to {
+    transform: scale3d(0.5, 0.5, 1);
+    opacity: 0.2;
+  }
+}
 
 .cl-Loading-mask {
   position: fixed;
@@ -36,12 +46,12 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  min-width: vw(80);
-  min-height: vw(80);
+  min-width: vw(90);
+  min-height: vw(90);
   border-radius: vw(10);
   @media screen and (min-width: 576px) {
-    min-width: 80px;
-    min-height: 80px;
+    min-width: 90px;
+    min-height: 90px;
     border-radius: 10px;
   }
 }
@@ -57,16 +67,17 @@
   }
 }
 
-.cl-Loading-wave-container {
+.cl-Loading-wave-container,
+.cl-Loading-dotted-container {
   font-size: 0;
   transform: rotate(180deg);
+  display: inline-block;
 }
 .cl-Loading-wave-item {
   $duration: 500ms;
   $count: 6;
 
   display: inline-block;
-  background-color: #fff;
   width: vw(2);
   height: vw(25);
   margin-right: vw(4);
@@ -90,11 +101,11 @@
 
 .cl-Loading-helix-container {
   font-size: 0;
-  width: vw(28);
-  height: vw(28);
+  width: vw(26);
+  height: vw(26);
   @media screen and (min-width: 576px) {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
   position: relative;
 }
@@ -108,31 +119,56 @@
   width: 100%;
   height: 100%;
   display: inline-block;
-  &::after {
-    content: "";
-    display: block;
-    margin: 0 auto;
-    background: #fff;
-    animation: cl-Loading-helix-animation #{$duration} linear infinite;
-
-    width: vw(2);
-    height: vw(8);
-    border-radius: vw(1);
-    @media screen and (min-width: 576px) {
-      width: 2px;
-      height: 8px;
-      border-radius: 1px;
-    }
-  }
-  @for $i from 2 through 12 {
+  @for $i from 2 through $count {
     &:nth-child(#{$i}) {
       transform: rotate(360deg / $count * ($i - 1));
     }
   }
 
   @for $i from 2 through $count {
-    &:nth-child(#{$i})::after {
+    &:nth-child(#{$i}) .cl-Loading-helix-itembar {
       animation-delay: -$duration + $duration / $count * ($i - 1);
+    }
+  }
+}
+.cl-Loading-helix-itembar {
+  $duration: 1.2s;
+  display: block;
+  margin: 0 auto;
+  animation: cl-Loading-helix-animation #{$duration} linear infinite;
+  width: vw(2);
+  height: vw(8);
+  border-radius: vw(1);
+  @media screen and (min-width: 576px) {
+    width: 2px;
+    height: 8px;
+    border-radius: 1px;
+  }
+}
+
+.cl-Loading-dotted-item {
+  $duration: 500ms;
+  $count: 3;
+
+  display: inline-block;
+  font-size: 0;
+  width: vw(8);
+  height: vw(8);
+  margin-right: vw(5);
+  @media screen and (min-width: 576px) {
+    width: 8px;
+    height: 8px;
+    margin-right: 5px;
+  }
+
+  border-radius: 50%;
+  animation: cl-Loading-dotted-animation $duration ease infinite alternate;
+  &:last-child {
+    margin-right: 0;
+  }
+  @for $i from 2 through $count {
+    &:nth-child(#{$i}) {
+      animation-delay: -$duration / $count * $i;
     }
   }
 }

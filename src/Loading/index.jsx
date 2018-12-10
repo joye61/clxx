@@ -12,21 +12,55 @@ function LoadingMask({ hintComponent, children }) {
   );
 }
 
-export function WaveLoading() {
+/**
+ * 波浪形Loading
+ * @param {*} color 颜色
+ */
+export function WaveLoading({ color = "#fff" }) {
   const list = [];
   for (let i = 0; i < 6; i++) {
-    list.push(<span className="cl-Loading-wave-item" key={i} />);
+    list.push(
+      <span
+        className="cl-Loading-wave-item"
+        key={i}
+        style={{ backgroundColor: color }}
+      />
+    );
   }
   return <div className="cl-Loading-wave-container">{list}</div>;
 }
 
-export function HelixLoading() {
+/**
+ * 菊花齿轮形Loading
+ * @param {*} color 颜色
+ */
+export function HelixLoading({ color = "#fff" }) {
   const list = [];
   for (let i = 0; i < 12; i++) {
-    list.push(<div className="cl-Loading-helix-item" key={i} />);
+    list.push(
+      <div className="cl-Loading-helix-item" key={i}>
+        <span
+          className="cl-Loading-helix-itembar"
+          style={{ backgroundColor: color }}
+        />
+      </div>
+    );
   }
 
   return <div className="cl-Loading-helix-container">{list}</div>;
+}
+
+export function DottedLoading({ color = "#fff" }) {
+  const list = [];
+  for (let i = 0; i < 3; i++) {
+    list.push(
+      <span
+        className="cl-Loading-dotted-item"
+        style={{ backgroundColor: color }}
+      />
+    );
+  }
+  return <div className="cl-Loading-dotted-container">{list}</div>;
 }
 
 export default class Loading {
@@ -35,24 +69,37 @@ export default class Loading {
   constructor(option) {
     // 默认配置
     let config = {
-      type: "helix"
-    }
-    if(typeof option === "string") {
+      type: "wave",
+      color: undefined,
+      hintColor: "#fff"
+    };
+    if (typeof option === "string") {
       config.hint = option;
-    } 
-    if(typeof option === "object") {
-      config = {...config, ...option};
+    }
+    if (typeof option === "object") {
+      config = { ...config, ...option };
     }
 
     // 默认Loading样式是转菊花
-    let Component = HelixLoading;
-    if (config.type.toLowerCase() === "wave") {
+    let Component = null;
+    let type = config.type.toLowerCase();
+    if (type === "wave") {
       Component = WaveLoading;
+    } else if (type === "dotted") {
+      Component = DottedLoading;
+    } else if (type === "helix") {
+      Component = HelixLoading;
+    } else {
+      throw new Error(`Invalid loading type '${config.type}'`);
     }
 
     let hintComponent = null;
     if (typeof config.hint === "string") {
-      hintComponent = <p className="cl-Loading-hint">{config.hint}</p>;
+      hintComponent = (
+        <p className="cl-Loading-hint" style={{ color: config.hintColor }}>
+          {config.hint}
+        </p>
+      );
     }
 
     if (React.isValidElement(config.hint)) {
@@ -62,7 +109,7 @@ export default class Loading {
     document.body.appendChild(this.container);
     ReactDOM.render(
       <LoadingMask hintComponent={hintComponent}>
-        <Component />
+        <Component color={config.color || undefined} />
       </LoadingMask>,
       this.container
     );

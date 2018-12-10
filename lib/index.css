@@ -103,6 +103,14 @@
   to {
     opacity: 0; } }
 
+@keyframes cl-Loading-dotted-animation {
+  from {
+    transform: scale3d(1.2, 1.2, 1);
+    opacity: 1; }
+  to {
+    transform: scale3d(0.5, 0.5, 1);
+    opacity: 0.2; } }
+
 .cl-Loading-mask {
   position: fixed;
   top: 0;
@@ -119,13 +127,13 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  min-width: 21.33333vw;
-  min-height: 21.33333vw;
+  min-width: 24vw;
+  min-height: 24vw;
   border-radius: 2.66667vw; }
   @media screen and (min-width: 576px) {
     .cl-Loading {
-      min-width: 80px;
-      min-height: 80px;
+      min-width: 90px;
+      min-height: 90px;
       border-radius: 10px; } }
 
 .cl-Loading-hint {
@@ -139,13 +147,14 @@
       font-size: 12px;
       margin-top: 10px; } }
 
-.cl-Loading-wave-container {
+.cl-Loading-wave-container,
+.cl-Loading-dotted-container {
   font-size: 0;
-  transform: rotate(180deg); }
+  transform: rotate(180deg);
+  display: inline-block; }
 
 .cl-Loading-wave-item {
   display: inline-block;
-  background-color: #fff;
   width: 0.53333vw;
   height: 6.66667vw;
   margin-right: 1.06667vw;
@@ -172,13 +181,13 @@
 
 .cl-Loading-helix-container {
   font-size: 0;
-  width: 7.46667vw;
-  height: 7.46667vw;
+  width: 6.93333vw;
+  height: 6.93333vw;
   position: relative; }
   @media screen and (min-width: 576px) {
     .cl-Loading-helix-container {
-      width: 28px;
-      height: 28px; } }
+      width: 26px;
+      height: 26px; } }
 
 .cl-Loading-helix-item {
   position: absolute;
@@ -187,20 +196,6 @@
   width: 100%;
   height: 100%;
   display: inline-block; }
-  .cl-Loading-helix-item::after {
-    content: "";
-    display: block;
-    margin: 0 auto;
-    background: #fff;
-    animation: cl-Loading-helix-animation 1.2s linear infinite;
-    width: 0.53333vw;
-    height: 2.13333vw;
-    border-radius: 0.26667vw; }
-    @media screen and (min-width: 576px) {
-      .cl-Loading-helix-item::after {
-        width: 2px;
-        height: 8px;
-        border-radius: 1px; } }
   .cl-Loading-helix-item:nth-child(2) {
     transform: rotate(30deg); }
   .cl-Loading-helix-item:nth-child(3) {
@@ -223,39 +218,100 @@
     transform: rotate(300deg); }
   .cl-Loading-helix-item:nth-child(12) {
     transform: rotate(330deg); }
-  .cl-Loading-helix-item:nth-child(2)::after {
+  .cl-Loading-helix-item:nth-child(2) .cl-Loading-helix-itembar {
     animation-delay: -1.1s; }
-  .cl-Loading-helix-item:nth-child(3)::after {
+  .cl-Loading-helix-item:nth-child(3) .cl-Loading-helix-itembar {
     animation-delay: -1s; }
-  .cl-Loading-helix-item:nth-child(4)::after {
+  .cl-Loading-helix-item:nth-child(4) .cl-Loading-helix-itembar {
     animation-delay: -0.9s; }
-  .cl-Loading-helix-item:nth-child(5)::after {
+  .cl-Loading-helix-item:nth-child(5) .cl-Loading-helix-itembar {
     animation-delay: -0.8s; }
-  .cl-Loading-helix-item:nth-child(6)::after {
+  .cl-Loading-helix-item:nth-child(6) .cl-Loading-helix-itembar {
     animation-delay: -0.7s; }
-  .cl-Loading-helix-item:nth-child(7)::after {
+  .cl-Loading-helix-item:nth-child(7) .cl-Loading-helix-itembar {
     animation-delay: -0.6s; }
-  .cl-Loading-helix-item:nth-child(8)::after {
+  .cl-Loading-helix-item:nth-child(8) .cl-Loading-helix-itembar {
     animation-delay: -0.5s; }
-  .cl-Loading-helix-item:nth-child(9)::after {
+  .cl-Loading-helix-item:nth-child(9) .cl-Loading-helix-itembar {
     animation-delay: -0.4s; }
-  .cl-Loading-helix-item:nth-child(10)::after {
+  .cl-Loading-helix-item:nth-child(10) .cl-Loading-helix-itembar {
     animation-delay: -0.3s; }
-  .cl-Loading-helix-item:nth-child(11)::after {
+  .cl-Loading-helix-item:nth-child(11) .cl-Loading-helix-itembar {
     animation-delay: -0.2s; }
-  .cl-Loading-helix-item:nth-child(12)::after {
+  .cl-Loading-helix-item:nth-child(12) .cl-Loading-helix-itembar {
     animation-delay: -0.1s; }
 
-.cl-Toast {
+.cl-Loading-helix-itembar {
+  display: block;
+  margin: 0 auto;
+  animation: cl-Loading-helix-animation 1.2s linear infinite;
+  width: 0.53333vw;
+  height: 2.13333vw;
+  border-radius: 0.26667vw; }
+  @media screen and (min-width: 576px) {
+    .cl-Loading-helix-itembar {
+      width: 2px;
+      height: 8px;
+      border-radius: 1px; } }
+
+.cl-Loading-dotted-item {
+  display: inline-block;
+  font-size: 0;
+  width: 2.13333vw;
+  height: 2.13333vw;
+  margin-right: 1.33333vw;
+  border-radius: 50%;
+  animation: cl-Loading-dotted-animation 500ms ease infinite alternate; }
+  @media screen and (min-width: 576px) {
+    .cl-Loading-dotted-item {
+      width: 8px;
+      height: 8px;
+      margin-right: 5px; } }
+  .cl-Loading-dotted-item:last-child {
+    margin-right: 0; }
+  .cl-Loading-dotted-item:nth-child(2) {
+    animation-delay: -333.33333ms; }
+  .cl-Loading-dotted-item:nth-child(3) {
+    animation-delay: -500ms; }
+
+.cl-Toast-container {
   position: fixed;
   z-index: 9;
+  left: 50%; }
+
+.cl-Toast-container-middle {
   top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0); }
+
+.cl-Toast-container-top {
+  top: 6.4vw;
+  transform: translate3d(-50%, 0, 0); }
+  @media screen and (min-width: 576px) {
+    .cl-Toast-container-top {
+      top: 24px; } }
+
+.cl-Toast-container-bottom {
+  bottom: 6.4vw;
+  transform: translate3d(-50%, 0, 0); }
+  @media screen and (min-width: 576px) {
+    .cl-Toast-container-bottom {
+      bottom: 24px; } }
+
+@keyframes cl-Toast-show {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@keyframes cl-Toast-hide {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+
+.cl-Toast {
   color: #fff;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 500ms;
   font-size: 3.73333vw;
   line-height: 13.33333vw;
   padding: 0 5.33333vw;
@@ -266,14 +322,16 @@
   text-overflow: ellipsis; }
   @media screen and (min-width: 576px) {
     .cl-Toast {
-      font-size: 16px;
-      line-height: 57.14286px;
+      font-size: 14px;
+      line-height: 50px;
       padding: 0 20px;
       border-radius: 10px; } }
-  .cl-Toast.cl-Toast-show {
-    opacity: 1; }
-  .cl-Toast.cl-Toast-hide {
-    opacity: 0; }
+
+.cl-Toast-show {
+  animation: cl-Toast-show 200ms ease-in; }
+
+.cl-Toast-hide {
+  animation: cl-Toast-hide 500ms ease-out; }
 
 *,
 ::after,
