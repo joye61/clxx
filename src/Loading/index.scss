@@ -7,7 +7,7 @@
     opacity: 1;
   }
   to {
-    transform: scale3d(1, 0.1, 1);
+    transform: scale3d(1, .1, 1);
     opacity: 0;
   }
 }
@@ -45,7 +45,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   min-width: vw(90);
   min-height: vw(90);
   border-radius: vw(10);
@@ -79,12 +79,12 @@
 
   display: inline-block;
   width: vw(2);
-  height: vw(25);
+  height: vw(18);
   margin-right: vw(4);
   border-radius: vw(1);
   @media screen and (min-width: 576px) {
     width: 2px;
-    height: 25px;
+    height: 18px;
     margin-right: 4px;
     border-radius: 1px;
   }
@@ -111,7 +111,7 @@
   position: relative;
 }
 .cl-Loading-helix-item {
-  $duration: 1.2s;
+  $duration: 1s;
   $count: 12;
 
   position: absolute;
@@ -133,7 +133,7 @@
   }
 }
 .cl-Loading-helix-itembar {
-  $duration: 1.2s;
+  $duration: 1s;
   display: block;
   margin: 0 auto;
   animation: cl-Loading-helix-animation #{$duration} linear infinite;

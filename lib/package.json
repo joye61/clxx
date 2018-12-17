@@ -1,6 +1,6 @@
 {
   "name": "cl-utils",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "common used utility for web develop",
   "main": "./index.js",
   "author": "joye",

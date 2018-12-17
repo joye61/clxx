@@ -23,8 +23,11 @@ if (typeof Promise === "undefined") {
  *  data?: any; // 请求数据
  *  headers?: any; // 请求头
  *  credentials?: string; // 设置认证模式
- *  loadingTimeLimit?: number; // 加载进度显示时间，单位毫秒
  *  showLoading?: false; // 显示加载进度效果，注意开启加载进度效果需要包含对应的CSS资源文件
+ *  loadingConfig?: { // 加载组件配置
+ *    timeLimit?: number; // 加载进度最小显示时间，单位毫秒，默认1000ms
+ *    ...; // 其他Loading组件配置项
+ *  }
  *  timeLimit?: number; // 超时时长，单位毫秒
  *  onTimeOut?: function; // 超时回调
  *  onLoad?: function; // 加载数据回调
@@ -43,34 +46,45 @@ export default function ajax(option) {
     method: "GET",
     headers: {},
     credentials: "omit",
-    loadingTimeLimit: 1000,
     showLoading: false,
+    loadingConfig: {
+      timeLimit: 1000
+    },
     timeLimit: 15000,
     onTimeOut: () => {},
     onLoad: () => {},
     // onError: () => {}, // 如果没有错误处理函数，则错误会抛出
     transmitParam: false
   };
+
+  // 配置项合并
   option = { ...defaultOption, ...option };
+
+  // 允许方法任意大小写
   option.method = option.method.toUpperCase();
+
+  // 规范化URL的Schema
+  if (option.url.indexOf("//") === 0) {
+    option.url = window.location.protocol + option.url;
+  }
 
   // 加载效果显示逻辑
   let loading;
   let loadingStartTime = Date.now();
   let destroyLoading;
   if (option.showLoading) {
-    loading = new Loading();
+    loading = new Loading(option.loadingConfig);
     destroyLoading = (ondestroy = () => {}) => {
       let now = Date.now();
       let diff = now - loadingStartTime;
-      if (diff > option.loadingTimeLimit) {
+      if (diff > option.loadingConfig.timeLimit) {
         loading.destroy();
         ondestroy();
       } else {
         window.setTimeout(() => {
           loading.destroy();
           ondestroy();
-        }, option.loadingTimeLimit - diff);
+        }, option.loadingConfig.timeLimit - diff);
       }
     };
   }

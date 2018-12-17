@@ -191,8 +191,11 @@ ajax({
   data?: any; // 请求数据
   headers?: any; // 请求头
   credentials?: string; // 设置认证模式
-  loadingTimeLimit?: number; // 加载进度显示时间，单位毫秒
   showLoading?: false; // 显示加载进度效果，注意开启加载进度效果需要包含对应的CSS资源文件
+  loadingConfig?: { // 加载组件配置
+    timeLimit?: number; // 加载进度最小显示时间，单位毫秒，默认1000ms
+    // ... 其他Loading组件配置项
+  };
   timeLimit?: number; // 超时时长，单位毫秒
   onTimeOut?: function; // 超时回调
   onLoad?: function; // 加载数据回调
