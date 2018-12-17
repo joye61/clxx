@@ -207,7 +207,7 @@ ajax({
 参数解析：
 
 - `showLoading`: 是否显示Loading动画，默认不显示，如果开启这个选项，记住一定要引入对应的CSS文件
-- `loadingTimeLimit`: Loading动画最小显示时间，有时候数据加载很快，loading动画会**闪现**，为了防止这个问题，可以设置Loading最小显示时间，默认为1000，单位是毫秒
+- `loadingConfig`: timelimi表示Loading动画最小显示时间，有时候数据加载很快，loading动画会**闪现**，为了防止这个问题，可以设置Loading最小显示时间，默认为1000，单位是毫秒。loadingConfig也接受其他配置参数，具体参数请参考Loading组件
 - `transmitParam`: 参数透传功能。当前页面的URL原始参数会透传到ajax请求参数中。需要注意的是：如果采用了基于**Hash**的本地历史记录路由功能，Hash段上的参数也会被透传
 
 
