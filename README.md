@@ -173,6 +173,35 @@ new Toast({
 });
 ```
 
+# ScrollView 组件
+
+解决原生滚动所遇到的所有问题，目前该组件功能还在完善，功能列表：
+
+- [x] 滚动穿透
+- [ ] PC端支持
+- [ ] 下拉刷新
+- [ ] 橡皮筋效果
+
+### 单独引入
+
+```javascript
+// 引入CSS
+import "cl-utils/ScrollView/index.css";
+// 引入库
+import ScrollView from "cl-utils/ScrollView";
+```
+
+### 使用方式
+
+```javascript
+<ScrollView showScrollBar={true} direction="horizontal">{/* 此处可包含任意被滚动内容 */}</ScrollView>
+```
+
+参数说明：
+
+- `showScrollBar`:  是否显示滚动条
+- `direction`:  滚动方向，水平还是垂直，参数可选项为 `horizontal | vertical`
+
 # ajax 请求
 
 提供了一个基于 `fetch` 的 `polyfill` 封装，基于现有常用业务逻辑：
@@ -245,6 +274,35 @@ rem({
   designWidth: 750 // 设计尺寸，默认750px。如果调用rem时没有参数，那么设计尺寸默认被当做750
 });
 ```
+
+# Ticker 
+
+基于浏览器帧频的滴答器
+
+```javascript
+import Ticker from "cl-utils/ticker";
+// 初始化Ticker
+const ticker = new Ticker();
+
+// 任务为函数类型
+// 添加任务task1
+ticker.add(task1);
+// 添加任务task2  
+ticker.add(task2);
+// 删除任务task1
+ticker.remove(task1);
+// 销毁ticker
+ticker.destroy();
+```
+
+任务根据 `add` 添加的先后顺序执行，默认执行任务间隔跟浏览器帧频保持一致，因而本功能适用于做动画效果。构造函数也接受参数
+
+```javascript
+// 构造函数目前接受一个参数，代表执行间隔，单位毫秒
+// 下面构造函数创建了一个定时器，每隔2秒会自动执行一次任务列表
+const ticker = new Ticker(2000);
+```
+
 
 # 其他
 

@@ -11,3 +11,5 @@ export { default as is } from "./is";
 export { default as cookie } from "./cookie";
 export { default as ajax, get, post } from "./ajax";
 export { default as rem } from "./rem";
+export { default as ScrollView } from "./ScrollView";
+export { default as Ticker } from "./ticker";
