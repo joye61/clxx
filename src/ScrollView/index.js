@@ -305,7 +305,7 @@ export default class ScrollView extends React.Component {
         height: `${this.state.barSize}px`,
         top: 0,
         right: 0,
-        width: "3px"
+        width: "4px"
       };
       if (axis === "x") {
         style = {
@@ -314,7 +314,7 @@ export default class ScrollView extends React.Component {
           width: `${this.state.barSize}px`,
           left: 0,
           bottom: 0,
-          height: "3px"
+          height: "4px"
         };
       }
 
@@ -344,6 +344,7 @@ export default class ScrollView extends React.Component {
         onTouchMove={this.move.bind(this)}
         onTouchEnd={this.end.bind(this)}
         onTouchCancel={this.end.bind(this)}
+        onWheel={(e)=>{}}
       >
         <div ref={this.contentRef} style={this.getTransform()}>
           {this.props.children}
