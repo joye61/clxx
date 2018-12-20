@@ -9,21 +9,12 @@ try {
   window.addEventListener("testpassive", null, options);
 } catch (err) {}
 
-// 禁止移动端默认滚动功能
-document.documentElement.addEventListener(
-  "touchstart",
-  e => {
-    e.preventDefault();
-  },
-  passiveSupported ? { passive: false } : false
-);
-
 // 检测是否支持Touch事件
 export let isTouchSupport =
   typeof window.ontouchstart === "undefined" ? false : true;
 
 // 获取transform样式属性的react属性名
-export function getReactTransformAttr() {
+export const reactTransformAttr = (() => {
   const list = {
     webkit: "Webkit",
     moz: "Moz",
@@ -39,4 +30,4 @@ export function getReactTransformAttr() {
       return `${list[prefx]}Transform`;
     }
   }
-}
+})();

@@ -4,6 +4,8 @@
 import "./stopScroll";
 import React from "react";
 import Ticker from "../ticker";
+import { passiveSupported, reactTransformAttr } from "./env";
+import ScrollBar from "./ScrollBar";
 
 export default class ScrollView extends React.Component {
   // 外框元素
@@ -40,7 +42,7 @@ export default class ScrollView extends React.Component {
   };
 
   // 衰减系数
-  factor = 0.97;
+  factor = 0.95;
   // 速度值
   speed = 0;
 
@@ -53,33 +55,15 @@ export default class ScrollView extends React.Component {
   constructor(props) {
     super(props);
 
-    // 获取转换属性，解决CSS兼容性
-    this.getTransformAttr();
+    this.axis = this.props.direction === "horizontal" ? "x" : "y";
 
     // 拖动帧
     this.frameDragTask = this.frameDrag.bind(this);
     // 惯性帧
     this.frameInertiaTask = this.frameInertia.bind(this);
-  }
 
-  getTransformAttr() {
-    const list = {
-      webkit: "Webkit",
-      moz: "Moz",
-      ms: "ms",
-      o: "O"
-    };
-    if (typeof document.body.style.transform === "string") {
-      this.transformAttr = "transform";
-      return;
-    }
-
-    for (const prefix in list) {
-      if (typeof document.body.style[`${prefix}Transform`] === "string") {
-        this.transformAttr = `${list[prefx]}Transform`;
-        return;
-      }
-    }
+    // 禁止默认滚动
+    this.stopDefaultScroll = event => event.preventDefault();
   }
 
   static getDerivedStateFromProps(props) {
@@ -99,6 +83,27 @@ export default class ScrollView extends React.Component {
     this.container = this.containerRef.current;
     this.content = this.contentRef.current;
     this.refreshSize();
+
+    // 初始化Ticker
+    this.ticker = new Ticker();
+    this.ticker.add(this.refreshSize.bind(this));
+    this.ticker.add(this.frameDragTask);
+    this.ticker.add(this.frameInertiaTask);
+
+    // 禁用默认滚动
+    document.documentElement.addEventListener(
+      "touchstart",
+      this.stopDefaultScroll,
+      passiveSupported ? { passive: false } : false
+    );
+  }
+
+  componentWillUnmount() {
+    document.documentElement.removeEventListener(
+      "touchstart",
+      this.stopDefaultScroll
+    );
+    this.ticker.destroy();
   }
 
   /**
@@ -113,7 +118,7 @@ export default class ScrollView extends React.Component {
     };
 
     // 如果需要滚动条，并且内容溢出，则设置滚动条尺寸
-    if (this.props.showScrollBar && this.diffRect[this.getAxis()] < 0) {
+    if (this.props.showScrollBar && this.diffRect[this.axis] < 0) {
       this.refreshBarSize();
     }
   }
@@ -125,7 +130,7 @@ export default class ScrollView extends React.Component {
     let barSize = this.containerRect.height ** 2 / this.contentRect.height;
     let barOffset =
       (Math.abs(this.state.position) * barSize) / this.containerRect.height;
-    if (this.getAxis() === "x") {
+    if (this.axis === "x") {
       barSize = this.containerRect.width ** 2 / this.contentRect.width;
       barOffset =
         (Math.abs(this.state.position) * barSize) / this.containerRect.width;
@@ -158,16 +163,12 @@ export default class ScrollView extends React.Component {
     hasChange && this.refreshSize();
   }
 
-  getAxis() {
-    return this.props.direction === "horizontal" ? "x" : "y";
-  }
-
   /**
    * 获取实际位置
    * @param {number} position
    */
   getPosition(position) {
-    const range = [this.diffRect[this.getAxis()], 0];
+    const range = [this.diffRect[this.axis], 0];
     // 滚动不能超过容器临界值
     if (position <= range[0]) {
       position = range[0];
@@ -183,37 +184,17 @@ export default class ScrollView extends React.Component {
    * 手指拖动偏移
    */
   frameDrag() {
+    if (this.isTouching) {
+      // 目标偏移
+      this.offset = {
+        x: this.moveCoordinate.x - this.coordinate.x,
+        y: this.moveCoordinate.y - this.coordinate.y
+      };
 
-    // 目标偏移
-    this.offset = {
-      x: this.moveCoordinate.x - this.coordinate.x,
-      y: this.moveCoordinate.y - this.coordinate.y
-    };
-    this.coordinate = this.moveCoordinate;
-    const axis = this.getAxis();
-    const position = this.getPosition(this.state.position + this.offset[axis]);
-    if (this.state.position !== position) {
-      this.setState({ position });
-      this.refreshBarSize();
-    }
-  }
-
-  /**
-   * 惯性偏移
-   */
-  frameInertia() {
-    // 新速度为当前速度乘以衰减系数
-    this.speed *= this.factor;
-
-    // 速度降低到一个极小值，认为速度为0，已经停止下来了
-    if (Math.abs(this.speed) <= 0.5) {
-      this.isInertia = false;
-      this.speed = 0;
-      this.ticker.destroy();
-    }
-    // 惯性滚动
-    else {
-      const position = this.getPosition(this.state.position + this.speed);
+      this.coordinate = this.moveCoordinate;
+      const position = this.getPosition(
+        this.state.position + this.offset[this.axis]
+      );
       if (this.state.position !== position) {
         this.setState({ position });
         this.refreshBarSize();
@@ -221,9 +202,33 @@ export default class ScrollView extends React.Component {
     }
   }
 
+  /**
+   * 惯性偏移
+   */
+  frameInertia() {
+    if (this.isInertia) {
+      // 新速度为当前速度乘以衰减系数
+      this.speed *= this.factor;
+
+      // 速度降低到一个极小值，认为速度为0，已经停止下来了
+      if (Math.abs(this.speed) <= 0.5) {
+        this.isInertia = false;
+        this.speed = 0;
+      }
+      // 惯性滚动
+      else {
+        const position = this.getPosition(this.state.position + this.speed);
+        if (this.state.position !== position) {
+          this.setState({ position });
+          this.refreshBarSize();
+        }
+      }
+    }
+  }
+
   start(e) {
     // 如果内容高度小于容器高度，阻止滚动
-    if (this.diffRect[this.getAxis()] >= 0) {
+    if (this.diffRect[this.axis] >= 0) {
       return;
     }
 
@@ -231,7 +236,6 @@ export default class ScrollView extends React.Component {
     if (this.isInertia) {
       this.isInertia = false;
       this.speed = 0;
-      this.ticker.destroy();
     }
 
     if (!this.isTouching) {
@@ -243,10 +247,6 @@ export default class ScrollView extends React.Component {
         x: target.clientX,
         y: target.clientY
       };
-
-      // 初始化Ticker
-      this.ticker = new Ticker();
-      this.ticker.add(this.frameDragTask);
     }
   }
 
@@ -265,15 +265,9 @@ export default class ScrollView extends React.Component {
       this.isTouching = false;
 
       // 如果存在惯性，手指离开之后要惯性滚动一段距离
-      this.speed = this.offset[this.getAxis()];
+      this.speed = this.offset[this.axis];
       if (this.speed !== 0) {
         this.isInertia = true;
-        this.ticker.remove(this.frameDragTask);
-        this.ticker.add(this.frameInertiaTask);
-      }
-      // 如果不存在惯性，直接停止帧频计时器
-      else {
-        this.ticker.destroy();
       }
     }
   }
@@ -281,44 +275,41 @@ export default class ScrollView extends React.Component {
   /**
    * 获取偏移位置
    */
-  getTransform() {
+  getContentStyle() {
     const translate = () => {
       let str = `translate3d(0, ${this.state.position}px, 0)`;
-      if (this.getAxis() === "x") {
+      if (this.axis === "x") {
         str = `translate3d(${this.state.position}px, 0, 0)`;
       }
       return str;
     };
 
-    return { [this.transformAttr]: translate() };
+    let style = {
+      position: "absolute",
+      [reactTransformAttr]: translate()
+    };
+
+    if (this.axis === "x") {
+      style.height = "100%";
+    } else {
+      style.width = "100%";
+    }
+
+    return style;
   }
 
   /**
    * 显示滚动条
    */
   showScrollBar() {
-    const axis = this.getAxis();
-    if (this.props.showScrollBar && this.diffRect[axis] < 0) {
-      let style = {
-        [this.transformAttr]: `translate3d(0, ${this.state.barOffset}px, 0)`,
-        // top: `${this.state.barOffset}px`,
-        height: `${this.state.barSize}px`,
-        top: 0,
-        right: 0,
-        width: "4px"
-      };
-      if (axis === "x") {
-        style = {
-          [this.transformAttr]: `translate3d(${this.state.barOffset}px, 0, 0)`,
-          // left: `${this.state.barOffset}px`,
-          width: `${this.state.barSize}px`,
-          left: 0,
-          bottom: 0,
-          height: "4px"
-        };
-      }
-
-      return <div className="cl-ScrollView-bar" style={style} />;
+    if (this.props.showScrollBar && this.diffRect[this.axis] < 0) {
+      return (
+        <ScrollBar
+          longSide={this.state.barSize}
+          offset={this.state.barOffset}
+          direction={this.props.direction}
+        />
+      );
     }
   }
 
@@ -327,26 +318,26 @@ export default class ScrollView extends React.Component {
     if (typeof this.props.className === "string") {
       containerClass += ` ${this.props.className}`;
     }
-
-    const props = {
-      ...this.props,
-      className: containerClass
+    let containerStyle = {
+      position: "relative",
+      overflow: "hidden",
+      height: "100%"
     };
-
-    // 避免警告信息
-    delete props.showScrollBar;
+    if (typeof this.props.style === "object") {
+      containerStyle = { ...containerStyle, ...this.props.style };
+    }
 
     return (
       <div
         ref={this.containerRef}
-        {...props}
+        style={containerStyle}
+        className={containerClass}
         onTouchStart={this.start.bind(this)}
         onTouchMove={this.move.bind(this)}
         onTouchEnd={this.end.bind(this)}
         onTouchCancel={this.end.bind(this)}
-        onWheel={(e)=>{}}
       >
-        <div ref={this.contentRef} style={this.getTransform()}>
+        <div ref={this.contentRef} style={this.getContentStyle()}>
           {this.props.children}
         </div>
         {this.showScrollBar()}
