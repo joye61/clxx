@@ -159,7 +159,7 @@
   height: 4.8vw;
   margin-right: 1.06667vw;
   border-radius: 0.26667vw;
-  animation: cl-Loading-wave-animation 500ms linear infinite alternate; }
+  animation: cl-Loading-wave-animation 400ms linear infinite alternate; }
   @media screen and (min-width: 576px) {
     .cl-Loading-wave-item {
       width: 2px;
@@ -169,15 +169,15 @@
   .cl-Loading-wave-item:last-child {
     margin-right: 0; }
   .cl-Loading-wave-item:nth-child(2) {
-    animation-delay: -83.33333ms; }
+    animation-delay: -66.66667ms; }
   .cl-Loading-wave-item:nth-child(3) {
-    animation-delay: -166.66667ms; }
+    animation-delay: -133.33333ms; }
   .cl-Loading-wave-item:nth-child(4) {
-    animation-delay: -250ms; }
+    animation-delay: -200ms; }
   .cl-Loading-wave-item:nth-child(5) {
-    animation-delay: -333.33333ms; }
+    animation-delay: -266.66667ms; }
   .cl-Loading-wave-item:nth-child(6) {
-    animation-delay: -416.66667ms; }
+    animation-delay: -333.33333ms; }
 
 .cl-Loading-helix-container {
   display: inline-block;
@@ -220,39 +220,39 @@
   .cl-Loading-helix-item:nth-child(12) {
     transform: rotate(330deg); }
   .cl-Loading-helix-item:nth-child(2) .cl-Loading-helix-itembar {
-    animation-delay: -0.91667s; }
+    animation-delay: -641.66667ms; }
   .cl-Loading-helix-item:nth-child(3) .cl-Loading-helix-itembar {
-    animation-delay: -0.83333s; }
+    animation-delay: -583.33333ms; }
   .cl-Loading-helix-item:nth-child(4) .cl-Loading-helix-itembar {
-    animation-delay: -0.75s; }
+    animation-delay: -525ms; }
   .cl-Loading-helix-item:nth-child(5) .cl-Loading-helix-itembar {
-    animation-delay: -0.66667s; }
+    animation-delay: -466.66667ms; }
   .cl-Loading-helix-item:nth-child(6) .cl-Loading-helix-itembar {
-    animation-delay: -0.58333s; }
+    animation-delay: -408.33333ms; }
   .cl-Loading-helix-item:nth-child(7) .cl-Loading-helix-itembar {
-    animation-delay: -0.5s; }
+    animation-delay: -350ms; }
   .cl-Loading-helix-item:nth-child(8) .cl-Loading-helix-itembar {
-    animation-delay: -0.41667s; }
+    animation-delay: -291.66667ms; }
   .cl-Loading-helix-item:nth-child(9) .cl-Loading-helix-itembar {
-    animation-delay: -0.33333s; }
+    animation-delay: -233.33333ms; }
   .cl-Loading-helix-item:nth-child(10) .cl-Loading-helix-itembar {
-    animation-delay: -0.25s; }
+    animation-delay: -175ms; }
   .cl-Loading-helix-item:nth-child(11) .cl-Loading-helix-itembar {
-    animation-delay: -0.16667s; }
+    animation-delay: -116.66667ms; }
   .cl-Loading-helix-item:nth-child(12) .cl-Loading-helix-itembar {
-    animation-delay: -0.08333s; }
+    animation-delay: -58.33333ms; }
 
 .cl-Loading-helix-itembar {
   display: block;
   margin: 0 auto;
-  animation: cl-Loading-helix-animation 1s linear infinite;
+  animation: cl-Loading-helix-animation 700ms linear infinite;
   width: 0.53333vw;
-  height: 2.13333vw;
+  height: 1.86667vw;
   border-radius: 0.26667vw; }
   @media screen and (min-width: 576px) {
     .cl-Loading-helix-itembar {
       width: 2px;
-      height: 8px;
+      height: 7px;
       border-radius: 1px; } }
 
 .cl-Loading-dotted-item {
@@ -262,7 +262,7 @@
   height: 2.13333vw;
   margin-right: 1.33333vw;
   border-radius: 50%;
-  animation: cl-Loading-dotted-animation 500ms ease infinite alternate; }
+  animation: cl-Loading-dotted-animation 400ms ease infinite alternate; }
   @media screen and (min-width: 576px) {
     .cl-Loading-dotted-item {
       width: 8px;
@@ -271,9 +271,9 @@
   .cl-Loading-dotted-item:last-child {
     margin-right: 0; }
   .cl-Loading-dotted-item:nth-child(2) {
-    animation-delay: -333.33333ms; }
+    animation-delay: -266.66667ms; }
   .cl-Loading-dotted-item:nth-child(3) {
-    animation-delay: -500ms; }
+    animation-delay: -400ms; }
 
 .cl-Toast-container {
   position: fixed;

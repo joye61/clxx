@@ -74,7 +74,7 @@
   display: inline-block;
 }
 .cl-Loading-wave-item {
-  $duration: 500ms;
+  $duration: 400ms;
   $count: 6;
 
   display: inline-block;
@@ -111,7 +111,7 @@
   position: relative;
 }
 .cl-Loading-helix-item {
-  $duration: 1s;
+  $duration: 700ms;
   $count: 12;
 
   position: absolute;
@@ -133,22 +133,22 @@
   }
 }
 .cl-Loading-helix-itembar {
-  $duration: 1s;
+  $duration: 700ms;
   display: block;
   margin: 0 auto;
   animation: cl-Loading-helix-animation #{$duration} linear infinite;
   width: vw(2);
-  height: vw(8);
+  height: vw(7);
   border-radius: vw(1);
   @media screen and (min-width: 576px) {
     width: 2px;
-    height: 8px;
+    height: 7px;
     border-radius: 1px;
   }
 }
 
 .cl-Loading-dotted-item {
-  $duration: 500ms;
+  $duration: 400ms;
   $count: 3;
 
   display: inline-block;

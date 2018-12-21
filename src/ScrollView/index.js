@@ -51,7 +51,7 @@ export default class ScrollView extends React.Component {
 
     // 禁用默认滚动
     document.documentElement.addEventListener(
-      "touchstart",
+      "touchmove",
       this.stopDefaultScroll,
       passiveSupported ? { passive: false } : false
     );
@@ -59,7 +59,7 @@ export default class ScrollView extends React.Component {
 
   componentWillUnmount() {
     document.documentElement.removeEventListener(
-      "touchstart",
+      "touchmove",
       this.stopDefaultScroll
     );
     this.ticker.destroy();
