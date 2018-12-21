@@ -185,8 +185,6 @@ new Toast({
 ### 单独引入
 
 ```javascript
-// 引入CSS
-import "cl-utils/ScrollView/index.css";
 // 引入库
 import ScrollView from "cl-utils/ScrollView";
 ```
