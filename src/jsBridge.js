@@ -44,8 +44,9 @@ export default function(namespace, api, param) {
 }
 
 function generateIndex(callback) {
+  callbackIndex += 1
   window[`__MCL_CALLBACK_${callbackIndex}`] = callback;
-  return (callbackIndex += 1);
+  return callbackIndex;
 }
 
 function sendRequest(url) {
