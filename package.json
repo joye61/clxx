@@ -1,12 +1,12 @@
 {
   "name": "cl-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "common used utility for web develop",
   "main": "./lib/index.js",
   "scripts": {
     "watch:scss": "node-sass -w ./src -o ./lib",
     "watch:babel": "babel src -d lib -w --no-comments",
-    "watch": "concurrently -k \"npm run watch:babel\" \"npm run watch:scss\"",
+    "start": "concurrently -k \"npm run watch:babel\" \"npm run watch:scss\"",
     "build": "rm -rfv ./lib && babel src -d lib --no-comments && node-sass ./src -o ./lib && node scripts/package.js"
   },
   "repository": {
@@ -43,8 +43,11 @@
     ]
   },
   "dependencies": {
+    "core-js": "^2.6.2",
     "lodash": "^4.17.11",
+    "object-assign": "^4.1.1",
     "promise": "^8.0.2",
+    "querystring": "^0.2.0",
     "raf": "^3.4.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",

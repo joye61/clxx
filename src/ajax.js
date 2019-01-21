@@ -2,18 +2,6 @@ import querystring from "querystring";
 import isPlainObject from "lodash/isPlainObject";
 import Loading from "./Loading";
 
-// 强行注入Polyfill，尽可能扩大兼容
-if (typeof URL === "undefined") {
-  require("url-polyfill");
-}
-if (typeof fetch === "undefined") {
-  require("whatwg-fetch");
-}
-if (typeof Promise === "undefined") {
-  require("promise/lib/rejection-tracking").enable();
-  window.Promise = require("promise/lib/es6-extensions.js");
-}
-
 /**
  *
  * @param {*} option
@@ -73,6 +61,12 @@ export default function ajax(option) {
   let loadingStartTime = Date.now();
   let destroyLoading;
   if (option.showLoading) {
+
+    // 如果动画显示时长未设置，设置默认值
+    if(typeof option.loadingConfig.timeLimit === "undefined") {
+      option.loadingConfig.timeLimit = 1000;
+    }
+
     loading = new Loading(option.loadingConfig);
     destroyLoading = (ondestroy = () => {}) => {
       let now = Date.now();

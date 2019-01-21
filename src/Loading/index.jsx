@@ -49,23 +49,6 @@ export function HelixLoading({ color = "#fff" }) {
   return <div className="cl-Loading-helix-container">{list}</div>;
 }
 
-/**
- * 三点起伏式Loading
- * @param {*} color 颜色
- */
-export function DottedLoading({ color = "#fff" }) {
-  const list = [];
-  for (let i = 0; i < 3; i++) {
-    list.push(
-      <span
-        className="cl-Loading-dotted-item"
-        style={{ backgroundColor: color }}
-      />
-    );
-  }
-  return <div className="cl-Loading-dotted-container">{list}</div>;
-}
-
 export default class Loading {
   container = document.createElement("div");
 
@@ -88,8 +71,6 @@ export default class Loading {
     let type = config.type.toLowerCase();
     if (type === "wave") {
       Component = WaveLoading;
-    } else if (type === "dotted") {
-      Component = DottedLoading;
     } else if (type === "helix") {
       Component = HelixLoading;
     } else {

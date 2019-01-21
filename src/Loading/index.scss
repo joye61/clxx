@@ -2,31 +2,22 @@
   @return 100vw * $size / 375;
 }
 @keyframes cl-Loading-wave-animation {
-  from {
-    transform: scale3d(1, 1, 1);
-    opacity: 1;
+  0%, 40%, 100% {
+    transform: scaleY(1);
+    opacity: .3;
   }
-  to {
-    transform: scale3d(1, .1, 1);
-    opacity: 0;
+
+  20% {
+      transform: scaleY(1.8);
+      opacity: 1;
   }
 }
 @keyframes cl-Loading-helix-animation {
   from {
-    opacity: 1;
+    transform: rotate(0);
   }
   to {
-    opacity: 0;
-  }
-}
-@keyframes cl-Loading-dotted-animation {
-  from {
-    transform: scale3d(1.2, 1.2, 1);
-    opacity: 1;
-  }
-  to {
-    transform: scale3d(0.5, 0.5, 1);
-    opacity: 0.2;
+    transform: rotate(360deg);
   }
 }
 
@@ -67,34 +58,31 @@
   }
 }
 
-.cl-Loading-wave-container,
-.cl-Loading-dotted-container {
+.cl-Loading-wave-container{
   font-size: 0;
-  transform: rotate(180deg);
   display: inline-block;
 }
+
 .cl-Loading-wave-item {
-  $duration: 400ms;
+  $duration: 1000ms;
   $count: 6;
 
   display: inline-block;
-  width: vw(2);
-  height: vw(18);
-  margin-right: vw(4);
-  border-radius: vw(1);
+  width: 2px;
+  height: vw(14);
+  margin-right: 4px;
   @media screen and (min-width: 576px) {
-    width: 2px;
-    height: 18px;
+    width: 3px;
+    height: 14px;
     margin-right: 4px;
-    border-radius: 1px;
   }
-  animation: cl-Loading-wave-animation #{$duration} linear infinite alternate;
+  animation: cl-Loading-wave-animation #{$duration} ease-in-out infinite;
   &:last-child {
     margin-right: 0;
   }
   @for $i from 2 through $count {
     &:nth-child(#{$i}) {
-      animation-delay: -$duration / $count * ($i - 1);
+      animation-delay: (($i - 1) * 100ms) - $duration;
     }
   }
 }
@@ -102,18 +90,18 @@
 .cl-Loading-helix-container {
   display: inline-block;
   font-size: 0;
-  width: vw(26);
-  height: vw(26);
+  width: vw(30);
+  height: vw(30);
+  $duration: 700ms;
+  animation: cl-Loading-helix-animation #{$duration} steps(12) infinite;
   @media screen and (min-width: 576px) {
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
   }
   position: relative;
 }
 .cl-Loading-helix-item {
-  $duration: 700ms;
   $count: 12;
-
   position: absolute;
   top: 0;
   width: 0;
@@ -123,20 +111,13 @@
   @for $i from 2 through $count {
     &:nth-child(#{$i}) {
       transform: rotate(360deg / $count * ($i - 1));
-    }
-  }
-
-  @for $i from 2 through $count {
-    &:nth-child(#{$i}) .cl-Loading-helix-itembar {
-      animation-delay: -$duration + $duration / $count * ($i - 1);
+      opacity: 1 - $i / $count;
     }
   }
 }
 .cl-Loading-helix-itembar {
-  $duration: 700ms;
   display: block;
   margin: 0 auto;
-  animation: cl-Loading-helix-animation #{$duration} linear infinite;
   width: vw(2);
   height: vw(7);
   border-radius: vw(1);
@@ -144,32 +125,5 @@
     width: 2px;
     height: 7px;
     border-radius: 1px;
-  }
-}
-
-.cl-Loading-dotted-item {
-  $duration: 400ms;
-  $count: 3;
-
-  display: inline-block;
-  font-size: 0;
-  width: vw(8);
-  height: vw(8);
-  margin-right: vw(5);
-  @media screen and (min-width: 576px) {
-    width: 8px;
-    height: 8px;
-    margin-right: 5px;
-  }
-
-  border-radius: 50%;
-  animation: cl-Loading-dotted-animation $duration ease infinite alternate;
-  &:last-child {
-    margin-right: 0;
-  }
-  @for $i from 2 through $count {
-    &:nth-child(#{$i}) {
-      animation-delay: -$duration / $count * $i;
-    }
   }
 }
