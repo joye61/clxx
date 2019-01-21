@@ -27,8 +27,7 @@ import "cl-utils/Loading/index.css";
 // 引入库
 import Loading, {
   HelixComponent, 
-  WaveComponent, 
-  DottedComponent
+  WaveComponent
 } from "cl-utils/Loading";
 ```
 
@@ -37,11 +36,9 @@ import Loading, {
 
 - 菊花齿轮效果 `helix`
 - 波浪形态效果 `wave`
-- 三点轮换效果 `dotted`
 
 <p>
   <img src="./doc/helix.gif" height="150">
-  <img src="./doc/wave.gif" height="150">
   <img src="./doc/dotted.gif" height="150">
   <img src="./doc/with-hint.gif" height="150">
 </p>
@@ -82,15 +79,10 @@ ReactDOM.render(
   <div>
     <HelixLoading color="#000" />
     <WaveLoading color="#000" />
-    <DottedLoading color="#000" />
   </div>,
   document.getElementById("root")
 );
 ```
-
-<p>
-  <img src="./doc/sub-loading.gif" height="50">
-</p>
 
 
 # Alert 组件
