@@ -51,7 +51,7 @@ export default function ajax(option) {
   // 允许方法任意大小写
   option.method = option.method.toUpperCase();
 
-  // 规范化URL的Schema
+  // 规范化url的Schema
   if (option.url.indexOf("//") === 0) {
     option.url = window.location.protocol + option.url;
   }
@@ -61,9 +61,8 @@ export default function ajax(option) {
   let loadingStartTime = Date.now();
   let destroyLoading;
   if (option.showLoading) {
-
     // 如果动画显示时长未设置，设置默认值
-    if(typeof option.loadingConfig.timeLimit === "undefined") {
+    if (typeof option.loadingConfig.timeLimit === "undefined") {
       option.loadingConfig.timeLimit = 1000;
     }
 
@@ -90,8 +89,7 @@ export default function ajax(option) {
     timeoutFlag = true;
   }, option.timeLimit);
 
-  // 处理url，生成URL对象
-  const url = new URL(option.url);
+  // 查询字符串对象构建
   let appendParam = {};
 
   // 当前页面的查询字符串参数透传
@@ -110,27 +108,30 @@ export default function ajax(option) {
     }
   }
 
+  let queryParam = "";
   if (option.data && isPlainObject(option.data)) {
     // GET请求时，请求参数拼装进查询参数
     if (option.method === "GET") {
       appendParam = { ...appendParam, ...option.data };
+      queryParam = querystring.stringify(appendParam);
     }
 
     // POST 请求时，封装data
-    if (option.method === "POST" && !option.headers["Content-Type"]) {
-      const postSearchParams = new URLSearchParams();
-      for (let key in option.data) {
-        postSearchParams.append(key, option.data[key]);
-      }
-      option.data = postSearchParams;
+    if (option.method === "POST") {
+      option.data = querystring.stringify(option.data);
       option.headers["Content-Type"] =
         "application/x-www-form-urlencoded;charset=UTF-8";
     }
   }
 
-  // 生成最终URL
-  for (let key in appendParam) {
-    url.searchParams.set(key, appendParam[key]);
+  // 生成最终url
+  option.url = option.url.replace(/(\?*|&*)$/, "");
+  if (queryParam) {
+    if (/\?/.test(option.url)) {
+      option.url += `&${queryParam}`;
+    } else {
+      option.url += `?${queryParam}`;
+    }
   }
 
   let fetchOption = {
@@ -138,11 +139,11 @@ export default function ajax(option) {
     headers: option.headers,
     credentials: option.credentials
   };
-  if (option.method !== "GET") {
+  if (option.method === "POST") {
     fetchOption.body = option.data;
   }
 
-  fetch(url.href, fetchOption)
+  fetch(option.url, fetchOption)
     .then(response => {
       // 这里做超时逻辑检测
       if (timeoutFlag === true) {
