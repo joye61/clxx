@@ -12,22 +12,3 @@ try {
 // 检测是否支持Touch事件
 export let isTouchSupport =
   typeof window.ontouchstart === "undefined" ? false : true;
-
-// 获取transform样式属性的react属性名
-export const reactTransformAttr = (() => {
-  const list = {
-    webkit: "Webkit",
-    moz: "Moz",
-    ms: "ms",
-    o: "O"
-  };
-  if (typeof document.body.style.transform === "string") {
-    return "transform";
-  }
-
-  for (const prefix in list) {
-    if (typeof document.body.style[`${prefix}Transform`] === "string") {
-      return `${list[prefx]}Transform`;
-    }
-  }
-})();
