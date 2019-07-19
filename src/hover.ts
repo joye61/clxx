@@ -43,6 +43,7 @@
 
 const doc: HTMLElement = document.documentElement;
 
+// 全局配置
 let isAttach: boolean = false;
 let _allowBubbling: boolean = false;
 let _defaultHoverClass: string = "hover";
