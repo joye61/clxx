@@ -1,21 +1,19 @@
 {
   "name": "cl-utils",
   "version": "0.1.4",
-  "description": "common used utility for web develop",
-  "main": "./lib/index.js",
+  "description": "Most common used utility for web develop",
+  "main": "./libs/index.js",
   "scripts": {
-    "watch:scss": "node-sass -w ./src -o ./lib",
-    "watch:babel": "babel src -d lib -w --no-comments",
-    "start": "concurrently -k \"npm run watch:babel\" \"npm run watch:scss\"",
-    "build": "rm -rfv ./lib && babel src -d lib --no-comments && node-sass ./src -o ./lib && node scripts/package.js"
+    "build:scss": "sass --linefeed=lf --output-style=expanded ./src -o ./libs",
+    "build": "node ./scripts/clean.js && tsc && npm run build:scss"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joye61/cl-utils.git"
   },
   "keywords": [
-    "javascript",
-    "library"
+    "library",
+    "react"
   ],
   "author": "joye",
   "license": "MIT",
@@ -23,36 +21,20 @@
     "url": "https://github.com/joye61/cl-utils/issues"
   },
   "homepage": "https://github.com/joye61/cl-utils#readme",
-  "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.6",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/preset-env": "^7.1.6",
-    "@babel/preset-react": "^7.0.0",
-    "concurrently": "^4.1.0",
-    "fs-extra": "^7.0.1",
-    "node-sass": "^4.10.0"
-  },
-  "babel": {
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
-    ],
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
-  },
+  "registry": "https://registry.npmjs.org",
   "dependencies": {
-    "core-js": "^2.6.2",
-    "lodash": "^4.17.11",
-    "object-assign": "^4.1.1",
-    "promise": "^8.0.2",
-    "querystring": "^0.2.0",
+    "@types/lodash": "^4.14.136",
+    "@types/node": "^12.0.0",
+    "@types/raf": "^3.4.0",
+    "@types/react": "^16.8.16",
+    "@types/react-dom": "^16.8.4",
+    "lodash": "^4.17.15",
     "raf": "^3.4.1",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "url-polyfill": "^1.1.2",
-    "whatwg-fetch": "^3.0.0"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
-  "registry": "https://registry.npmjs.org"
+  "devDependencies": {
+    "fs-extra": "^8.1.0",
+    "sass": "^1.22.7"
+  }
 }

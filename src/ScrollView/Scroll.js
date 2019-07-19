@@ -24,7 +24,7 @@ export default class Scroll {
 
     // 禁用默认滚动
     this.stopDefaultScrollHandler = event => event.preventDefault();
-    this.stopDefaulScroll();
+    this.stopDefaultScroll();
 
     // 触摸事件处理
     this.handler = new Handler();
@@ -32,7 +32,7 @@ export default class Scroll {
     this.updater = this.updatePosition.bind(this);
     this.touchStartHandler = this.handler.onStart.bind(this.handler);
     this.touchMoveHandler = event => {
-      this.handler.onMove.bind(this.handler, event);
+      this.handler.onMove.bind(this.handler, event)();
       if(this.scheduleUpdate) {
         return ;
       }
@@ -48,7 +48,7 @@ export default class Scroll {
   }
 
   getTransformAttr() {
-    const attrs = ["transform", "webkitTransform", "mozTransform", "ms", "o"];
+    const attrs = ["transform", "webkitTransform", "MozTransform", "ms", "o"];
     for (let attr of attrs) {
       if (typeof document.body.style[attr] === "string") {
         this.transformAttr = attr;
@@ -73,7 +73,7 @@ export default class Scroll {
   /**
    * 禁用默认滚动
    */
-  stopDefaulScroll() {
+  stopDefaultScroll() {
     document.documentElement.addEventListener(
       "touchstart",
       this.stopDefaultScrollHandler,

@@ -1,6 +1,6 @@
 import querystring from "querystring";
 import isPlainObject from "lodash/isPlainObject";
-import Loading from "./Loading";
+// import Loading from "./Loading";
 
 /**
  *
@@ -24,7 +24,28 @@ import Loading from "./Loading";
  * }
  *
  */
-export default function ajax(option) {
+
+type Callback = (res?: any) => void;
+
+interface AjaxOption {
+  url: string; // 请求url地址
+  method?: string; // 请求方式
+  data?: any; // 请求数据
+  headers?: any; // 请求头
+  credentials?: string; // 设置认证模式
+  showLoading?: false; // 显示加载进度效果，注意开启加载进度效果需要包含对应的CSS资源文件
+  loadingConfig?: {
+    // 加载组件配置
+    timeLimit?: number; // 加载进度最小显示时间，单位毫秒，默认1000ms
+  };
+  timeLimit?: number; // 超时时长，单位毫秒
+  onTimeOut?: Callback; // 超时回调
+  onLoad?: Callback; // 加载数据回调
+  onError?: Callback; // 错误回调
+  transmitParam?: boolean; // 是否透传url参数
+}
+
+export default function ajax(option: AjaxOption) {
   if (!option.url) {
     throw new Error("Request url can not be null");
   }

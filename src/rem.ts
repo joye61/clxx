@@ -1,6 +1,11 @@
 import isPlainObject from "lodash/isPlainObject";
 
-export default function rem(option) {
+interface RemOption {
+  criticalWidth?: number;
+  designWidth?: number;
+}
+
+export default function rem(option: RemOption | number) {
   // 设计尺寸，在html根元素指定data-dw
   const dw = document.documentElement.dataset.dw;
   let config = {
@@ -15,7 +20,7 @@ export default function rem(option) {
   }
 
   if (isPlainObject(option)) {
-    config = { ...config, ...option };
+    config = { ...config, ...<RemOption>option };
   }
 
   const reset = () => {

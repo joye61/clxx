@@ -1,15 +1,17 @@
 import raf from "raf";
 
+type Task = () => void;
+
 export default class Ticker {
-  tasks = [];
-  frameId = 0;
-  isRun = true;
+  tasks: Array<Task> = [];
+  frameId: number = 0;
+  isRun: boolean = true;
 
   /**
    * 设置定时器
    * @param {number} interval 单位毫秒
    */
-  constructor(interval) {
+  constructor(interval: number) {
     let useInterval = false;
     if (typeof interval === "number" && interval > 1000 / 60) {
       useInterval = true;
@@ -23,10 +25,10 @@ export default class Ticker {
         return;
       }
       this.frameId = raf(frame);
-      if(useInterval) {
+      if (useInterval) {
         let current = Date.now();
         let diff = current - start;
-        if(diff >= interval) {
+        if (diff >= interval) {
           exec();
           start = current;
         }
@@ -42,7 +44,7 @@ export default class Ticker {
    * 添加任务
    * @param {Function} task
    */
-  add(task) {
+  add(task: Task) {
     if (typeof task === "function") {
       this.tasks.push(task);
     }
@@ -52,7 +54,7 @@ export default class Ticker {
    * 移除任务
    * @param {Function} task
    */
-  remove(task) {
+  remove(task: Task): void {
     if (typeof task === "function") {
       let findIndex = -1;
       for (let i = 0; i < this.tasks.length; i++) {
