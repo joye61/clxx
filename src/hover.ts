@@ -1,58 +1,67 @@
-// let touchHoverOn = true;
-
-// let getTarget = (node)=>{
-//     if(!node || !(node instanceof Element)) return null;
-//     if(node.dataset.hover !== undefined) {
-//         return node;
-//     } else if(node.parentNode !== null){
-//         return getTarget(node.parentNode);
-//     }
-// }
-
-// let inHover = false, node = null;
-// let touchstart = function(e){
-//     if(e.touches.length > 1 || inHover || !touchHoverOn) {
-//         return ;
-//     }
-//     node = getTarget(e.touches.item(0).target);
-//     if(node == null) return ;
-//     inHover = true;
-
-//     node.dataset.hover && node.classList.add(node.dataset.hover);
-// };
-// let touchend = function(){
-//     if(inHover) {
-//         inHover = false;
-//         node.dataset.hover && node.classList.remove(node.dataset.hover);
-//     }
-// };
-
-// let doc = document.documentElement;
-// doc.addEventListener('touchstart', touchstart);
-// doc.addEventListener('touchend', touchend);
-// doc.addEventListener('touchcancel', touchend);
-
-// export let touchHover = {
-//     on(){
-//         touchHoverOn = true;
-//     },
-//     off(){
-//         touchHoverOn = false;
-//     }
-// };
-
+// 文档根节点元素
 const doc: HTMLElement = document.documentElement;
 
-// 全局配置
+// 当前是否正在绑定
 let isAttach: boolean = false;
+// 是否正在触摸
+let isTouch: boolean = false;
+// 点击的目标数组
+let targetList: Array<HTMLElement> = [];
+// 是否允许点击穿透
 let _allowBubbling: boolean = false;
+// 默认的hover类
 let _defaultHoverClass: string = "hover";
 
-function touchstart(event: TouchEvent) {
-  
+/**
+ * 获取一个或者多个满足条件的DOM元素
+ * @param element HTMLELment
+ * @return Array<HTMLElement>
+ */
+function getTargetList(element: HTMLElement | null): Array<HTMLElement> {
+  // 递归退出条件
+  if (element === doc || element === null) {
+    return [];
+  }
+
+  // 将获取到的DOM节点置于数组中
+  const list: Array<HTMLElement> = [];
+  if (element.dataset.hover !== undefined) {
+    list.push(element);
+    // 如果不允许点击穿透，查找过程停止
+    if (!_allowBubbling) {
+      return list;
+    }
+  }
+
+  // 如果允许穿透，或者没有找到，继续向上寻找
+  list.push(...getTargetList(element.parentElement));
+  return list;
 }
-function touchend(event: TouchEvent) {}
-function touchcancel(event: TouchEvent) {}
+
+// 触摸开启时
+function touchstart(event: TouchEvent) {
+  if (!isTouch) {
+    if (event.touches.length > 1) {
+      return;
+    }
+    targetList = getTargetList(event.touches[0].target as any);
+    targetList.forEach(element => {
+      element.classList.add(element.dataset.hover || _defaultHoverClass);
+    });
+    isTouch = true;
+  }
+}
+
+// 触摸结束
+function touchend(event: TouchEvent) {
+  if (isTouch) {
+    targetList.forEach(element => {
+      element.classList.remove(element.dataset.hover || _defaultHoverClass);
+    });
+    targetList = [];
+    isTouch = false;
+  }
+}
 
 export type HoverOption = {
   allowBubbling: boolean;

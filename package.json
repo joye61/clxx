@@ -4,7 +4,7 @@
   "description": "Most common used utility for web develop",
   "main": "./libs/index.js",
   "scripts": {
-    "build:scss": "sass --linefeed=lf --output-style=expanded ./src -o ./libs",
+    "build:scss": "sass --style=expanded ./src:./libs",
     "build": "node ./scripts/clean.js && tsc && npm run build:scss"
   },
   "repository": {
