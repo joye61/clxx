@@ -43,42 +43,47 @@
 
 const doc: HTMLElement = document.documentElement;
 
-function touchstart(event: TouchEvent) {}
+let isAttach: boolean = false;
+let _allowBubbling: boolean = false;
+let _defaultHoverClass: string = "hover";
+
+function touchstart(event: TouchEvent) {
+  
+}
 function touchend(event: TouchEvent) {}
 function touchcancel(event: TouchEvent) {}
 
 export type HoverOption = {
   allowBubbling: boolean;
-  hoverClass: string;
+  defaultHoverClass: string;
 };
 
 export interface Hover {
-  isAttach: boolean;
   attach: (option: HoverOption) => void;
   detach: () => void;
 }
 
 export const hover: Hover = {
-  isAttach: false,
-  attach({ allowBubbling = false, hoverClass = "hover" }: HoverOption) {
-    if (this.isAttach === false) {
+  attach({ allowBubbling = false, defaultHoverClass = "hover" }: HoverOption) {
+    // 设置全局公共配置
+    _allowBubbling = allowBubbling;
+    _defaultHoverClass = defaultHoverClass;
+
+    // 绑定全局事件监听
+    if (isAttach === false) {
       doc.addEventListener("touchstart", touchstart);
       doc.addEventListener("touchend", touchend);
       doc.addEventListener("touchcancel", touchend);
-      this.isAttach = true;
+      isAttach = true;
     }
   },
 
-  createAttach(){
-    
-  },
-
   detach() {
-    if (this.isAttach === true) {
+    if (isAttach === true) {
       doc.removeEventListener("touchstart", touchstart);
       doc.removeEventListener("touchend", touchend);
       doc.removeEventListener("touchcancel", touchend);
-      this.isAttach = false;
+      isAttach = false;
     }
   }
 };
