@@ -94,6 +94,8 @@ export const hover: Hover = {
       doc.removeEventListener("touchend", touchend);
       doc.removeEventListener("touchcancel", touchend);
       isAttach = false;
+      _allowBubbling = false;
+      _defaultHoverClass = "hover";
     }
   }
 };

@@ -17,6 +17,11 @@
   resolved "https://registry.npm.taobao.org/@types/prop-types/download/@types/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
   integrity sha1-8aEee6uww8rWgQC+OB0eBkxo8fY=
 
+"@types/qs@^6.5.3":
+  version "6.5.3"
+  resolved "https://registry.npm.taobao.org/@types/qs/download/@types/qs-6.5.3.tgz#1c3b71b091eaeaf5924538006b7f70603ce63d38"
+  integrity sha1-HDtxsJHq6vWSRTgAa39wYDzmPTg=
+
 "@types/raf@^3.4.0":
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/@types/raf/download/@types/raf-3.4.0.tgz#2b72cbd55405e071f1c4d29992638e022b20acc2"
@@ -44,6 +49,14 @@ anymatch@^3.0.1:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
+
+axios@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.npm.taobao.org/axios/download/axios-0.19.0.tgz#8e09bff3d9122e133f7b8101c8fbdd00ed3d2ab8"
+  integrity sha1-jgm/89kSLhM/e4EByPvdAO09Krg=
+  dependencies:
+    follow-redirects "1.5.10"
+    is-buffer "^2.0.2"
 
 binary-extensions@^2.0.0:
   version "2.0.0"
@@ -77,12 +90,26 @@ csstype@^2.2.0:
   resolved "https://registry.npm.taobao.org/csstype/download/csstype-2.6.6.tgz#c34f8226a94bbb10c32cc0d714afdf942291fc41"
   integrity sha1-w0+CJqlLuxDDLMDXFK/flCKR/EE=
 
+debug@=3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npm.taobao.org/debug/download/debug-3.1.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdebug%2Fdownload%2Fdebug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  integrity sha1-W7WgZyYotkFJVmuhaBnmFRjGcmE=
+  dependencies:
+    ms "2.0.0"
+
 fill-range@^7.0.1:
   version "7.0.1"
   resolved "https://registry.npm.taobao.org/fill-range/download/fill-range-7.0.1.tgz#1919a6a7c75fe38b2c7c77e5198535da9acdda40"
   integrity sha1-GRmmp8df44ssfHflGYU12prN2kA=
   dependencies:
     to-regex-range "^5.0.1"
+
+follow-redirects@1.5.10:
+  version "1.5.10"
+  resolved "https://registry.npm.taobao.org/follow-redirects/download/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+  integrity sha1-e3qfmuov3/NnhqlP9kPtB/T/Xio=
+  dependencies:
+    debug "=3.1.0"
 
 fs-extra@^8.1.0:
   version "8.1.0"
@@ -116,6 +143,11 @@ is-binary-path@^2.1.0:
   integrity sha1-6h9/O4DwZCNug0cPhsCcJU+0Wwk=
   dependencies:
     binary-extensions "^2.0.0"
+
+is-buffer@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.npm.taobao.org/is-buffer/download/is-buffer-2.0.3.tgz#4ecf3fcf749cbd1e472689e109ac66261a25e725"
+  integrity sha1-Ts8/z3ScvR5HJonhCaxmJhol5yU=
 
 is-extglob@^2.1.1:
   version "2.1.1"
@@ -158,6 +190,11 @@ loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+ms@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/ms/download/ms-2.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fms%2Fdownload%2Fms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
+  integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
+
 normalize-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/normalize-path/download/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
@@ -186,6 +223,11 @@ prop-types@^15.6.2:
     loose-envify "^1.4.0"
     object-assign "^4.1.1"
     react-is "^16.8.1"
+
+qs@^6.7.0:
+  version "6.7.0"
+  resolved "https://registry.npm.taobao.org/qs/download/qs-6.7.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqs%2Fdownload%2Fqs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
+  integrity sha1-QdwaAV49WB8WIXdr4xr7KHapsbw=
 
 raf@^3.4.1:
   version "3.4.1"
