@@ -39,7 +39,6 @@ import Loading, {
 
 <p>
   <img src="./doc/helix.gif" height="150">
-  <img src="./doc/dotted.gif" height="150">
   <img src="./doc/with-hint.gif" height="150">
 </p>
 
@@ -292,12 +291,3 @@ ticker.destroy();
 // 下面构造函数创建了一个定时器，每隔2秒会自动执行一次任务列表
 const ticker = new Ticker(2000);
 ```
-
-
-# 其他
-
-简单功能请参考源码
-
-- [cookie](./src/cookie.js)
-- [jsBridge](./src/jsBridge.js)
-- [is](./src/is.js)
