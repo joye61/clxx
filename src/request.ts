@@ -2,44 +2,61 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Loading, LoadingOption } from "./Loading";
 import querystring from "qs";
 
+// 导出默认的axios对象
 export { default as rawRequest } from "axios";
 
 export interface RequestLoadingOption extends LoadingOption {
-  minExistTime: number;
+  minExistTime?: number;
 }
 
 export interface RequestOption extends AxiosRequestConfig {
-  url: string;
-  loading?: RequestLoadingOption;
+  loading?: RequestLoadingOption | boolean;
+  httpCache?: boolean;
   transmitParam?: boolean;
+  transmitHashParam?: boolean;
 }
 
+/**
+ * 发送ajax请求
+ * @param option RequestOption
+ */
 export async function request(option: RequestOption) {
   // 默认不透传URL参数
   let transmitParam = !!option.transmitParam;
-  // 如果loading存在，默认最小存在时间1000毫秒
-  let minExistTime = 1000;
-  if (option.loading && option.loading.minExistTime) {
-    minExistTime = option.loading.minExistTime;
+  let transmitHashParam = !!option.transmitHashParam;
+
+  // 配置请求是否需要清除缓存
+  if (!option.httpCache) {
+    option.params = {
+      __c: Date.now()
+    };
   }
 
-  // 规范化url的Schema
-  if (option.url.indexOf("//") === 0) {
-    option.url = window.location.protocol + option.url;
+  // 如果loading存在，默认最小存在时间1000毫秒
+  let minExistTime = 1000;
+  let showLoading = false;
+  let loadingConfig: any = {};
+  if (typeof option.loading === "object") {
+    if (typeof option.loading.minExistTime === "number") {
+      minExistTime = option.loading.minExistTime;
+    }
+    showLoading = true;
+    loadingConfig = { ...option.loading };
+  } else {
+    showLoading = !!option.loading;
   }
 
   // 显示加载进度条逻辑
   let loadingFinishFn = async () => {};
-  if (typeof option.loading === "object") {
+  if (showLoading === true) {
     const loadingStart = Date.now();
-    const loadingComponent = new Loading(option.loading);
-
+    const loadingComponent = new Loading(loadingConfig);
     loadingFinishFn = async () => {
       const current = Date.now();
       const diff = current - loadingStart;
       // 如果执行时还没到最小存在时间，则继续等待
       if (diff < minExistTime) {
-        new Promise(resolve => {
+        return new Promise(resolve => {
           window.setTimeout(() => {
             loadingComponent.destroy();
             resolve();
@@ -58,16 +75,20 @@ export async function request(option: RequestOption) {
     appendParam = urlParam;
 
     // 透传Hash段的查询参数，兼容Hash路由查询模式
-    const hashSearchStart = window.location.hash.indexOf("?");
-    if (hashSearchStart > -1) {
-      const hashSearch = window.location.hash.substring(hashSearchStart);
-      const hashSearchParam = querystring.parse(hashSearch.replace(/^\?*/, ""));
-      appendParam = { ...appendParam, ...hashSearchParam };
+    if (transmitHashParam) {
+      const hashSearchStart = window.location.hash.indexOf("?");
+      if (hashSearchStart > -1) {
+        const hashSearch = window.location.hash.substring(hashSearchStart);
+        const hashSearchParam = querystring.parse(
+          hashSearch.replace(/^\?*/, "")
+        );
+        appendParam = { ...appendParam, ...hashSearchParam };
+      }
     }
 
     // 追加参数到当前参数列表
     if (typeof option.params === "object") {
-      option.params = { ...option.params, appendParam };
+      option.params = { ...option.params, ...appendParam };
     } else {
       option.params = appendParam;
     }

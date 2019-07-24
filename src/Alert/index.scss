@@ -78,7 +78,7 @@
     cursor: pointer;
     flex: 1;
     background: transparent;
-    font-size: vw(16);
+    font-size: vw(15);
     line-height: vw(44);
     text-align: center;
     box-sizing: border-box;
@@ -86,7 +86,7 @@
     -webkit-tap-highlight-color: transparent;
     font-weight: 500;
     @media screen and (min-width: 576px) {
-      font-size: 16px;
+      font-size: 15px;
       line-height: 50px;
     }
   }

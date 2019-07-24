@@ -1,41 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-export class ToastComponent extends React.Component {
-  static defaultProps = {
-    duration: 3000,
-    onEnd: undefined
-  };
-
-  state = {
-    animationClass: "cl-Toast cl-Toast-show"
-  }
-
-  componentDidMount() {
-    window.setTimeout(() => {
-      this.setState({
-        animationClass: "cl-Toast cl-Toast-hide"
-      });
-    }, this.props.duration);
-  }
-
-  onAnimationEnd(e){
-    if(e.animationName === 'cl-Toast-hide' && typeof this.props.onEnd === "function") {
-      this.props.onEnd();
-    }
-  }
-
-  render() {
-    return (
-      <div
-        className={this.state.animationClass}
-        onAnimationEnd={this.onAnimationEnd.bind(this)}
-      >
-        {this.props.content}
-      </div>
-    );
-  }
-}
+import { ToastComponent } from "./ToastComponent";
 
 export default class Toast {
   container = document.createElement("div");
