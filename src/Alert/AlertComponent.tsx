@@ -1,4 +1,7 @@
+/** @jsx jsx */
+import { jsx, SerializedStyles } from "@emotion/core";
 import React, { useState } from "react";
+import { style, hideAnimation } from "./style";
 
 type Callback = () => void;
 export interface AlertComponentProps {
@@ -23,64 +26,55 @@ export function AlertComponent({
   onHide = () => {}
 }: AlertComponentProps) {
   // 动画状态类
-  const [animationClass, setAnimationClass] = useState<string>("cl-Alert-show");
+  const [animation, setAnimation] = useState<SerializedStyles>(
+    style.containerShow
+  );
 
   // 动画结束回调
   const animationEnd = (event: React.AnimationEvent) => {
-    if (event.animationName === "cl-Alert-hide") {
+    if (hideAnimation.name === event.animationName) {
       typeof onHide === "function" && onHide();
     }
   };
 
   // 取消按钮点击
   const cancel = () => {
-    setAnimationClass("cl-Alert-hide");
+    setAnimation(style.containerHide);
     typeof onCancel === "function" && onCancel();
   };
 
   // 确认按钮点击
   const confirm = () => {
-    setAnimationClass("cl-Alert-hide");
+    setAnimation(style.containerHide);
     typeof onConfirm === "function" && onConfirm();
   };
 
   // 显示弹框内容
   const showContent = () => {
     if (typeof content === "string") {
-      return <p className="cl-Alert-content">{content}</p>;
+      return <p css={style.content}>{content}</p>;
     }
     if (React.isValidElement(content)) {
       return content;
     }
   };
 
-  let className = "cl-Alert";
+  const wrapperCss = [style.alert];
   if (showMask) {
-    className = "cl-Alert cl-Alert-mask";
+    wrapperCss.push(style.alertMask);
   }
 
   return (
-    <div className={className}>
-      <div
-        className={`cl-Alert-container ${animationClass}`}
-        onAnimationEnd={animationEnd}
-      >
+    <div css={wrapperCss}>
+      <div css={[style.container, animation]} onAnimationEnd={animationEnd}>
         {showContent()}
-        <div className="cl-Alert-btn">
+        <div css={style.btn}>
           {showCancel ? (
-            <div
-              className="cl-Alert-cancel"
-              onClick={cancel}
-              onTouchStart={() => {}}
-            >
+            <div css={style.cancel} onClick={cancel} onTouchStart={() => {}}>
               {cancelText}
             </div>
           ) : null}
-          <div
-            className="cl-Alert-confirm"
-            onClick={confirm}
-            onTouchStart={() => {}}
-          >
+          <div css={style.confirm} onClick={confirm} onTouchStart={() => {}}>
             {confirmText}
           </div>
         </div>
