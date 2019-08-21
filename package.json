@@ -4,8 +4,7 @@
   "description": "Most common used utility for web develop",
   "main": "./libs/index.js",
   "scripts": {
-    "build:scss": "sass --style=expanded ./src:./libs",
-    "build": "node ./scripts/clean.js && tsc && npm run build:scss"
+    "build": "node ./scripts/clean.js && tsc"
   },
   "repository": {
     "type": "git",

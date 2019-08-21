@@ -4,7 +4,7 @@ import { vw } from "../cssUtil";
 export const showAnimation = keyframes`
 from {
   opacity: 0;
-  transform: scale(0.9);
+  transform: scale(0.8);
 }
 to {
   opacity: 1;
@@ -18,7 +18,7 @@ from {
 }
 to {
   opacity: 0;
-  transform: scale(0.9);
+  transform: scale(0.8);
 }
 `;
 
@@ -74,7 +74,7 @@ export const style = {
       cursor: pointer;
       flex: 1;
       background: transparent;
-      font-size: ${vw(15)};
+      font-size: ${vw(16)};
       line-height: ${vw(44)};
       text-align: center;
       box-sizing: border-box;
