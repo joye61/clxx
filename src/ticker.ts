@@ -2,7 +2,7 @@ import raf from "raf";
 
 type Task = () => void;
 
-export default class Ticker {
+export class Ticker {
   tasks: Array<Task> = [];
   frameId: number = 0;
   isRun: boolean = true;

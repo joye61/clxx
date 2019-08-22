@@ -20,7 +20,7 @@ export interface RequestOption extends AxiosRequestConfig {
  * 发送ajax请求
  * @param option RequestOption
  */
-export async function request(option: RequestOption) {
+export async function ajax(option: RequestOption) {
   // 默认不透传URL参数
   let transmitParam = !!option.transmitParam;
   let transmitHashParam = !!option.transmitHashParam;

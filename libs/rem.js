@@ -41,4 +41,4 @@ function rem(option) {
     }
     reset();
 }
-exports.default = rem;
+exports.rem = rem;

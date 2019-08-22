@@ -59,7 +59,7 @@ exports.rawRequest = axios_2.default;
  * 发送ajax请求
  * @param option RequestOption
  */
-function request(option) {
+function ajax(option) {
     return __awaiter(this, void 0, void 0, function () {
         var transmitParam, transmitHashParam, minExistTime, showLoading, loadingConfig, loadingFinishFn, loadingStart_1, loadingComponent_1, appendParam, urlParam, hashSearchStart, hashSearch, hashSearchParam, response;
         var _this = this;
@@ -147,4 +147,4 @@ function request(option) {
         });
     });
 }
-exports.request = request;
+exports.ajax = ajax;

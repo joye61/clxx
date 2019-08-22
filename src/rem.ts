@@ -5,7 +5,7 @@ interface RemOption {
   designWidth?: number;
 }
 
-export default function rem(option: RemOption | number) {
+export function rem(option: RemOption | number) {
   // 设计尺寸，在html根元素指定data-dw
   const dw = document.documentElement.dataset.dw;
   let config = {

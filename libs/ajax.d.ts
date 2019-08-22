@@ -14,4 +14,4 @@ export interface RequestOption extends AxiosRequestConfig {
  * 发送ajax请求
  * @param option RequestOption
  */
-export declare function request(option: RequestOption): Promise<import("axios").AxiosResponse<any>>;
+export declare function ajax(option: RequestOption): Promise<import("axios").AxiosResponse<any>>;

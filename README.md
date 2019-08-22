@@ -6,11 +6,12 @@
 npm install cl-utils
 ```
 
+
+- 2019/8/22：移除了SCSS依赖，样式完全由CSS-IN—JS方案实现
+
 ### 全功能引入
 
 ```javascript
-// CSS文件对于部分依赖UI的组件是必须的
-import "cl-utils/index.css";
 // 引入入口文件
 import * as clUtils from "cl-utils"
 ```
@@ -22,8 +23,6 @@ import * as clUtils from "cl-utils"
 ### 单独引入
 
 ```javascript
-// 引入CSS
-import "cl-utils/Loading/index.css";
 // 引入库
 import Loading, {
   HelixComponent, 
@@ -58,7 +57,6 @@ const loading = new Loading({
   type: "wave", // 效果类型
   color: "#fff", // 加载效果元素的颜色
   hint: "正在加载", // 提示文案
-  hintColor: "#fff" // 提示文案的颜色
 });
 
 // 当用配置对象创建加载效果时，提示内容可以是一个React组件
@@ -66,7 +64,6 @@ const loading = new Loading({
   type: "wave", // 效果类型
   color: "#fff", // 加载效果元素的颜色
   hint: <p>一个React组件</p>, // 提示文案
-  hintColor: "#fff" // 提示文案的颜色
 });
 ```
 
@@ -91,8 +88,6 @@ ReactDOM.render(
 ### 单独引入
 
 ```javascript
-// 引入CSS
-import "cl-utils/Alert/index.css";
 // 引入库
 import alert, { AlertComponent } from "cl-utils/Alert";
 ```
@@ -141,8 +136,6 @@ alert({
 ### 单独引入
 
 ```javascript
-// 引入CSS
-import "cl-utils/Toast/index.css";
 // 引入库
 import Toast, { ToastComponent } from "cl-utils/Alert";
 ```
@@ -164,69 +157,23 @@ new Toast({
 });
 ```
 
-# ScrollView 组件
-
-解决原生滚动所遇到的所有问题，目前该组件功能还在完善，功能列表：
-
-- [x] 滚动穿透
-- [ ] PC端支持
-- [ ] 下拉刷新
-- [ ] 橡皮筋效果
-
-### 单独引入
-
-```javascript
-// 引入库
-import ScrollView from "cl-utils/ScrollView";
-```
-
-### 使用方式
-
-```javascript
-<ScrollView showScrollBar={true} direction="horizontal">{/* 此处可包含任意被滚动内容 */}</ScrollView>
-```
-
-参数说明：
-
-- `showScrollBar`:  是否显示滚动条
-- `direction`:  滚动方向，水平还是垂直，参数可选项为 `horizontal | vertical`
-
 # ajax 请求
 
-提供了一个基于 `fetch` 的 `polyfill` 封装，基于现有常用业务逻辑：
+提供了一个基于 `axios` 的封装，基于现有常用业务逻辑：
 
 ### 单独引入
 ```javascript
 import ajax, { get, post } from "cl-utils/ajax";
 ```
 
-`ajax` 关键字是一个全功能的默认导出对象；同时模块还提供了 `get` 和 `post` 一般导出，完全模拟 `jQuery` 的 `get` 和 `post` 功能。
-
 ```javascript
 ajax({
-  url: string; // 请求url地址
-  method?: string; // 请求方式
-  data?: any; // 请求数据
-  headers?: any; // 请求头
-  credentials?: string; // 设置认证模式
-  showLoading?: false; // 显示加载进度效果，注意开启加载进度效果需要包含对应的CSS资源文件
-  loadingConfig?: { // 加载组件配置
-    timeLimit?: number; // 加载进度最小显示时间，单位毫秒，默认1000ms
-    // ... 其他Loading组件配置项
-  };
-  timeLimit?: number; // 超时时长，单位毫秒
-  onTimeOut?: function; // 超时回调
-  onLoad?: function; // 加载数据回调
-  onError?: function; // 错误回调
-  transmitParam?: boolean; // 是否透传url参数
+  loading?: RequestLoadingOption | boolean; //显示loading动画
+  httpCache?: boolean; // 启用http缓存
+  transmitParam?: boolean; // 透传URL参数
+  transmitHashParam?: boolean; // 透传hash参数
 });
 ```
-
-参数解析：
-
-- `showLoading`: 是否显示Loading动画，默认不显示，如果开启这个选项，记住一定要引入对应的CSS文件
-- `loadingConfig`: timeLimit表示Loading动画最小显示时间，有时候数据加载很快，loading动画会**闪现**，为了防止这个问题，可以设置Loading最小显示时间，默认为1000，单位是毫秒。loadingConfig也接受其他配置参数，具体参数请参考Loading组件
-- `transmitParam`: 参数透传功能。当前页面的URL原始参数会透传到ajax请求参数中。需要注意的是：如果采用了基于**Hash**的本地历史记录路由功能，Hash段上的参数也会被透传
 
 
 # 页面自适应

@@ -1,5 +1,5 @@
 declare type Task = () => void;
-export default class Ticker {
+export declare class Ticker {
     tasks: Array<Task>;
     frameId: number;
     isRun: boolean;

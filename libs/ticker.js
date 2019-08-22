@@ -74,4 +74,4 @@ var Ticker = /** @class */ (function () {
     };
     return Ticker;
 }());
-exports.default = Ticker;
+exports.Ticker = Ticker;

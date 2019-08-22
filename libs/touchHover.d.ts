@@ -1,9 +1,5 @@
-export declare type HoverOption = {
-    allowBubbling?: boolean;
-    defaultHoverClass?: string;
-};
 export interface Hover {
-    attach: (option: HoverOption) => void;
+    attach: () => void;
     detach: () => void;
 }
 export declare const touchHover: Hover;

@@ -59,13 +59,8 @@ function touchend(event: TouchEvent) {
   }
 }
 
-export type HoverOption = {
-  allowBubbling?: boolean;
-  defaultHoverClass?: string;
-};
-
 export interface Hover {
-  attach: (option: HoverOption) => void;
+  attach: () => void;
   detach: () => void;
 }
 
