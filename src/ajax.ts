@@ -5,7 +5,7 @@ import querystring from "qs";
 // 导出默认的axios对象
 export { default as rawRequest } from "axios";
 
-export interface RequestLoadingOption extends LoadingOption {
+export interface RequestLoadingOption extends LoadingOption<any> {
   minExistTime?: number;
 }
 

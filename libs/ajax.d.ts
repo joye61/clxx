@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { LoadingOption } from "./Loading";
 export { default as rawRequest } from "axios";
-export interface RequestLoadingOption extends LoadingOption {
+export interface RequestLoadingOption extends LoadingOption<any> {
     minExistTime?: number;
 }
 export interface RequestOption extends AxiosRequestConfig {
