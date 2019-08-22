@@ -16,23 +16,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var react_dom_1 = __importDefault(require("react-dom"));
+var isPlainObject_1 = __importDefault(require("lodash/isPlainObject"));
 var AlertComponent_1 = require("./AlertComponent");
 /**
- *
+ * 弹框提示
  * @param option
  */
 function Alert(option) {
     var props;
-    if (typeof option === "string") {
-        props = {
-            content: option
-        };
-    }
-    else if (typeof option === "object") {
+    if (isPlainObject_1.default(option)) {
         props = option;
     }
     else {
-        throw new Error("无效的参数");
+        props = {
+            content: option
+        };
     }
     var container = document.createElement("div");
     document.body.appendChild(container);

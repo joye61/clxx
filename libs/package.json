@@ -2,10 +2,7 @@
   "name": "cl-utils",
   "version": "0.1.4",
   "description": "Most common used utility for web develop",
-  "main": "./libs/index.js",
-  "scripts": {
-    "build": "node ./scripts/build.js && tsc"
-  },
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joye61/cl-utils.git"
@@ -20,7 +17,6 @@
     "url": "https://github.com/joye61/cl-utils/issues"
   },
   "homepage": "https://github.com/joye61/cl-utils#readme",
-  "registry": "https://registry.npmjs.org",
   "dependencies": {
     "@emotion/core": "^10.0.16",
     "axios": "^0.19.0",
@@ -30,14 +26,5 @@
     "raf": "^3.4.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.137",
-    "@types/node": "^12.7.2",
-    "@types/qs": "^6.5.3",
-    "@types/raf": "^3.4.0",
-    "@types/react": "^16.9.2",
-    "@types/react-dom": "^16.9.0",
-    "fs-extra": "^8.1.0"
   }
 }

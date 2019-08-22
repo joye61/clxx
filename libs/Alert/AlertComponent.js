@@ -12,9 +12,9 @@ var core_1 = require("@emotion/core");
 var react_1 = __importStar(require("react"));
 var style_1 = require("./style");
 function AlertComponent(_a) {
-    var _b = _a.content, content = _b === void 0 ? "" : _b, _c = _a.showMask, showMask = _c === void 0 ? true : _c, _d = _a.showCancel, showCancel = _d === void 0 ? false : _d, _e = _a.cancelText, cancelText = _e === void 0 ? "取消" : _e, _f = _a.confirmText, confirmText = _f === void 0 ? "确定" : _f, _g = _a.onConfirm, onConfirm = _g === void 0 ? function () { } : _g, _h = _a.onCancel, onCancel = _h === void 0 ? function () { } : _h, _j = _a.onHide, onHide = _j === void 0 ? function () { } : _j;
+    var content = _a.content, _b = _a.showMask, showMask = _b === void 0 ? true : _b, _c = _a.showCancel, showCancel = _c === void 0 ? false : _c, _d = _a.cancelText, cancelText = _d === void 0 ? "取消" : _d, _e = _a.confirmText, confirmText = _e === void 0 ? "确定" : _e, _f = _a.onConfirm, onConfirm = _f === void 0 ? function () { } : _f, _g = _a.onCancel, onCancel = _g === void 0 ? function () { } : _g, _h = _a.onHide, onHide = _h === void 0 ? function () { } : _h;
     // 动画状态类
-    var _k = react_1.useState(style_1.style.containerShow), animation = _k[0], setAnimation = _k[1];
+    var _j = react_1.useState(style_1.style.containerShow), animation = _j[0], setAnimation = _j[1];
     // 动画结束回调
     var animationEnd = function (event) {
         if (style_1.hideAnimation.name === event.animationName) {
@@ -32,21 +32,20 @@ function AlertComponent(_a) {
         typeof onConfirm === "function" && onConfirm();
     };
     // 显示弹框内容
-    var showContent = function () {
-        if (typeof content === "string") {
-            return core_1.jsx("p", { css: style_1.style.content }, content);
-        }
-        if (react_1.default.isValidElement(content)) {
-            return content;
-        }
-    };
+    var showContent;
+    if (react_1.default.isValidElement(content)) {
+        showContent = content;
+    }
+    else {
+        showContent = core_1.jsx("p", { css: style_1.style.content }, content);
+    }
     var wrapperCss = [style_1.style.alert];
     if (showMask) {
         wrapperCss.push(style_1.style.alertMask);
     }
     return (core_1.jsx("div", { css: wrapperCss },
         core_1.jsx("div", { css: [style_1.style.container, animation], onAnimationEnd: animationEnd },
-            showContent(),
+            showContent,
             core_1.jsx("div", { css: style_1.style.btn },
                 showCancel ? (core_1.jsx("div", { css: style_1.style.cancel, onClick: cancel, onTouchStart: function () { } }, cancelText)) : null,
                 core_1.jsx("div", { css: style_1.style.confirm, onClick: confirm, onTouchStart: function () { } }, confirmText)))));

@@ -14,10 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/** @jsx jsx */
+var core_1 = require("@emotion/core");
 var react_1 = __importDefault(require("react"));
 var react_dom_1 = __importDefault(require("react-dom"));
 var WaveLoading_1 = require("./WaveLoading");
 var HelixLoading_1 = require("./HelixLoading");
+var style_1 = require("./style");
 var Loading = /** @class */ (function () {
     function Loading(option) {
         this.container = document.createElement("div");
@@ -44,17 +47,18 @@ var Loading = /** @class */ (function () {
         else {
             throw new Error("Invalid loading type '" + config.type + "'");
         }
+        // 支持组件hint
         var hintComponent = null;
-        if (typeof config.hint === "string") {
-            hintComponent = (react_1.default.createElement("p", { className: "cl-Loading-hint", style: { color: "#fff" } }, config.hint));
-        }
         if (react_1.default.isValidElement(config.hint)) {
             hintComponent = config.hint;
         }
+        else {
+            hintComponent = config.hint ? (core_1.jsx("p", { css: style_1.style.hint("#fff") }, config.hint)) : null;
+        }
         document.body.appendChild(this.container);
-        react_dom_1.default.render(react_1.default.createElement("div", { className: "cl-Loading-mask" },
-            react_1.default.createElement("div", { className: "cl-Loading" },
-                react_1.default.createElement(Component, { color: config.color }),
+        react_dom_1.default.render(core_1.jsx("div", { css: style_1.style.mask },
+            core_1.jsx("div", { css: style_1.style.container },
+                core_1.jsx(Component, { color: config.color }),
                 hintComponent)), this.container);
     }
     Loading.prototype.destroy = function () {

@@ -17,38 +17,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var react_1 = __importDefault(require("react"));
 var react_dom_1 = __importDefault(require("react-dom"));
 var ToastComponent_1 = require("./ToastComponent");
-var Toast = /** @class */ (function () {
-    function Toast(option) {
+var isPlainObject_1 = __importDefault(require("lodash/isPlainObject"));
+exports.Toast = {
+    container: null,
+    create: function (option) {
         var _this = this;
-        this.container = document.createElement("div");
-        var config = {
-            duration: 3000,
-            position: "middle" // 位置 top|middle|center
-        };
-        if (typeof option === "string") {
-            config.content = option;
-        }
-        if (typeof option === "object") {
-            config = __assign({}, config, option);
-        }
-        var className = "cl-Toast-container";
-        if (config.position === "top") {
-            className += " cl-Toast-container-top";
-        }
-        else if (config.position === "bottom") {
-            className += " cl-Toast-container-bottom";
+        if (this.container === null) {
+            this.container = document.createElement("div");
+            document.body.appendChild(this.container);
         }
         else {
-            className += " cl-Toast-container-middle";
+            react_dom_1.default.unmountComponentAtNode(this.container);
         }
-        document.body.appendChild(this.container);
-        react_dom_1.default.render(react_1.default.createElement("div", { className: className },
-            react_1.default.createElement(ToastComponent_1.ToastComponent, { content: config.content, duration: config.duration, onEnd: function () {
-                    // 这里是完全结束，需要清理
-                    react_dom_1.default.unmountComponentAtNode(_this.container);
-                    _this.container.remove();
-                } })), this.container);
+        var props;
+        if (isPlainObject_1.default(option)) {
+            props = option;
+        }
+        else {
+            props = {
+                content: option
+            };
+        }
+        props.onEnd = function () {
+            if (_this.container instanceof HTMLElement) {
+                react_dom_1.default.unmountComponentAtNode(_this.container);
+                _this.container.remove();
+            }
+        };
+        react_dom_1.default.render(react_1.default.createElement(ToastComponent_1.ToastComponent, __assign({}, props)), this.container);
     }
-    return Toast;
-}());
-exports.default = Toast;
+};

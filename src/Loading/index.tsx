@@ -1,20 +1,23 @@
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { WaveLoading } from "./WaveLoading";
 import { HelixLoading } from "./HelixLoading";
+import { style } from "./style";
 
-export interface LoadingOption {
+export interface LoadingOption<H> {
   type: "wave" | "helix";
-  color: string;
-  hint?: string | React.ReactElement;
+  color?: string;
+  hint?: H;
 }
 
-export class Loading {
+export class Loading<H> {
   container = document.createElement("div");
 
-  constructor(option: LoadingOption) {
+  constructor(option: LoadingOption<H>) {
     // 默认配置
-    let config: LoadingOption = {
+    let config: LoadingOption<H> = {
       type: "wave",
       color: "#fff"
     };
@@ -36,23 +39,20 @@ export class Loading {
       throw new Error(`Invalid loading type '${config.type}'`);
     }
 
+    // 支持组件hint
     let hintComponent = null;
-    if (typeof config.hint === "string") {
-      hintComponent = (
-        <p className="cl-Loading-hint" style={{ color: "#fff" }}>
-          {config.hint}
-        </p>
-      );
-    }
-
     if (React.isValidElement(config.hint)) {
       hintComponent = config.hint;
+    } else {
+      hintComponent = config.hint ? (
+        <p css={style.hint("#fff")}>{config.hint}</p>
+      ) : null;
     }
 
     document.body.appendChild(this.container);
     ReactDOM.render(
-      <div className="cl-Loading-mask">
-        <div className="cl-Loading">
+      <div css={style.mask}>
+        <div css={style.container}>
           <Component color={config.color} />
           {hintComponent}
         </div>

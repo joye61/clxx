@@ -32,18 +32,19 @@ export const style = {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
   `,
   alertMask: css`
     background-color: rgba(0, 0, 0, 0.5);
   `,
   container: css`
     background-color: #fff;
-    width: ${vw(250)};
+    width: ${vw(280)};
     border-radius: ${vw(10)};
     overflow: hidden;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     @media screen and (min-width: 576px) {
-      width: 300px;
+      width: 320px;
       border-radius: 10px;
     }
   `,
@@ -75,7 +76,7 @@ export const style = {
       flex: 1;
       background: transparent;
       font-size: ${vw(15)};
-      line-height: ${vw(44)};
+      line-height: ${vw(40)};
       text-align: center;
       box-sizing: border-box;
       user-select: none;

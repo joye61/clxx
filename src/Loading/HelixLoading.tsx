@@ -1,24 +1,19 @@
-import React from "react";
+/** @jsx jsx */
+import { jsx, SerializedStyles } from "@emotion/core";
+import { style, barNum } from "./HelixStyle";
 
-export interface HelixLoadingOption {
-  color: string;
+export interface HelixLoadingProps {
+  color?: string;
 }
 
 /**
  * 菊花齿轮形Loading
  * @param {*} color 颜色
  */
-export function HelixLoading({ color = "#fff" }: HelixLoadingOption) {
+export function HelixLoading({ color = "#000" }: HelixLoadingProps) {
   const list = [];
-  for (let i = 0; i < 12; i++) {
-    list.push(
-      <div className="cl-Loading-helix-item" key={i}>
-        <span
-          className="cl-Loading-helix-itembar"
-          style={{ backgroundColor: color }}
-        />
-      </div>
-    );
+  for (let i = 0; i < barNum; i++) {
+    list.push(<span css={style[`bar-${i}`]} key={i} />);
   }
-  return <div className="cl-Loading-helix-container">{list}</div>;
+  return <div css={style.container(color)}>{list}</div>;
 }

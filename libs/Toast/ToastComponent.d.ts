@@ -1,9 +1,8 @@
-import React from "react";
-declare type Callback = () => void;
-export interface ToastComponentProps {
-    content: string | React.Component;
+/// <reference types="react" />
+export interface ToastComponentProps<T> {
+    onEnd?: () => void;
+    content: T;
+    position?: "top" | "middle" | "bottom";
     duration?: number;
-    onEnd?: Callback;
 }
-export declare function ToastComponent({ content, duration, onEnd }: ToastComponentProps): JSX.Element;
-export {};
+export declare function ToastComponent<T>({ content, position, duration, onEnd }: ToastComponentProps<T>): JSX.Element;

@@ -1,6 +1,6 @@
 /// <reference types="react" />
 export interface WaveLoadingOption {
-    color: string;
+    color?: string;
 }
 /**
  * 波浪形Loading

@@ -7,10 +7,6 @@ let isAttach: boolean = false;
 let isTouch: boolean = false;
 // 点击的目标数组
 let targetList: Array<HTMLElement> = [];
-// 是否允许点击穿透
-let _allowBubbling: boolean = false;
-// 默认的hover类
-let _defaultHoverClass: string = "hover";
 
 /**
  * 获取一个或者多个满足条件的DOM元素
@@ -28,7 +24,7 @@ function getTargetList(element: HTMLElement | null): Array<HTMLElement> {
   if (element.dataset.hover !== undefined) {
     list.push(element);
     // 如果不允许点击穿透，查找过程停止
-    if (!_allowBubbling) {
+    if (element.dataset.bubbling === undefined) {
       return list;
     }
   }
@@ -46,7 +42,7 @@ function touchstart(event: TouchEvent) {
     }
     targetList = getTargetList(event.touches[0].target as any);
     targetList.forEach(element => {
-      element.classList.add(element.dataset.hover || _defaultHoverClass);
+      element.classList.add(element.dataset.hover as string);
     });
     isTouch = true;
   }
@@ -56,7 +52,7 @@ function touchstart(event: TouchEvent) {
 function touchend(event: TouchEvent) {
   if (isTouch) {
     targetList.forEach(element => {
-      element.classList.remove(element.dataset.hover || _defaultHoverClass);
+      element.classList.remove(element.dataset.hover as string);
     });
     targetList = [];
     isTouch = false;
@@ -64,8 +60,8 @@ function touchend(event: TouchEvent) {
 }
 
 export type HoverOption = {
-  allowBubbling: boolean;
-  defaultHoverClass: string;
+  allowBubbling?: boolean;
+  defaultHoverClass?: string;
 };
 
 export interface Hover {
@@ -73,12 +69,8 @@ export interface Hover {
   detach: () => void;
 }
 
-export const hover: Hover = {
-  attach({ allowBubbling = false, defaultHoverClass = "hover" }: HoverOption) {
-    // 设置全局公共配置
-    _allowBubbling = allowBubbling;
-    _defaultHoverClass = defaultHoverClass;
-
+export const touchHover: Hover = {
+  attach() {
     // 绑定全局事件监听
     if (isAttach === false) {
       doc.addEventListener("touchstart", touchstart);
@@ -94,8 +86,6 @@ export const hover: Hover = {
       doc.removeEventListener("touchend", touchend);
       doc.removeEventListener("touchcancel", touchend);
       isAttach = false;
-      _allowBubbling = false;
-      _defaultHoverClass = "hover";
     }
   }
 };

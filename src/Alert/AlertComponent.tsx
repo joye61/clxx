@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { style, hideAnimation } from "./style";
 
 type Callback = () => void;
-export interface AlertComponentProps {
-  content: string | React.ReactElement;
+export interface AlertComponentProps<T> {
+  content: T;
   showMask?: boolean;
   showCancel?: boolean;
   cancelText?: string;
@@ -15,8 +15,8 @@ export interface AlertComponentProps {
   onHide?: Callback;
 }
 
-export function AlertComponent({
-  content = "",
+export function AlertComponent<T>({
+  content,
   showMask = true,
   showCancel = false,
   cancelText = "取消",
@@ -24,7 +24,7 @@ export function AlertComponent({
   onConfirm = () => {},
   onCancel = () => {},
   onHide = () => {}
-}: AlertComponentProps) {
+}: AlertComponentProps<T>) {
   // 动画状态类
   const [animation, setAnimation] = useState<SerializedStyles>(
     style.containerShow
@@ -50,14 +50,12 @@ export function AlertComponent({
   };
 
   // 显示弹框内容
-  const showContent = () => {
-    if (typeof content === "string") {
-      return <p css={style.content}>{content}</p>;
-    }
-    if (React.isValidElement(content)) {
-      return content;
-    }
-  };
+  let showContent: any;
+  if (React.isValidElement(content)) {
+    showContent = content;
+  } else {
+    showContent = <p css={style.content}>{content}</p>;
+  }
 
   const wrapperCss = [style.alert];
   if (showMask) {
@@ -67,7 +65,7 @@ export function AlertComponent({
   return (
     <div css={wrapperCss}>
       <div css={[style.container, animation]} onAnimationEnd={animationEnd}>
-        {showContent()}
+        {showContent}
         <div css={style.btn}>
           {showCancel ? (
             <div css={style.cancel} onClick={cancel} onTouchStart={() => {}}>

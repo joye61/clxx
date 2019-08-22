@@ -1,11 +1,10 @@
-import React from "react";
-export interface LoadingOption {
+export interface LoadingOption<H> {
     type: "wave" | "helix";
-    color: string;
-    hint?: string | React.ReactElement;
+    color?: string;
+    hint?: H;
 }
-export declare class Loading {
+export declare class Loading<H> {
     container: HTMLDivElement;
-    constructor(option: LoadingOption);
+    constructor(option: LoadingOption<H>);
     destroy(): void;
 }

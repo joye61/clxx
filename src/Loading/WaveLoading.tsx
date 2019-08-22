@@ -1,7 +1,10 @@
+/** @jsx jsx */
+import { jsx, SerializedStyles } from "@emotion/core";
 import React from "react";
+import { style, barNum } from "./WaveStyle";
 
 export interface WaveLoadingOption {
-  color: string;
+  color?: string;
 }
 
 /**
@@ -10,14 +13,8 @@ export interface WaveLoadingOption {
  */
 export function WaveLoading({ color = "#000" }: WaveLoadingOption) {
   const list = [];
-  for (let i = 0; i < 6; i++) {
-    list.push(
-      <span
-        className="cl-Loading-wave-item"
-        key={i}
-        style={{ backgroundColor: color }}
-      />
-    );
+  for (let i = 0; i < barNum; i++) {
+    list.push(<span key={i} css={[style.item(color), style[`bar-${i}`]]} />);
   }
-  return <div className="cl-Loading-wave-container">{list}</div>;
+  return <div css={style.container}>{list}</div>;
 }

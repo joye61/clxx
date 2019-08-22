@@ -7,25 +7,33 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/** @jsx jsx */
+var core_1 = require("@emotion/core");
 var react_1 = __importStar(require("react"));
+var style_1 = require("./style");
 function ToastComponent(_a) {
-    var content = _a.content, _b = _a.duration, duration = _b === void 0 ? 3000 : _b, _c = _a.onEnd, onEnd = _c === void 0 ? function () { } : _c;
-    var _d = react_1.useState("cl-Toast cl-Toast-show"), animationClass = _d[0], setAnimationClass = _d[1];
-    // 约定时间之后自动清理Toast
+    var content = _a.content, _b = _a.position, position = _b === void 0 ? "bottom" : _b, _c = _a.duration, duration = _c === void 0 ? 3000 : _c, _d = _a.onEnd, onEnd = _d === void 0 ? function () { } : _d;
+    var _e = react_1.useState(style_1.style.containerShow), animation = _e[0], setAnimation = _e[1];
     react_1.useEffect(function () {
         var timer = window.setTimeout(function () {
-            setAnimationClass("cl-Toast cl-Toast-hide");
+            setAnimation(style_1.style.containerHide);
         }, duration);
-        (function () {
-            window.clearTimeout(timer);
-        });
-    });
-    // 动画结束时执行
+        return function () {
+            window.clearInterval(timer);
+        };
+    }, []);
+    var showContent;
+    if (react_1.default.isValidElement(content)) {
+        showContent = content;
+    }
+    else {
+        showContent = core_1.jsx("p", { css: style_1.style.content }, content);
+    }
     var animationEnd = function (event) {
-        if (event.animationName === "cl-Toast-hide") {
+        if (event.animationName === style_1.hideAnimation.name) {
             typeof onEnd === "function" && onEnd();
         }
     };
-    return (react_1.default.createElement("div", { className: animationClass, onAnimationEnd: animationEnd }, content));
+    return (core_1.jsx("div", { css: [style_1.style.container, style_1.style[position], animation], onAnimationEnd: animationEnd }, showContent));
 }
 exports.ToastComponent = ToastComponent;

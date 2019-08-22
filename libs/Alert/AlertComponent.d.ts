@@ -1,7 +1,7 @@
-import React from "react";
+/// <reference types="react" />
 declare type Callback = () => void;
-export interface AlertComponentProps {
-    content: string | React.ReactElement;
+export interface AlertComponentProps<T> {
+    content: T;
     showMask?: boolean;
     showCancel?: boolean;
     cancelText?: string;
@@ -10,5 +10,5 @@ export interface AlertComponentProps {
     onCancel?: Callback;
     onHide?: Callback;
 }
-export declare function AlertComponent({ content, showMask, showCancel, cancelText, confirmText, onConfirm, onCancel, onHide }: AlertComponentProps): JSX.Element;
+export declare function AlertComponent<T>({ content, showMask, showCancel, cancelText, confirmText, onConfirm, onCancel, onHide }: AlertComponentProps<T>): JSX.Element;
 export {};
