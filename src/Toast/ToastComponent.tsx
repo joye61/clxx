@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
+import { SerializedStyles } from "@emotion/core";
 import React, { useState, useEffect } from "react";
 import { style, hideAnimation } from "./style";
 

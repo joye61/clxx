@@ -37,8 +37,8 @@ import Loading, {
 - 波浪形态效果 `wave`
 
 <p>
-  <img src="./doc/helix.gif" height="150">
-  <img src="./doc/with-hint.gif" height="150">
+  <img src="../assets/helix.gif" height="150">
+  <img src="../assets/with-hint.gif" height="150">
 </p>
 
 
@@ -93,8 +93,8 @@ import alert, { AlertComponent } from "cl-utils/Alert";
 ```
 
 <p>
-  <img src="./doc/alert.png" width="40%">
-  <img src="./doc/alert-with-cancel.png" width="40%">
+  <img src="../assets/alert.png" width="40%">
+  <img src="../assets/alert-with-cancel.png" width="40%">
 </p>
 
 弹框组件也是支持定制的：
@@ -141,7 +141,7 @@ import Toast, { ToastComponent } from "cl-utils/Alert";
 ```
 
 <p>
-  <img src="./doc/toast.gif" width="40%">
+  <img src="../assets/toast.gif" width="40%">
 </p>
 
 

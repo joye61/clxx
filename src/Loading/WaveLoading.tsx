@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
 import React from "react";
 import { style, barNum } from "./WaveStyle";
 
