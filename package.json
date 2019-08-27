@@ -2,14 +2,16 @@
   "name": "cl-utils",
   "version": "0.1.5",
   "description": "Most common used utility for web develop",
-  "main": "./libs/index.js",
+  "main": "./index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "start": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx -w",
-    "types": "node ./scripts/types.js",
-    "build:ts": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx",
-    "build": "npm run types && npm run build:ts",
-    "test": "jest"
+    "start": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx -w --ignore **/__tests__/**",
+    "build:ts": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx --ignore **/__tests__/**",
+    "rm:build": "node ./scripts/rmbuild.js",
+    "gen:package": "node ./scripts/package.js",
+    "gen:types": "node ./scripts/types.js",
+    "build": "npm run rm:build && npm run build:ts && npm run gen:types && npm run gen:package",
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -26,26 +28,6 @@
   },
   "homepage": "https://github.com/joye61/cl-utils#readme",
   "registry": "https://registry.npmjs.org",
-  "babel": {
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
-    ],
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-typescript",
-      [
-        "@emotion/babel-preset-css-prop",
-        {
-          "sourceMap": false
-        }
-      ]
-    ]
-  },
-  "jest": {
-    "verbose": true,
-    "collectCoverage": true,
-    "coverageDirectory": "./__tests__/__coverage"
-  },
   "dependencies": {
     "@emotion/core": "^10.0.16",
     "axios": "^0.19.0",
@@ -71,6 +53,11 @@
     "@types/raf": "^3.4.0",
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
+    "eslint": "^6.2.2",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "fs-extra": "^8.1.0",
     "jest": "^24.9.0",
     "typescript": "^3.5.3"
