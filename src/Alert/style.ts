@@ -69,13 +69,13 @@ export const style = {
   `,
   btn: css`
     display: flex;
-    box-shadow: 0 -0.5px 0 0 #e0e0e0;
+    box-shadow: 0 -${1 / window.devicePixelRatio}px 0 0 #e0e0e0;
     font-size: 0;
     div {
       cursor: pointer;
       flex: 1;
       background: transparent;
-      font-size: ${vw(15)};
+      font-size: ${vw(16)};
       line-height: ${vw(40)};
       text-align: center;
       box-sizing: border-box;
@@ -98,7 +98,7 @@ export const style = {
   `,
   cancel: css`
     border: none;
-    border-right: 1px solid #f0f0f0;
+    box-shadow: ${1 / window.devicePixelRatio}px 0 0 0 #e0e0e0;
     color: #888;
     &:active {
       color: #555;
