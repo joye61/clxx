@@ -4,8 +4,8 @@
 
 **TODO** 待实现功能列表
 
-[ ] 滚动条和滚动条组件
-[ ] 级联选择器
+- [ ] 滚动条和滚动条组件
+- [ ] 级联选择器
 
 
 ## 安装
@@ -266,7 +266,7 @@ alert({
 类似原生功能的 `Toast` 组件
 
 <p>
-  <img src="../assets/toast.gif" width="40%">
+  <img src="./assets/toast.gif" width="40%">
 </p>
 
 
