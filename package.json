@@ -1,6 +1,6 @@
 {
   "name": "cl-utils",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Most common used utility for web develop",
   "main": "./index.js",
   "types": "./index.d.ts",

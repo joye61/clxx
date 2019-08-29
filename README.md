@@ -1,44 +1,197 @@
 # cl-utils
 
-日常开发常用功能集。安装：
+日常开发常用功能集合，**零CSS依赖**，响应式支持PC和移动端
+
+**TODO** 待实现功能列表
+
+[ ] 滚动条和滚动条组件
+[ ] 级联选择器
+
+
+## 安装
 
 ```
 npm install cl-utils
 ```
 
-
-- 2019/8/22：移除了SCSS依赖，样式完全由CSS-IN—JS方案实现
-
-### 全功能引入
+## 全集
 
 ```javascript
-// 引入入口文件
-import * as clUtils from "cl-utils"
+import {
+  ajax,
+  is,
+  rem,
+  Ticker,
+  touchHover,
+  Activable,
+  Clickable,
+  Toast,
+  Loading,
+  Alert
+} from "cl-utils";
 ```
 
-> 目前功能集中关于组件的部分全部都是基于 `React` 框架
+
+# ajax
+
+基于 [`axios`](https://github.com/axios/axios) 进行扩展，除了支持 `axios(config)` 的全部配置，还支持部分扩展参数：
+
+```typescript
+interface RequestLoadingOption extends LoadingOption<any> {
+  // loading动画最小展示时长，默认1000ms
+  minExistTime?: number;
+}
+interface RequestOption extends AxiosRequestConfig {
+  // 是否展示loading动画，可以传递布尔值，也可以传递loading配置参数
+  // LoadingOption 的参数选项参考Loading组件，默认: false
+  loading?: RequestLoadingOption | boolean;
+  // 是否在url参数后添加当前时间，防止浏览器缓存。默认: false
+  httpCache?: boolean;
+  // 将当前页面的URL参数透传到所有的Http请求中去
+  transmitParam?: boolean;
+  // 当当前页面hash的参数透传到所有的http请求中去
+  transmitHashParam?: boolean;
+}
+```
+
+示例：
+
+```javascript
+// 1、显示默认loading动画
+ajax({
+  url: "https://example.com",
+  loading: true,
+  httpCache: true
+})
+// 2、配置loading动画
+ajax({
+  url: "https://example.com",
+  loading: {
+    minExistTime: 500, // 单位毫秒
+    type: "helix" // 菊花loading
+  },
+  httpCache: true
+})
+```
+
+# is
+
+基于 [lodash](https://lodash.com/) 进行二次包装盒扩展，用于数据类型，环境等判断：
+
+```typescript
+declare const is: {
+  anroid(): boolean; 
+  ios(): boolean;
+  weixin(): boolean;
+  QQ(): boolean;
+  iphoneX(): boolean;
+  touchable(): boolean;
+  boolean: (value?: any) => value is boolean;
+  element: (value?: any) => boolean;
+  empty: (value?: any) => boolean;
+  deepEqual: (value: any, other: any) => boolean;
+  error: (value: any) => value is Error;
+  function: (value: any) => value is (...args: any[]) => any;
+  number: (value?: any) => value is number;
+  plainObject: (value?: any) => boolean;
+  string: (value?: any) => value is string;
+  symbol: (value: any) => boolean;
+  undefined: (value: any) => value is undefined;
+  null: (value: any) => value is null;
+};
+```
+
+# rem
+
+基于设计稿尺寸设置`html`根元素的`font-size`的小脚本，这里假设设计稿的根元素字体尺寸是`100px`，根元素的字体尺寸基于这个比例进行变换：
+
+```typescript
+interface RemOption {
+  // 临界尺寸，超过这个尺寸就固定字体尺寸，一般认为是PC环境
+  criticalWidth?: number;
+  // 设计稿尺寸
+  designWidth?: number;
+}
+declare function rem(option: RemOption | number): void;
+```
+
+示例：
+
+```javascript
+// 传递数字代表设计稿尺寸
+rem(750);
+
+// 传递对象
+rem({
+  criticalWidth: 576,
+  designWidth: 750
+});
+
+// 特殊用法：设计稿尺寸可以定义在html元素的data-dw中，这种场景无需传递参数
+// 如： <html data-dw="750"></html>
+rem();
+
+```
+
+# Activable
+
+一个原生的防点击穿透的库，效果基本等价于CSS中的`:active`，兼容移动端和PC端
+
+```typescript
+declare type Target = string | HTMLElement;
+interface ActivableOption {
+  target: Target;
+  activeClass?: string;
+  activeStyle?: React.CSSProperties;
+  bubblable?: boolean;
+  onClick?: () => void;
+}
+declare class Activable {
+    /**
+     * 支持三种参数类型
+     * 1、字符串代表选择器
+     * 2、DOM元素
+     * 3、对象形式
+     * @param option
+     */
+    constructor(option: ActivableOption | Target);
+    // 解除事件绑定
+    destroy(): void;
+}
+```
+
+示例：
+
+```javascript
+// 直接绑定选择器
+new Activable("#element");
+// 直接绑定元素
+new Activable(element);
+// 复杂参数
+new Activable({
+  target: "#element",
+  activeStyle: {
+    background: "red"
+  }
+});
+
+```
+
+
 
 # Loading 组件
 
 ### 单独引入
 
-```javascript
-// 引入库
-import Loading, {
-  HelixComponent, 
-  WaveComponent
-} from "cl-utils/Loading";
-```
 
-
-纯CSS加载，目前包含三种预设加载效果：
+包含2种预设加载效果：
 
 - 菊花齿轮效果 `helix`
 - 波浪形态效果 `wave`
 
 <p>
-  <img src="../assets/helix.gif" height="150">
-  <img src="../assets/with-hint.gif" height="150">
+  <img src="./assets/helix.gif" height="150">
+  <img src="./assets/with-hint.gif" height="150">
 </p>
 
 
@@ -67,34 +220,13 @@ const loading = new Loading({
 });
 ```
 
-大部分情况下，用上述代码中的示例就可以完成工作了。有时候需要一些高级定制，如把加载动画置入一个按钮中。`Loading` 组件对外输出三个React子组件 `HelixComponent`、`WaveComponent` 和 `DottedComponent`：
-
-```javascript
-// 三个组件都接受唯一属性 color，可以是任意合法CSS颜色值 
-ReactDOM.render(
-  <div>
-    <HelixLoading color="#000" />
-    <WaveLoading color="#000" />
-  </div>,
-  document.getElementById("root")
-);
-```
-
-
 # Alert 组件
 
 可以取代原生 `alert` 的React组件
 
-### 单独引入
-
-```javascript
-// 引入库
-import alert, { AlertComponent } from "cl-utils/Alert";
-```
-
 <p>
-  <img src="../assets/alert.png" width="40%">
-  <img src="../assets/alert-with-cancel.png" width="40%">
+  <img src="./assets/alert.png" width="40%">
+  <img src="./assets/alert-with-cancel.png" width="40%">
 </p>
 
 弹框组件也是支持定制的：
@@ -133,13 +265,6 @@ alert({
 
 类似原生功能的 `Toast` 组件
 
-### 单独引入
-
-```javascript
-// 引入库
-import Toast, { ToastComponent } from "cl-utils/Alert";
-```
-
 <p>
   <img src="../assets/toast.gif" width="40%">
 </p>
@@ -147,76 +272,26 @@ import Toast, { ToastComponent } from "cl-utils/Alert";
 
 ```javascript
 // 最简单的用法
-new Toast("这是一个测试");
+Toast.create("这是一个测试");
 
 // 带复杂配置的用法
-new Toast({
-  content: string | ReactElement; // toast显示的内容，字符串或React组件；必选 
-  duration?: number; // toast持续时间，默认为3000毫秒，注意单位为毫秒；可选
-  position?: string; // toast显示位置，默认为屏幕正中间，也可以为顶部和底部。三个可选值分别为: top | middle | bottom
-});
-```
-
-# ajax 请求
-
-提供了一个基于 `axios` 的封装，基于现有常用业务逻辑：
-
-### 单独引入
-```javascript
-import ajax, { get, post } from "cl-utils/ajax";
-```
-
-```javascript
-ajax({
-  loading?: RequestLoadingOption | boolean; //显示loading动画
-  httpCache?: boolean; // 启用http缓存
-  transmitParam?: boolean; // 透传URL参数
-  transmitHashParam?: boolean; // 透传hash参数
-});
-```
-
-
-# 页面自适应
-
-基于CSS单位 `rem`
-
-### 单独引入
-```javascript
-import rem from "cl-utils/rem";
-```
-
-采用rem做自适应的时候，需要设计师提供设计尺寸，这里采用的度量标准是设计尺寸的宽度，一种方式是在`html`根元素上添加数据属性`data-dw`：
-
-```html
-// 第一步：HTML文件根元素设置设计尺寸(宽度)
-<html data-dw="750">
-  <!--省略文档内容-->
-</html>
-
-// 第二步：在JS中调用rem函数
-rem();
-```
-
-
-其他使用方式：
-
-```javascript
-// 这种方式最简单，直接将设计尺寸作为参数传入
-rem(750);
-
-// rem也接受简单的配置参数
-rem({
-  criticalWidth: 576, // 移动和非移动临界点，默认576
-  designWidth: 750 // 设计尺寸，默认750px。如果调用rem时没有参数，那么设计尺寸默认被当做750
+Toast.create({
+  // toast显示的内容，字符串或React组件；必选
+  content: string | ReactElement;
+   // toast持续时间，默认为3000毫秒，注意单位为毫秒；可选 
+  duration?: number;
+  // toast显示位置，默认为屏幕正中间，也可以为顶部和底部。三个可选值分别为: top | middle | bottom
+  position?: string; 
+  // Toast框显示为圆角
+  rounded?: boolean;
 });
 ```
 
 # Ticker 
 
-基于浏览器帧频的滴答器
+基于 `requestAnimationFrame` 的简单滴答器
 
 ```javascript
-import Ticker from "cl-utils/ticker";
 // 初始化Ticker
 const ticker = new Ticker();
 
