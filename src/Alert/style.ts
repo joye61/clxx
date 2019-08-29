@@ -69,7 +69,7 @@ export const style = {
   `,
   btn: css`
     display: flex;
-    border-top: 1px solid #f0f0f0;
+    box-shadow: 0 -0.5px 0 0 #e0e0e0;
     font-size: 0;
     div {
       cursor: pointer;
@@ -92,7 +92,7 @@ export const style = {
     border: none;
     color: #007bff;
     &:active {
-      color: #007bff - #333;
+      color: #006bde;
       background-color: #f5f5f5;
     }
   `,

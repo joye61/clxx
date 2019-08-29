@@ -1,17 +1,15 @@
 {
   "name": "cl-utils",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Most common used utility for web develop",
   "main": "./index.js",
-  "types": "./types/index.d.ts",
+  "types": "./index.d.ts",
   "scripts": {
-    "start": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx -w --ignore **/__tests__/**",
-    "build:ts": "babel ./src --no-comments --delete-dir-on-start -d ./libs -x .ts,.tsx --ignore **/__tests__/**",
+    "start": "tsc -w",
     "rm:build": "node ./scripts/rmbuild.js",
     "gen:package": "node ./scripts/package.js",
-    "gen:types": "node ./scripts/types.js",
-    "build": "npm run rm:build && npm run build:ts && npm run gen:types && npm run gen:package",
-    "test": "jest --coverage"
+    "build": "npm run rm:build && tsc -d && npm run gen:package",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

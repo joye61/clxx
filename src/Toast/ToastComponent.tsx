@@ -1,4 +1,5 @@
-import { SerializedStyles } from "@emotion/core";
+/** @jsx jsx */
+import { jsx, SerializedStyles } from "@emotion/core";
 import React, { useState, useEffect } from "react";
 import { style, hideAnimation } from "./style";
 
@@ -7,12 +8,14 @@ export interface ToastComponentProps<T> {
   content: T;
   position?: "top" | "middle" | "bottom";
   duration?: number;
+  rounded?: boolean;
 }
 
 export function ToastComponent<T>({
   content,
   position = "bottom",
   duration = 3000,
+  rounded = false,
   onEnd = () => {}
 }: ToastComponentProps<T>) {
   const [animation, setAnimation] = useState<SerializedStyles>(
@@ -33,7 +36,7 @@ export function ToastComponent<T>({
   if (React.isValidElement(content)) {
     showContent = content;
   } else {
-    showContent = <p css={style.content}>{content}</p>;
+    showContent = <p css={style.content(rounded)}>{content}</p>;
   }
 
   const animationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {

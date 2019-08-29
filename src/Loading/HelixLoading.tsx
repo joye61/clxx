@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 import { style, barNum } from "./HelixStyle";
 
 export interface HelixLoadingProps {

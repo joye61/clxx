@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import isPlainObject from "lodash/isPlainObject";
+import {is} from "../is";
 import { AlertComponent, AlertComponentProps } from "./AlertComponent";
 
 /**
@@ -9,7 +9,7 @@ import { AlertComponent, AlertComponentProps } from "./AlertComponent";
  */
 export function Alert<T>(option: T | AlertComponentProps<T>) {
   let props: AlertComponentProps<T>;
-  if (isPlainObject(option)) {
+  if (is.plainObject(option)) {
     props = option as AlertComponentProps<T>;
   } else {
     props = {

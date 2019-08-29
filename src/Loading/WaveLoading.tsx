@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 import { style, barNum } from "./WaveStyle";
 
 export interface WaveLoadingOption {

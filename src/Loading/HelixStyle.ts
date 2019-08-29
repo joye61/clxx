@@ -28,7 +28,14 @@ export const style: any = {
         margin-left: ${vw(-1)};
         height: 100%;
         left: 50%;
-        border-top: ${vw(8)} solid ${barColor};
+        &::after {
+          display: block;
+          content: "";
+          background-color: ${barColor};
+          border-radius: ${vw(1)};
+          height: ${vw(8)};
+          transform: scaleX(0.85);
+        }
       }
 
       @media screen and (min-width: 576px) {
@@ -37,7 +44,10 @@ export const style: any = {
         span {
           width: 2px;
           margin-left: -1px;
-          border-top: 8px solid ${barColor};
+          &::after {
+            border-radius: 1px;
+            height: 8px;
+          }
         }
       }
     `;

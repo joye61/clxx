@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { ToastComponent, ToastComponentProps } from "./ToastComponent";
-import isPlainObject from "lodash/isPlainObject";
+import {is} from "../is";
 
 export interface ToastType {
   container: null | HTMLElement;
@@ -19,7 +19,7 @@ export const Toast: ToastType = {
     }
 
     let props: ToastComponentProps<T>;
-    if (isPlainObject(option)) {
+    if (is.plainObject(option)) {
       props = option as ToastComponentProps<T>;
     } else {
       props = {

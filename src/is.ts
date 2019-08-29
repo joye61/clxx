@@ -48,5 +48,8 @@ export const is = {
     return (
       /iPhone/gi.test(window.navigator.userAgent) && window.screen.height >= 812
     );
+  },
+  touchable() {
+    return !this.undefined(window.ontouchstart);
   }
 };
