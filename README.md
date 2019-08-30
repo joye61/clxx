@@ -101,37 +101,6 @@ declare const is: {
 };
 ```
 
-# rem
-
-基于设计稿尺寸设置`html`根元素的`font-size`的小脚本，这里假设设计稿的根元素字体尺寸是`100px`，根元素的字体尺寸基于这个比例进行变换：
-
-```typescript
-interface RemOption {
-  // 临界尺寸，超过这个尺寸就固定字体尺寸，一般认为是PC环境
-  criticalWidth?: number;
-  // 设计稿尺寸
-  designWidth?: number;
-}
-declare function rem(option: RemOption | number): void;
-```
-
-示例：
-
-```javascript
-// 传递数字代表设计稿尺寸
-rem(750);
-
-// 传递对象
-rem({
-  criticalWidth: 576,
-  designWidth: 750
-});
-
-// 特殊用法：设计稿尺寸可以定义在html元素的data-dw中，这种场景无需传递参数
-// 如： <html data-dw="750"></html>
-rem();
-
-```
 
 # Activable
 
