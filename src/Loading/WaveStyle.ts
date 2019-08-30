@@ -10,7 +10,7 @@ export const wave = keyframes`
 }
 
 20% {
-    transform: scaleY(1.8);
+    transform: scaleY(2);
     opacity: 1;
 }
 `;
@@ -25,11 +25,11 @@ export const style: any = {
     return css`
       display: inline-block;
       width: ${vw(2)};
-      height: ${vw(14)};
+      height: ${vw(12)};
       margin-right: ${vw(4)};
       @media screen and (min-width: 576px) {
         width: 2px;
-        height: 14px;
+        height: 12px;
         margin-right: 4px;
       }
       background-color: ${barColor};

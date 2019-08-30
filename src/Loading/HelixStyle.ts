@@ -12,13 +12,21 @@ to {
 }
 `;
 
+export const opacityAnimation = keyframes`
+from {
+  opacity: 1;
+}
+to {
+  opacity: 0;
+}
+`;
+
 export const style: any = {
   container(barColor: string = "#000") {
     return css`
       width: ${vw(30)};
       height: ${vw(30)};
       position: relative;
-      animation: ${rotate} 800ms steps(${barNum}) infinite;
       span {
         position: absolute;
         top: 0;
@@ -33,8 +41,8 @@ export const style: any = {
           content: "";
           background-color: ${barColor};
           border-radius: ${vw(1)};
-          height: ${vw(8)};
-          transform: scaleX(0.85);
+          height: ${vw(7)};
+          transform: scaleX(0.9);
         }
       }
 
@@ -46,7 +54,7 @@ export const style: any = {
           margin-left: -1px;
           &::after {
             border-radius: 1px;
-            height: 8px;
+            height: 7px;
           }
         }
       }
@@ -54,9 +62,14 @@ export const style: any = {
   }
 };
 
+const duration = 800;
+
 for (let i = 0; i < barNum; i++) {
   style[`bar-${i}`] = css`
     transform: rotate(${(360 * i) / barNum}deg);
-    opacity: ${1 - i / barNum};
+    &::after {
+      animation: ${opacityAnimation} ${duration}ms linear -${duration -
+          (duration * i) / barNum}ms infinite;
+    }
   `;
 }
