@@ -69,8 +69,19 @@ export const style = {
   `,
   btn: css`
     display: flex;
-    box-shadow: 0 -${1 / window.devicePixelRatio}px 0 0 #e0e0e0;
     font-size: 0;
+    position: relative;
+    &::before {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      content: "";
+      display: block;
+      border-top: 1px solid #e0e0e0;
+      width: 100%;
+      height: 1px;
+      transform: scaleY(${1 / window.devicePixelRatio});
+    }
     div {
       cursor: pointer;
       flex: 1;
@@ -98,8 +109,18 @@ export const style = {
   `,
   cancel: css`
     border: none;
-    box-shadow: ${1 / window.devicePixelRatio}px 0 0 0 #e0e0e0;
+    /* box-shadow: ${1 / window.devicePixelRatio}px 0 0 0 #e0e0e0; */
     color: #888;
+    position: relative;
+    &::after {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 1px;
+      right: -1px;
+      border-right: 1px solid #e0e0e0;
+      transform: scaleX(${1 / window.devicePixelRatio});
+    }
     &:active {
       color: #555;
       background-color: #f5f5f5;

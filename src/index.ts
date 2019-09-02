@@ -13,3 +13,4 @@ export {
   pureRemAdaption,
   normalizeWithAdaption
 } from "./cssUtil";
+export { Normalize } from "./Normalize";
