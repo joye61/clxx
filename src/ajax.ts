@@ -1,9 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Loading, LoadingOption } from "./Loading";
 import querystring from "qs";
-
-// 导出默认的axios对象
-export { default as rawRequest } from "axios";
+import { is } from "./is";
 
 export interface RequestLoadingOption extends LoadingOption<any> {
   minExistTime?: number;
@@ -11,7 +9,7 @@ export interface RequestLoadingOption extends LoadingOption<any> {
 
 export interface RequestOption extends AxiosRequestConfig {
   loading?: RequestLoadingOption | boolean;
-  httpCache?: boolean;
+  disableHttpCache?: boolean;
   transmitParam?: boolean;
   transmitHashParam?: boolean;
 }
@@ -25,11 +23,13 @@ export async function ajax(option: RequestOption) {
   let transmitParam = !!option.transmitParam;
   let transmitHashParam = !!option.transmitHashParam;
 
+  if (!is.plainObject(option.params)) {
+    option.params = {};
+  }
+
   // 配置请求是否需要清除缓存
-  if (!option.httpCache) {
-    option.params = {
-      __c: Date.now()
-    };
+  if (!!option.disableHttpCache === true) {
+    option.params.__c = Date.now();
   }
 
   // 如果loading存在，默认最小存在时间1000毫秒
@@ -87,11 +87,7 @@ export async function ajax(option: RequestOption) {
     }
 
     // 追加参数到当前参数列表
-    if (typeof option.params === "object") {
-      option.params = { ...option.params, ...appendParam };
-    } else {
-      option.params = appendParam;
-    }
+    option.params = { ...option.params, ...appendParam };
   }
 
   // 通过axios获取数据

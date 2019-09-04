@@ -15,7 +15,7 @@ export interface LoadingOption<H> {
 export class Loading<H> {
   container = document.createElement("div");
 
-  constructor(option: LoadingOption<H>) {
+  constructor(option?: LoadingOption<H>) {
     // 默认配置
     let config: LoadingOption<H> = {
       type: "wave",

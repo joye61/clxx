@@ -45,8 +45,8 @@ interface RequestOption extends AxiosRequestConfig {
   // 是否展示loading动画，可以传递布尔值，也可以传递loading配置参数
   // LoadingOption 的参数选项参考Loading组件，默认: false
   loading?: RequestLoadingOption | boolean;
-  // 是否在url参数后添加当前时间，防止浏览器缓存。默认: false
-  httpCache?: boolean;
+  // 是否在url参数后添加当前时间，禁用浏览器缓存。默认: false
+  disableHttpCache?: boolean;
   // 将当前页面的URL参数透传到所有的Http请求中去
   transmitParam?: boolean;
   // 当当前页面hash的参数透传到所有的http请求中去
