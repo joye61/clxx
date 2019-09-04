@@ -32,7 +32,7 @@ const isType = {
 
 export const is = {
   ...isType,
-  anroid(): boolean {
+  android(): boolean {
     return /Android/i.test(window.navigator.userAgent);
   },
   ios(): boolean {

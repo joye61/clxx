@@ -27,9 +27,23 @@ import {
   Clickable,
   Toast,
   Loading,
-  Alert
+  Alert,
+  Normalize
 } from "cl-utils";
 ```
+
+# Normalize 组件
+
+**适用于移动端**，简单的样式reset以及自适应组件
+
+```typescript
+<Normalize designWidth={375} criticalWidth={576}/>
+```
+
+默认值：
+
+- 设计尺寸：`375px`
+- 临界尺寸：`576px`
 
 
 # ajax
