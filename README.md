@@ -94,7 +94,7 @@ ajax({
 
 ```typescript
 declare const is: {
-  anroid(): boolean; 
+  android(): boolean; 
   ios(): boolean;
   weixin(): boolean;
   QQ(): boolean;
