@@ -20,7 +20,6 @@ npm install cl-utils
 import {
   ajax,
   is,
-  rem,
   Ticker,
   touchHover,
   Activable,
@@ -34,7 +33,7 @@ import {
 
 # Normalize 组件
 
-**适用于移动端**，简单的样式reset以及自适应组件
+**适用于移动端**，简单的样式reset以及自适应组件，该组件会全局注入自适应代码
 
 ```typescript
 <Normalize designWidth={375} criticalWidth={576}/>
@@ -44,6 +43,8 @@ import {
 
 - 设计尺寸：`375px`
 - 临界尺寸：`576px`
+
+在以上示例中，最大的显示区域宽度会`576px`，也就是说在PC端呈现时，会将body在屏幕居中，且只显示 `576px` 宽度，同时默认设置了设计稿的宽度为 `375px`
 
 
 # ajax
