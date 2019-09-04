@@ -160,7 +160,30 @@ new Activable({
 
 ```
 
+# Clickable
 
+这是 `Activable` 的组件形式包装，默认包装容器为 `div`，支持属性如下：
+
+```typescript
+interface ClickableProps {
+    className?: string;
+    id?: string;
+    children?: React.ReactNode;
+    style?: React.CSSProperties;
+    activeStyle?: React.CSSProperties;
+    activeClass?: string;
+    onClick?: () => void;
+    bubblable?: boolean;
+}
+```
+
+示例：
+
+```typescript
+<Clickable onClick={()=>{
+  console.log("确定按钮点击");
+}}>确定</Clickable>
+```
 
 # Loading 组件
 
