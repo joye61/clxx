@@ -14,7 +14,7 @@ export interface ActivableOption {
 export class Activable {
   target: HTMLElement;
   activeClass: string | undefined;
-  activeStyle = css({ opacity: 0.5 });
+  activeStyle: string | undefined = css({ opacity: 0.5 });
   bubbleable = false;
   onClick = () => {};
 
@@ -35,12 +35,17 @@ export class Activable {
       option = option as ActivableOption;
       this.target = this.getDOMTarget(option.target);
 
-      //获取活跃时的类名
+      // 获取活跃时的类名
       this.activeClass = is.string(option.activeClass)
         ? option.activeClass
         : undefined;
+      
+      // 如果活跃类名已通过参数传递，则默认活跃样式清除
+      if(this.activeClass) {
+        this.activeStyle = undefined;
+      }
 
-      //获取活跃时的样式
+      // 如果活跃样式已通过参数传递，设置活跃时的样式
       if (is.plainObject(option.activeStyle)) {
         this.activeStyle = css(option.activeStyle as any);
       }
