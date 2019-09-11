@@ -14,3 +14,4 @@ export {
   normalizeWithAdaption
 } from "./cssUtil";
 export { Normalize } from "./Normalize";
+export { RollingNotice } from "./RollingNotice";
