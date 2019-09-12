@@ -8,7 +8,7 @@
     "start": "tsc -w",
     "rm:build": "node ./scripts/rmbuild.js",
     "gen:package": "node ./scripts/package.js",
-    "build": "npm run rm:build && tsc && npm run gen:package",
+    "build": "npm run rm:build && tsc -d && npm run gen:package",
     "test": "jest"
   },
   "repository": {

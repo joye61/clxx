@@ -24,6 +24,9 @@ export class BulletScreen {
     // 设置弹幕目标
     if (is.string(checkTarget)) {
       this.target = document.querySelector(checkTarget);
+      if(!this.target) {
+        throw new Error("The display target does not exist");
+      }
     } else if (is.element(checkTarget)) {
       this.target = checkTarget as HTMLElement;
     } else {
