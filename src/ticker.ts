@@ -1,6 +1,28 @@
 import raf from "raf";
 
-type Task = () => void;
+/**
+ * TODO：
+ * 1、每隔一段时间执行1次，且执行次数可控制，如：
+ *    每隔2秒执行1次，最多执行5次
+ *    每隔2秒执行1次，无限执行
+ *    每隔2秒执行1次，无限执行，直到销毁
+ * 2、以requestAnimationFrame频率一直执行，直到主动销毁
+ * 3、可以设置延迟时间开始
+ */
+
+export type Task = () => void;
+
+export interface TickerOption {
+  // 任务或任务列表
+  task: Task | Array<Task>;
+  // 任务执行间隔
+  interval: number;
+  // 任务重复次数
+  repeat: number;
+  // 任务开始执行间隔
+  delay: number;
+}
+
 
 export class Ticker {
   tasks: Array<Task> = [];
