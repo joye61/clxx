@@ -4,11 +4,18 @@ import { css } from "emotion";
 import ReactDOM from "react-dom";
 import raf from "raf";
 import { keyframes } from "@emotion/core";
+import anime from "animejs";
 
 export interface BSOption {
   // 弹幕播放的舞台
   target: string | HTMLElement;
 }
+
+const bulletClass = css({
+  position: "absolute",
+  left: 0,
+  zIndex: 9
+});
 
 export class BulletScreen {
   target: null | HTMLElement = null;
@@ -24,7 +31,7 @@ export class BulletScreen {
     // 设置弹幕目标
     if (is.string(checkTarget)) {
       this.target = document.querySelector(checkTarget);
-      if(!this.target) {
+      if (!this.target) {
         throw new Error("The display target does not exist");
       }
     } else if (is.element(checkTarget)) {
@@ -54,14 +61,7 @@ export class BulletScreen {
    */
   push(item: React.ReactNode, duration: number = 5000) {
     const bulletContainer = document.createElement("div");
-    bulletContainer.classList.add(
-      css({
-        position: "absolute",
-        left: 0,
-        transform: `translate3d(${this.screenWidth}px, 0, 0)`,
-        zIndex: 9
-      })
-    );
+    bulletContainer.classList.add(bulletClass);
     ReactDOM.render(<>{item}</>, bulletContainer);
     (this.target as HTMLElement).appendChild(bulletContainer);
 
@@ -69,49 +69,37 @@ export class BulletScreen {
     raf(() => {
       const rect = bulletContainer.getBoundingClientRect();
       const height = rect.height;
-      // 动画关键帧
-      const fly = keyframes`
-        from {
-          transform: translate3d(${this.screenWidth}px, 0, 0);
+      const transform = this.transformProperty() as any;
+      bulletContainer.style[transform] = `translateX(${this.screenWidth}px)`;
+      bulletContainer.style.top =
+        Math.random() * (this.screenHeight - height) + "px";
+      anime({
+        targets: bulletContainer,
+        translateX: -rect.width + "px",
+        duration,
+        easing: "linear",
+        complete() {
+          ReactDOM.unmountComponentAtNode(bulletContainer);
+          bulletContainer.remove();
         }
-        to {
-          transform: translate3d(-100%, 0, 0);
-        }
-      `;
-      
-      // 弹幕设置为一个随机的高度出现在舞台中
-      if (this.screenHeight > height) {
-        const top = Math.random() * (this.screenHeight - height);
-        bulletContainer.classList.add(
-          css({
-            top,
-            animation: `${fly} ${duration}ms linear`
-          })
-        );
-      }
-
-      // 监听结束事件
-      bulletContainer.addEventListener(this.animationEndName(), () => {
-        ReactDOM.unmountComponentAtNode(bulletContainer);
-        bulletContainer.remove();
       });
     });
   }
 
-  // 获取跨浏览器兼容事件名
-  animationEndName() {
-    const testElement = document.createElement("div");
-
-    const maps: any = {
-      animation: "animationend",
-      OAnimation: "oAnimationEnd",
-      MozAnimation: "animationend",
-      WebkitAnimation: "webkitAnimationEnd"
-    };
-
-    for (let key in maps) {
-      if (is.undefined(testElement.style[key as any])) {
-        return maps[key];
+  /**
+   * 获取transform属性名字
+   */
+  transformProperty() {
+    const vendors: string[] = [
+      "transform",
+      "WebkitTransform",
+      "MozTransform",
+      "OTransform",
+      "msTransform"
+    ];
+    for (let vendor of vendors) {
+      if (is.string(document.body.style[vendor as any])) {
+        return vendor;
       }
     }
   }
