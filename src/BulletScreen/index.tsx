@@ -3,7 +3,6 @@ import { is } from "../is";
 import { css } from "emotion";
 import ReactDOM from "react-dom";
 import raf from "raf";
-import { keyframes } from "@emotion/core";
 import anime from "animejs";
 
 export interface BSOption {

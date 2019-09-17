@@ -11,7 +11,8 @@ import {
   isString,
   isSymbol,
   isUndefined,
-  isNull
+  isNull,
+  isRegExp
 } from "lodash";
 
 const isType = {
@@ -27,7 +28,8 @@ const isType = {
   string: isString,
   symbol: isSymbol,
   undefined: isUndefined,
-  null: isNull
+  null: isNull,
+  regexp: isRegExp
 };
 
 export const is = {
