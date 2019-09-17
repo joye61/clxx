@@ -1,3 +1,7 @@
+/**
+ * 禁用和启用默认滚动
+ */
+
 export let passiveSupported = false;
 
 try {
