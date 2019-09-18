@@ -12,7 +12,7 @@ export function vw(num: number): string {
  * 获取1像素的物理宽度
  */
 export function ppxWidth(): number {
-  return window.devicePixelRatio / 1;
+  return 1 / window.devicePixelRatio;
 }
 
 export interface AdaptiveOption {
