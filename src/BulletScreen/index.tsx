@@ -101,5 +101,6 @@ export class BulletScreen {
         return vendor;
       }
     }
+    return vendors[0];
   }
 }
