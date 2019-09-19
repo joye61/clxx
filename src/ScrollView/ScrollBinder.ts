@@ -4,6 +4,7 @@ import { Interpolation } from "@emotion/serialize";
 import { Ticker } from "../Ticker";
 import { scroll } from "./scroll";
 import { vw } from "../cssUtil";
+import { thisTypeAnnotation } from "@babel/types";
 
 export type ScrollTarget = string | HTMLElement | null;
 
@@ -136,10 +137,10 @@ export class ScrollBinder {
     this.container.classList.add(css(containerCss));
 
     // 设置滚动条相关
-    this.setBarInfo();
+    // this.setBarInfo();
 
     // 获取初始尺寸信息
-    this.updateSizeInfo();
+    this.update();
 
     // 设置初始位置
     this.updatePosition();
@@ -148,8 +149,11 @@ export class ScrollBinder {
     this.addEventBinder();
   }
 
+  /**
+   * 显示滚动条信息
+   */
   setBarInfo() {
-    if (this.config.showScrollBar) {
+    if (this.config.showScrollBar && this.diffHeight < 0 && this.bar === null) {
       this.bar = document.createElement("div");
 
       // 滚动条样式设置
@@ -182,10 +186,15 @@ export class ScrollBinder {
 
       this.bar.classList.add(css(barStyle));
       this.container.appendChild(this.bar);
+
+      // 添加PC端时滚动条的事件监听
+      this.addBarEventBinder();
     }
   }
 
-  // 隐藏滚动条
+  /**
+   * 隐藏滚动条
+   */
   hideBar() {
     if (this.config.showScrollBar && this.config.barAutoHide) {
       this.hideBarTicker = new Ticker(
@@ -198,7 +207,9 @@ export class ScrollBinder {
     }
   }
 
-  // 显示滚动条
+  /**
+   * 显示滚动条
+   */
   showBar() {
     if (this.config.showScrollBar && this.config.barAutoHide) {
       // 如果有bar正在隐藏，直接清除隐藏逻辑
@@ -213,15 +224,19 @@ export class ScrollBinder {
     (<HTMLElement>this.bar).style.height = `${this.barHeight}px`;
   }
 
-  updateSizeInfo() {
+  /**
+   * 当容器的内容有变化时，更新滚动条信息
+   */
+  update() {
     this.containerHeight = this.container.getBoundingClientRect().height;
     this.bodyHeight = this.body.getBoundingClientRect().height;
     this.diffHeight = this.containerHeight - this.bodyHeight;
 
     // 滚动条相关
-    if (this.config.showScrollBar) {
+    if (this.diffHeight < 0 && this.config.showScrollBar) {
       this.barRatio = this.containerHeight / this.bodyHeight;
       this.barHeight = this.containerHeight * this.barRatio;
+      this.setBarInfo();
       this.updateBarHeight();
     }
   }
@@ -286,7 +301,7 @@ export class ScrollBinder {
     return vendors[0];
   }
 
-  onStart = (event: TouchEvent) => {
+  onTouchStart = (event: TouchEvent) => {
     if (this.diffHeight < 0 && !this.isControlling) {
       // 阻止冒泡可以防止滚动穿透
       event.stopPropagation();
@@ -308,7 +323,7 @@ export class ScrollBinder {
     }
   };
 
-  onMove = (event: TouchEvent) => {
+  onTouchMove = (event: TouchEvent) => {
     if (this.isControlling) {
       this.moveTime = Date.now();
       const touch = event.touches.item(0) as Touch;
@@ -323,7 +338,7 @@ export class ScrollBinder {
     }
   };
 
-  onEnd = (event: TouchEvent) => {
+  onTouchEnd = (event: TouchEvent) => {
     if (this.isControlling) {
       this.endTime = Date.now();
       this.isControlling = false;
@@ -375,30 +390,69 @@ export class ScrollBinder {
     });
   }
 
-  onWheel = (event: WheelEvent)=>{
+  onWheel = (event: WheelEvent) => {
     event.stopPropagation();
-    console.log(event.deltaY, event.deltaMode);
-  }
+    this.position += event.deltaY;
+    this.updatePosition();
+    if (is.function(this.config.onScroll)) {
+      this.config.onScroll();
+    }
+  };
+
+  onMouseDown = (event: MouseEvent) => {
+    if (this.diffHeight < 0 && !this.isControlling) {
+      // 阻止冒泡可以防止滚动穿透
+      event.stopPropagation();
+
+      this.isControlling = true;
+
+      // 显示滚动条
+      this.showBar();
+      this.current = event.clientY;
+    }
+  };
+
+  onMouseMove = (event: MouseEvent) => {
+    if(this.isControlling) {
+      const current = event.clientY;
+      console.log(current);
+      const diff = current - this.current;
+      console.log(diff);
+      this.current = current;
+      this.position -= diff;
+      this.updatePosition();
+      if (is.function(this.config.onScroll)) {
+        this.config.onScroll();
+      }
+    }
+  };
+
+  onMouseUp = (event: MouseEvent) => {
+    if(this.isControlling) {
+      this.isControlling = false;
+      this.current = 0;
+      // 禁止状态，隐藏滚动条
+      this.hideBar();
+    }
+  };
 
   addEventBinder() {
     if (is.touchable()) {
-      this.container.addEventListener("touchstart", this.onStart);
-      this.container.addEventListener("touchmove", this.onMove);
-      this.container.addEventListener("touchend", this.onEnd);
-      this.container.addEventListener("touchcancel", this.onEnd);
+      this.container.addEventListener("touchstart", this.onTouchStart);
+      this.container.addEventListener("touchmove", this.onTouchMove);
+      this.container.addEventListener("touchend", this.onTouchEnd);
+      this.container.addEventListener("touchcancel", this.onTouchEnd);
     } else {
-      this.container.addEventListener('wheel', this.onWheel)
+      this.container.addEventListener("wheel", this.onWheel);
     }
   }
 
-  removeEventBinder() {
-    if (is.touchable()) {
-      this.container.removeEventListener("touchstart", this.onStart);
-      this.container.removeEventListener("touchmove", this.onMove);
-      this.container.removeEventListener("touchend", this.onEnd);
-      this.container.removeEventListener("touchcancel", this.onEnd);
-    } else {
-      this.container.removeEventListener('wheel', this.onWheel)
+  addBarEventBinder() {
+    // PC端环境需要支持滚动条拖动效果
+    if (!is.touchable()) {
+      (<HTMLElement>this.bar).addEventListener("mousedown", this.onMouseDown);
+      document.documentElement.addEventListener("mousemove", this.onMouseMove);
+      document.documentElement.addEventListener("mouseup", this.onMouseUp);
     }
   }
 }
