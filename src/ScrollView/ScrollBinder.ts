@@ -1,10 +1,9 @@
 import { is } from "../is";
 import { css } from "emotion";
-import { Interpolation } from "@emotion/serialize";
+import { Interpolation, CSSProperties } from "@emotion/serialize";
 import { Ticker } from "../Ticker";
 import { scroll } from "./scroll";
 import { vw } from "../cssUtil";
-import { thisTypeAnnotation } from "@babel/types";
 
 export type ScrollTarget = string | HTMLElement | null;
 
@@ -33,7 +32,9 @@ export interface ScrollBinderOption {
   barShowOrHideDuration: number;
   // 是否显示圆角滚动条
   barRounded: boolean;
-  // 惯性滚动时速度衰减系数0<f<1，不能为0和1
+  // 自定义滚动条样式
+  barStyle: CSSProperties;
+  // 惯性滚动时速度衰减系数0<factor<1，不能为0和1
   // 最好不要修改默认值，会影响流畅度
   speedFactor: number;
   // 滚动时触发
@@ -55,9 +56,10 @@ export class ScrollBinder {
     showScrollBar: false,
     barWidth: 4,
     barAutoHide: true,
-    barRounded: false,
-    barHideDelay: 2000,
+    barRounded: true,
+    barHideDelay: 3000,
     barShowOrHideDuration: 500,
+    barStyle: {},
     speedFactor: 0.98
   };
 
@@ -69,8 +71,6 @@ export class ScrollBinder {
   bar: HTMLElement | null = null;
   // 滚动条和容器的比例
   barRatio = 0;
-  // 当前滚动到的位置
-  position = 0;
   // CSS的兼容transform属性
   transform = this.transformProperty();
   // 滚动容器高度
@@ -81,8 +81,10 @@ export class ScrollBinder {
   barHeight = 0;
   // 容器和滚动内容的高度差
   diffHeight = 0;
-  // 当前位置
+  // 当前位置，临时位置
   current = 0;
+  // 当前滚动到的位置，最终经过计算的位置
+  position = 0;
   // 惯性速度
   speed = 0;
   // 是否正在手指拖动滚动
@@ -124,7 +126,7 @@ export class ScrollBinder {
     this.body = children[0] as HTMLElement;
 
     // 设置滚动条初始位置
-    this.position = this.config.initPosition;
+    this.position = -this.config.initPosition;
 
     // 初始化容器样式
     const containerCss: Interpolation = {
@@ -135,9 +137,6 @@ export class ScrollBinder {
       containerCss.position = "relative";
     }
     this.container.classList.add(css(containerCss));
-
-    // 设置滚动条相关
-    // this.setBarInfo();
 
     // 获取初始尺寸信息
     this.update();
@@ -158,23 +157,26 @@ export class ScrollBinder {
 
       // 滚动条样式设置
       const barStyle: Interpolation = {
+        userSelect: "none",
         position: "absolute",
         top: 0,
         right: 0,
         backgroundColor: `rgba(0, 0, 0, .6)`,
-        width: vw(this.config.barWidth)
+        width: vw(this.config.barWidth),
+        ...this.config.barStyle
       };
 
       // 是否显示圆角滚动条
       if (this.config.barRounded) {
         barStyle.borderRadius = vw(this.config.barWidth / 2);
         barStyle["@media screen and (min-width: 576px)"] = {
-          width: `${this.config.barWidth}px`,
-          borderRadius: `${this.config.barWidth / 2}px`
+          width: `${this.config.barWidth * 2}px`,
+          borderRadius: `${this.config.barWidth}px`
         };
       } else {
         barStyle["@media screen and (min-width: 576px)"] = {
-          width: `${this.config.barWidth}px`
+          width: `${this.config.barWidth * 2}px`,
+          borderRadius: 0
         };
       }
 
@@ -187,7 +189,7 @@ export class ScrollBinder {
       this.bar.classList.add(css(barStyle));
       this.container.appendChild(this.bar);
 
-      // 添加PC端时滚动条的事件监听
+      // 添加PC端时滚动条的事件监听，此处可以保证滚动条是存在的
       this.addBarEventBinder();
     }
   }
@@ -196,7 +198,7 @@ export class ScrollBinder {
    * 隐藏滚动条
    */
   hideBar() {
-    if (this.config.showScrollBar && this.config.barAutoHide) {
+    if (is.element(this.bar) && this.config.barAutoHide) {
       this.hideBarTicker = new Ticker(
         () => {
           (<HTMLElement>this.bar).style.opacity = "0";
@@ -211,7 +213,7 @@ export class ScrollBinder {
    * 显示滚动条
    */
   showBar() {
-    if (this.config.showScrollBar && this.config.barAutoHide) {
+    if (is.element(this.bar) && this.config.barAutoHide) {
       // 如果有bar正在隐藏，直接清除隐藏逻辑
       if (this.hideBarTicker instanceof Ticker) {
         this.hideBarTicker.destroy();
@@ -221,11 +223,13 @@ export class ScrollBinder {
   }
 
   updateBarHeight() {
-    (<HTMLElement>this.bar).style.height = `${this.barHeight}px`;
+    if (is.element(this.bar)) {
+      (<HTMLElement>this.bar).style.height = `${this.barHeight}px`;
+    }
   }
 
   /**
-   * 当容器的内容有变化时，更新滚动条信息
+   * 当容器的内容有变化时，更新滚动条信息，主要供外部调用
    */
   update() {
     this.containerHeight = this.container.getBoundingClientRect().height;
@@ -245,6 +249,10 @@ export class ScrollBinder {
    * 这里不应该有过多逻辑，影响滚动性能
    */
   updatePosition() {
+    // 滚动条内容不大于容器内容时，不执行任何更新逻辑
+    if (this.diffHeight >= 0) {
+      return;
+    }
     // 不能跨越边界
     if (this.position > 0) {
       this.position = 0;
@@ -274,9 +282,8 @@ export class ScrollBinder {
       this.config.onReachBottom();
     }
 
-    // 执行DOM变换，实现滚动动画
     this.body.style[<any>this.transform] = `translateY(${this.position}px)`;
-    if (this.config.showScrollBar) {
+    if (is.element(this.bar)) {
       (<HTMLElement>this.bar).style[<any>this.transform] = `translateY(${-this
         .position * this.barRatio}px)`;
     }
@@ -338,7 +345,7 @@ export class ScrollBinder {
     }
   };
 
-  onTouchEnd = (event: TouchEvent) => {
+  onTouchEnd = () => {
     if (this.isControlling) {
       this.endTime = Date.now();
       this.isControlling = false;
@@ -391,11 +398,28 @@ export class ScrollBinder {
   }
 
   onWheel = (event: WheelEvent) => {
-    event.stopPropagation();
-    this.position += event.deltaY;
-    this.updatePosition();
-    if (is.function(this.config.onScroll)) {
-      this.config.onScroll();
+    if (this.diffHeight < 0 && !this.isControlling) {
+      event.stopPropagation();
+      // 显示滚动条
+      this.showBar();
+
+      /**
+       * 根据滚动条的模式，设置不同的滚动方向
+       */
+      if (event.deltaMode === 0) {
+        this.speed = event.deltaY;
+      } else {
+        this.speed = (event.deltaY / Math.abs(event.deltaY)) * 200;
+      }
+
+      this.position += this.speed;
+      console.log(event.deltaY, event.deltaMode);
+      this.updatePosition();
+      if (is.function(this.config.onScroll)) {
+        this.config.onScroll();
+      }
+      // 隐藏滚动条
+      this.hideBar();
     }
   };
 
@@ -403,7 +427,6 @@ export class ScrollBinder {
     if (this.diffHeight < 0 && !this.isControlling) {
       // 阻止冒泡可以防止滚动穿透
       event.stopPropagation();
-
       this.isControlling = true;
 
       // 显示滚动条
@@ -413,13 +436,11 @@ export class ScrollBinder {
   };
 
   onMouseMove = (event: MouseEvent) => {
-    if(this.isControlling) {
+    if (this.isControlling) {
       const current = event.clientY;
-      console.log(current);
-      const diff = current - this.current;
-      console.log(diff);
+      this.speed = (this.current - current) / this.barRatio;
       this.current = current;
-      this.position -= diff;
+      this.position += this.speed;
       this.updatePosition();
       if (is.function(this.config.onScroll)) {
         this.config.onScroll();
@@ -427,8 +448,8 @@ export class ScrollBinder {
     }
   };
 
-  onMouseUp = (event: MouseEvent) => {
-    if(this.isControlling) {
+  onMouseUp = () => {
+    if (this.isControlling) {
       this.isControlling = false;
       this.current = 0;
       // 禁止状态，隐藏滚动条
@@ -447,6 +468,9 @@ export class ScrollBinder {
     }
   }
 
+  /**
+   * PC端滚动不带惯性效果，跟原生的PC效果保持一致
+   */
   addBarEventBinder() {
     // PC端环境需要支持滚动条拖动效果
     if (!is.touchable()) {

@@ -18,3 +18,5 @@ export { RollingNotice } from "./RollingNotice";
 export { CountDown } from "./CountDown";
 export { CountDowner } from "./CountDown/CountDowner";
 export { BulletScreen } from "./BulletScreen";
+export { ScrollBinder } from "./ScrollView/ScrollBinder";
+export { ScrollView } from "./ScrollView";

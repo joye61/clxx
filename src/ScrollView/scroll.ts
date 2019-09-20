@@ -1,9 +1,7 @@
 /**
- * 禁用和启用默认滚动
+ * 检测是否支持passive事件绑定
  */
-
 export let passiveSupported = false;
-
 try {
   window.addEventListener(
     "test",
@@ -16,6 +14,10 @@ try {
   );
 } catch (err) {}
 
+
+/**
+ * 禁用和启用默认滚动
+ */
 export const scroll = {
   handler(event: TouchEvent) {
     event.preventDefault();
