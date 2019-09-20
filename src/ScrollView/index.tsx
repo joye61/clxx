@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import {
   ScrollBinderOption,
   ScrollBinder
-} from "../../libs/ScrollView/ScrollBinder";
+} from "./ScrollBinder";
 import { is } from "../is";
 
 export interface ScrollViewProps extends ScrollBinderOption {
