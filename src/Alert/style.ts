@@ -109,7 +109,6 @@ export const style = {
   `,
   cancel: css`
     border: none;
-    /* box-shadow: ${1 / window.devicePixelRatio}px 0 0 0 #e0e0e0; */
     color: #888;
     position: relative;
     &::after {
