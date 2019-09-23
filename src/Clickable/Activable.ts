@@ -1,4 +1,4 @@
-import { is } from "./is";
+import { is } from "../is";
 import { css } from "emotion";
 
 export type Target = string | HTMLElement;

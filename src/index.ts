@@ -3,7 +3,7 @@ export { is } from "./is";
 export { touchHover } from "./touchHover";
 export { Ticker } from "./Ticker";
 export { Clickable } from "./Clickable";
-export { Activable } from "./Activable";
+export { Activable } from "./Clickable/Activable";
 export { Alert } from "./Alert";
 export { Loading } from "./Loading";
 export { Toast } from "./Toast";

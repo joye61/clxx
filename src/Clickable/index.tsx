@@ -4,7 +4,7 @@ import React, {
   useRef,
   MutableRefObject
 } from "react";
-import { Activable } from "../Activable";
+import { Activable } from "./Activable";
 
 export interface ClickableProps {
   // target参数
