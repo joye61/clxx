@@ -4,6 +4,7 @@ import { Interpolation, CSSProperties } from "@emotion/serialize";
 import { Ticker } from "../Ticker";
 import { scroll } from "./scroll";
 import { vw } from "../cssUtil";
+import {compat} from "../compat";
 
 export type ScrollTarget = string | HTMLElement | null;
 
@@ -72,7 +73,7 @@ export class ScrollBinder {
   // 滚动条和容器的比例
   barRatio = 0;
   // CSS的兼容transform属性
-  transform = this.transformProperty();
+  transform = (compat as any).transform;
   // 滚动容器高度
   containerHeight = 0;
   // 滚动体高度
@@ -287,25 +288,6 @@ export class ScrollBinder {
       (<HTMLElement>this.bar).style[<any>this.transform] = `translateY(${-this
         .position * this.barRatio}px)`;
     }
-  }
-
-  /**
-   * 浏览器兼容transform属性名称
-   */
-  transformProperty() {
-    const vendors: string[] = [
-      "transform",
-      "WebkitTransform",
-      "MozTransform",
-      "OTransform",
-      "msTransform"
-    ];
-    for (let vendor of vendors) {
-      if (is.string(document.body.style[vendor as any])) {
-        return vendor;
-      }
-    }
-    return vendors[0];
   }
 
   onTouchStart = (event: TouchEvent) => {

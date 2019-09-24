@@ -1,58 +1,54 @@
 import { is } from "./is";
 
-const list = {
-  
-  transitioncancel: "TransitionCancel",
-  transitionend: "TransitionEnd",
-  transitionrun: "TransitionRun",
-  transitionstart: "TransitionStart",
-};
+// 属性相关的vendor前缀
+const propertyVendors = ["Webkit", "Moz", "ms", "O"];
+// 函数相关的vendor前缀
+const functionVendors = ["Webkit", "moz", "ms", "o"];
 
-const vendors = ["Webkit", "Moz", "MS", "O"];
-
-export const compat = {
-  get transform() {
-    if (is.string(document.body.style.transform)) {
-      return "transform";
-    }
-    for (let vendor of vendors) {
-      const name = `${vendor}Transform`;
-      if (is.string(document.body.style[name as any])) {
-        return name;
-      }
-    }
-    return "transform";
-  }
-};
-
-const animationEvent = {
+// 待检查的列表，这里只列举了本仓库中所常用的几个
+const checkList = {
+  transform: "Transform",
+  animation: "Animation",
   animationcancel: "AnimationCancel",
   animationiteration: "AnimationIteration",
   animationend: "AnimationEnd",
-};
-
-const transitionEvent = {
+  transition: "Transition",
   transitioncancel: "TransitionCancel",
   transitionend: "TransitionEnd",
   transitionrun: "TransitionRun",
-  transitionstart: "TransitionStart",
-}
+  transitionstart: "TransitionStart"
+};
 
-Object.keys(animationEvent).forEach(eventName => {
-  Object.defineProperty(compat, eventName, {
+export const compat = {};
+
+Object.keys(checkList).forEach(checkName => {
+  Object.defineProperty(compat, checkName, {
     enumerable: true,
-    get [eventName](){
-      if(is.string(document.body.style[eventName as any])) {
-        return eventName;
+    get() {
+      let name: string = "";
+      if (checkName.indexOf("transform") === 0) {
+        name = "transform";
+      } else if (checkName.indexOf("transition") === 0) {
+        name = "transition";
+      } else if (checkName.indexOf("animation") === 0) {
+        name = "animation";
       }
-      for (let vendor of vendors) {
-        const name = `${vendor}Animation`;
+
+      // 1、首先检查不用前缀是否可以通过验证
+      if (is.string(document.body.style[name as any])) {
+        return checkName;
+      }
+
+      // 2、其次检查添加前缀是否可以通过验证
+      for (let vendor of propertyVendors) {
+        name = vendor + (<any>checkList)[checkName];
         if (is.string(document.body.style[name as any])) {
-          return vendor + (<any>animationEvent)[eventName];
+          return vendor + (<any>checkList)[checkName];
         }
       }
+
+      // 3、如果仍然没有找到，则返回undefined字符串
+      return "undefined";
     }
   });
 });
-const transitionEventList = Object.keys(transitionEvent);
-

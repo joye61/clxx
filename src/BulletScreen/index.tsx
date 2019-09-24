@@ -4,6 +4,7 @@ import { css } from "emotion";
 import ReactDOM from "react-dom";
 import raf from "raf";
 import anime from "animejs";
+import { compat } from "../compat";
 
 export interface BSOption {
   // 弹幕播放的舞台
@@ -68,7 +69,7 @@ export class BulletScreen {
     raf(() => {
       const rect = bulletContainer.getBoundingClientRect();
       const height = rect.height;
-      const transform = this.transformProperty() as any;
+      const transform = (compat as any).transform;
       bulletContainer.style[transform] = `translateX(${this.screenWidth}px)`;
       bulletContainer.style.top =
         Math.random() * (this.screenHeight - height) + "px";
@@ -83,24 +84,5 @@ export class BulletScreen {
         }
       });
     });
-  }
-
-  /**
-   * 获取transform属性名字
-   */
-  transformProperty() {
-    const vendors: string[] = [
-      "transform",
-      "WebkitTransform",
-      "MozTransform",
-      "OTransform",
-      "msTransform"
-    ];
-    for (let vendor of vendors) {
-      if (is.string(document.body.style[vendor as any])) {
-        return vendor;
-      }
-    }
-    return vendors[0];
   }
 }
