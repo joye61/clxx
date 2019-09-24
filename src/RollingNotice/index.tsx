@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, InterpolationWithTheme } from "@emotion/core";
+import { jsx, InterpolationWithTheme, css } from "@emotion/core";
 import { is } from "../is";
 import { style } from "./style";
 import { useInterval } from "react-use";
@@ -37,6 +37,7 @@ export function RollingNotice<E>(props: RollingNoticeProps<E>) {
   const customHeight: InterpolationWithTheme<any> = {};
   if (props.height) {
     customHeight.height = props.height;
+    customHeight.lineHeight = props.height;
   }
 
   if (list.length > 0) {
@@ -88,7 +89,7 @@ export function RollingNotice<E>(props: RollingNoticeProps<E>) {
   }, interval);
 
   return (
-    <div css={[style.container, customHeight]} className={className}>
+    <div css={[style.container, css(customHeight)]} className={className}>
       <ul css={style.ul} ref={container as any}>
         {list.map((item, index) => {
           return (

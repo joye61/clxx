@@ -1,25 +1,20 @@
 # cl-utils
 
-一个非主流但多数时候很有用的库，依赖于`React`和`CSS-IN-JS`技术，**零CSS依赖**。涉及UI的逻辑大部分依赖于`React`，但使用时**不完全需要使用`jsx`组件化技术**。主要针对移动端H5页面，同时对PC端的UI绝大部分做了兼容处理。
+一个非主流但多数时候很有用的库，依赖于`React`和`CSS-IN-JS`技术，**零 CSS 依赖**。涉及 UI 的逻辑大部分依赖于`React`，但使用时**不完全需要使用`jsx`组件化技术**。主要针对移动端 H5 页面，同时对 PC 端的 UI 绝大部分做了兼容处理。
 
-> 对于一个简单的取代`window.alert`功能而言，绝大部分基于React实现的库都是通过提供一个类似`<AlertComponent />`之类的组件，然后要求使用者通过类似 `state={showAlert: true}` 之类的状态来控制弹框的显示隐藏逻辑。
+> 对于一个简单的取代`window.alert`功能而言，绝大部分基于 React 实现的库都是通过提供一个类似`<AlertComponent />`之类的组件，然后要求使用者通过类似 `state={showAlert: true}` 之类的状态来控制弹框的显示隐藏逻辑。
 >
-> 但显然大部分时候直接以函数方式调用 `alert("hello world")` 更加简单。`cl-utils` 的[自定义弹框](./src/Alert/README.md)就是这么做的，虽然使用React实现了取代 `window.alert` 的UI，但是使用方式却跟原生调用体验保持了一致。仅仅是为了简单而已
+> 但显然大部分时候直接以函数方式调用 `alert("hello world")` 更加简单。`cl-utils` 的[自定义弹框](./src/Alert/README.md)就是这么做的，虽然使用 React 实现了取代 `window.alert` 的 UI，但是使用方式却跟原生调用体验保持了一致。仅仅是为了简单而已
 
-
-- 弹幕效果
-- 可点击框
-- 倒计时器
-- 跑马灯效果
-- 可定制Toast
-- 纯JS加载
-- 防穿透滚动库
-- 点赞特效（待实现）
-- 可定制alert
-- 滴答器Ticker
-- 自适应组件
-- 带加载效果的ajax
-
+- [可定制 alert](./src/Alert/README.md)
+- [弹幕效果](./src/BulletScreen/README.md)
+- [可响应元素](./src/Clickable/README.md)
+- [倒计时](./src/CountDown/README.md)
+- [纯 JS 加载](./src/Loading/README.md)
+- [自适应组件](./src/Normalize/README.md)
+- [跑马灯效果](./src/Alert/README.md)
+- [防穿透滚动库](./src/ScrollView/README.md)
+- [可定制 Toast](./src/Toast/README.md)
 
 ## 安装
 
@@ -33,24 +28,12 @@ npm install cl-utils
 yarn add cl-utils
 ```
 
-
-# Normalize 组件
-
-**适用于移动端**，简单的样式reset以及自适应组件，该组件会全局注入自适应代码
-
-```typescript
-<Normalize designWidth={375} criticalWidth={576}/>
-```
-
-默认值：
-
-- 设计尺寸：`375px`
-- 临界尺寸：`576px`
-
-在以上示例中，最大的显示区域宽度会`576px`，也就是说在PC端呈现时，会将body在屏幕居中，且只显示 `576px` 宽度，同时默认设置了设计稿的宽度为 `375px`
-
-
 # ajax
+
+```js
+// 引入
+import { ajax } from "cl-utils";
+```
 
 基于 [`axios`](https://github.com/axios/axios) 进行扩展，除了支持 `axios(config)` 的全部配置，还支持部分扩展参数：
 
@@ -74,13 +57,18 @@ interface RequestOption extends AxiosRequestConfig {
 
 示例：
 
+```js
+// 引入
+import { is } from "cl-utils";
+```
+
 ```javascript
 // 1、显示默认loading动画
 ajax({
   url: "https://example.com",
   loading: true,
   httpCache: true
-})
+});
 // 2、配置loading动画
 ajax({
   url: "https://example.com",
@@ -89,16 +77,16 @@ ajax({
     type: "helix" // 菊花loading
   },
   httpCache: true
-})
+});
 ```
 
 # is
 
-基于 [lodash](https://lodash.com/) 进行二次包装盒扩展，用于数据类型，环境等判断：
+数据类型、环境等判断：
 
 ```typescript
 declare const is: {
-  android(): boolean; 
+  android(): boolean;
   ios(): boolean;
   weixin(): boolean;
   QQ(): boolean;
@@ -119,207 +107,53 @@ declare const is: {
 };
 ```
 
+# Ticker
 
-# Activable
+```js
+// 引入
+import { Ticker } from "cl-utils";
+```
 
-一个原生的防点击穿透的库，效果基本等价于CSS中的`:active`，兼容移动端和PC端
+基于 `requestAnimationFrame` 的简单滴答器，可以取代浏览器自带定时器
 
-```typescript
-declare type Target = string | HTMLElement;
-interface ActivableOption {
-  target: Target;
-  activeClass?: string;
-  activeStyle?: React.CSSProperties;
-  bubblable?: boolean;
-  onClick?: () => void;
+```ts
+// Ticker 构造函数接受4个参数
+/**
+ * 单位都为毫秒
+ * @param task 可以传递一个或者多个任务（任务列表）
+ * @param interval 执行间隔，默认为0，代表以requestAnimationFrame的帧频执行
+ * @param repeat 任务重复次数，默认为无限执行
+ * @param delay 任务开始执行时的延迟时间，默认立即执行
+ */
+new Ticker(
+  task: Task | Array<Task>,
+  private interval: number = 0,
+  private repeat: number = 0,
+  private delay: number = 0
+);
+```
+
+基于以上签名，Ticker可以取代大部分功能
+
+```js
+// 取代 setInterval()
+new Ticker(()=>{}, 1000);
+// 相当于
+setInterval(()=>{}, 1000);
+
+// 取代 setTimeout()
+new Ticker(()=>{}, 5000, 1);
+// 相当于
+setTimeout(()=>{}, 5000);
+
+// 只有一个参数相当于不断执行的requestAnimationFrame
+new Ticker(()=>{
+  // logic here
+});
+// 相当于
+const frame = ()=>{
+  requestAnimationFrame(frame);
+  // logic here
 }
-declare class Activable {
-    /**
-     * 支持三种参数类型
-     * 1、字符串代表选择器
-     * 2、DOM元素
-     * 3、对象形式
-     * @param option
-     */
-    constructor(option: ActivableOption | Target);
-    // 解除事件绑定
-    destroy(): void;
-}
-```
-
-示例：
-
-```javascript
-// 直接绑定选择器
-new Activable("#element");
-// 直接绑定元素
-new Activable(element);
-// 复杂参数
-new Activable({
-  target: "#element",
-  activeStyle: {
-    background: "red"
-  }
-});
-
-```
-
-# Clickable
-
-这是 `Activable` 的组件形式包装，默认包装容器为 `div`，支持属性如下：
-
-```typescript
-interface ClickableProps {
-    className?: string;
-    id?: string;
-    children?: React.ReactNode;
-    style?: React.CSSProperties;
-    activeStyle?: React.CSSProperties;
-    activeClass?: string;
-    onClick?: () => void;
-    bubblable?: boolean;
-}
-```
-
-示例：
-
-```typescript
-<Clickable onClick={()=>{
-  console.log("确定按钮点击");
-}}>确定</Clickable>
-```
-
-# Loading 组件
-
-### 单独引入
-
-
-包含2种预设加载效果：
-
-- 菊花齿轮效果 `helix`
-- 波浪形态效果 `wave`
-
-<p>
-  <img src="./assets/helix.gif" height="150">
-  <img src="./assets/with-hint.gif" height="150">
-</p>
-
-
-
-```javascript
-// 新建一个Loading，默认的效果是 wave
-const loading = new Loading();
-// 销毁上一步创建的Loading
-loading.destroy();
-
-// 可以直接传入字符串参数，在动画下方添加一个文字提示
-const loading = new Loading("正在加载");
-
-// 可以用一个配置对象参数来创建加载效果
-const loading = new Loading({
-  type: "wave", // 效果类型
-  color: "#fff", // 加载效果元素的颜色
-  hint: "正在加载", // 提示文案
-});
-
-// 当用配置对象创建加载效果时，提示内容可以是一个React组件
-const loading = new Loading({
-  type: "wave", // 效果类型
-  color: "#fff", // 加载效果元素的颜色
-  hint: <p>一个React组件</p>, // 提示文案
-});
-```
-
-# Alert 组件
-
-可以取代原生 `alert` 的React组件
-
-<p>
-  <img src="./assets/alert.png" width="40%">
-  <img src="./assets/alert-with-cancel.png" width="40%">
-</p>
-
-弹框组件也是支持定制的：
-
-```javascript
-// 最简单的使用方法，跟原生alert一样
-alert("这是一个弹框测试");
-
-// 也可以通过传递配置对象参数进行复杂配置
-alert({
-  content: string | ReactElement; // 字符串或React组件；必选
-  showMask?: boolean; // 是否显示半透明背景，默认显示；可选
-  showCancel?: boolean; // 显示显示取消按钮, 默认不显示；可选
-  cancelText?: string; // 取消按钮文案，默认为“取消”；可选
-  confirmText?: string; // 确定按钮文案，默认为“确定”；可选
-  onConfirm?: () => {}; // 点击确定按钮回调函数；可选
-  onCancel?: () => {}; // 点击取消按钮回调函数；可选
-  onHide?: () => {}; // 组件完全消失之后回调函数；可选
-});
-```
-
-尤其要注意的是，当通过配置对象创建弹框时，`content`选项可以是一个React组件元素，这样就可以对显示内容的UI进行任意定制：
-
-```javascript
-// 显示内容为复杂React组件
-alert({
-  content: (
-    <div>
-      {/* 这里可以是任意复杂的内容 */}
-    </div>
-  )
-});
-```
-
-# Toast 组件
-
-类似原生功能的 `Toast` 组件
-
-<p>
-  <img src="./assets/toast.gif" width="40%">
-</p>
-
-
-```javascript
-// 最简单的用法
-Toast.create("这是一个测试");
-
-// 带复杂配置的用法
-Toast.create({
-  // toast显示的内容，字符串或React组件；必选
-  content: string | ReactElement;
-   // toast持续时间，默认为3000毫秒，注意单位为毫秒；可选 
-  duration?: number;
-  // toast显示位置，默认为屏幕正中间，也可以为顶部和底部。三个可选值分别为: top | middle | bottom
-  position?: string; 
-  // Toast框显示为圆角
-  rounded?: boolean;
-});
-```
-
-# Ticker 
-
-基于 `requestAnimationFrame` 的简单滴答器
-
-```javascript
-// 初始化Ticker
-const ticker = new Ticker();
-
-// 任务为函数类型
-// 添加任务task1
-ticker.add(task1);
-// 添加任务task2  
-ticker.add(task2);
-// 删除任务task1
-ticker.remove(task1);
-// 销毁ticker
-ticker.destroy();
-```
-
-任务根据 `add` 添加的先后顺序执行，默认执行任务间隔跟浏览器帧频保持一致，因而本功能适用于做动画效果。构造函数也接受参数
-
-```javascript
-// 构造函数目前接受一个参数，代表执行间隔，单位毫秒
-// 下面构造函数创建了一个定时器，每隔2秒会自动执行一次任务列表
-const ticker = new Ticker(2000);
+requestAnimationFrame(frame);
 ```
