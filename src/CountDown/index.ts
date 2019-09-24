@@ -6,7 +6,7 @@ export interface CountDownOption {
   remainTime: number;
   // 倒计时的时间间隔，单位为秒
   interval: number;
-  // 显示格式，只能是这ymdhis六个代表的组合，大小写不敏感
+  // 显示格式，只能是这dhis四个代表的组合，大小写不敏感
   format: string;
   // 每次更新时显示
   onUpdate: updateCallback;
@@ -114,6 +114,7 @@ export class CountDown {
 
         // 结束时触发结束事件
         if (this.option.remainTime === 0 && is.function(this.option.onEnd)) {
+          this.destroy();
           this.option.onEnd();
         }
       }

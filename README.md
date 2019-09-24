@@ -1,8 +1,11 @@
 # cl-utils
 
-主要应用于移动端的React组件和功能库，但对PC端保持了响应式兼容。主要特色：
+一个非主流但多数时候很有用的库，依赖于`React`和`CSS-IN-JS`技术，**零CSS依赖**。涉及UI的逻辑大部分依赖于`React`，但使用时**不完全需要使用`jsx`组件化技术**。主要针对移动端H5页面，同时对PC端的UI绝大部分做了兼容处理。
 
-**非正常组件，一些稍微有点复杂度，且常用组件库中找不到的功能集合**
+> 对于一个简单的取代`window.alert`功能而言，绝大部分基于React实现的库都是通过提供一个类似`<AlertComponent />`之类的组件，然后要求使用者通过类似 `state={showAlert: true}` 之类的状态来控制弹框的显示隐藏逻辑。
+>
+> 但显然大部分时候直接以函数方式调用 `alert("hello world")` 更加简单。`cl-utils` 的[自定义弹框](./src/Alert/README.md)就是这么做的，虽然使用React实现了取代 `window.alert` 的UI，但是使用方式却跟原生调用体验保持了一致。仅仅是为了简单而已
+
 
 - 弹幕效果
 - 可点击框
@@ -24,22 +27,12 @@
 npm install cl-utils
 ```
 
-## 全集
+或
 
-```javascript
-import {
-  ajax,
-  is,
-  Ticker,
-  touchHover,
-  Activable,
-  Clickable,
-  Toast,
-  Loading,
-  Alert,
-  Normalize
-} from "cl-utils";
 ```
+yarn add cl-utils
+```
+
 
 # Normalize 组件
 
