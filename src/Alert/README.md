@@ -6,6 +6,12 @@
 - 可以定制**确定**和**取消**按钮
 - 弹框内容可以是**React 组件**
 
+
+> 对于一个简单的取代`window.alert`功能而言，绝大部分基于 React 实现的库都是通过提供一个类似`<AlertComponent />`之类的组件，然后要求使用者通过类似 `state={showAlert: true}` 之类的状态来控制弹框的显示隐藏逻辑。
+>
+> 但显然大部分时候直接以函数方式调用 `alert("hello world")` 更加简单。`cl-utils` 的[自定义弹框](./src/Alert/README.md)就是这么做的，虽然使用 React 实现了取代 `window.alert` 的 UI，但是使用方式却跟原生调用体验保持了一致。
+
+
 # 使用
 
 `Alert` 的首字母为大写，为了不影响浏览器默认的 `window.alert` 功能
