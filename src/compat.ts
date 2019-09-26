@@ -5,14 +5,28 @@ const propertyVendors = ["Webkit", "Moz", "ms", "O"];
 // 函数相关的vendor前缀
 const functionVendors = ["Webkit", "moz", "ms", "o"];
 
-// 待检查的列表，这里只列举了本仓库中所常用的几个
+// 待检查的列表，主要用于动画库中属性兼容判断
 const checkList = {
   transform: "Transform",
+
   animation: "Animation",
+  animationDelay: "AnimationDelay",
+  animationDirection: "AnimationDirection",
+  animationDuration: "AnimationDuration",
+  animationFillMode: "AnimationFillMode",
+  animationIterationCount: "AnimationIterationCount",
+  animationName: "AnimationName",
+  animationPlayState: "AnimationPlayState",
+  animationTimingFunction: "AnimationTimingFunction",
   animationcancel: "AnimationCancel",
   animationiteration: "AnimationIteration",
   animationend: "AnimationEnd",
+
   transition: "Transition",
+  transitionDelay: "TransitionDelay",
+  transitionDuration: "TransitionDuration",
+  transitionProperty: "TransitionProperty",
+  transitionTimingFunction: "TransitionTimingFunction",
   transitioncancel: "TransitionCancel",
   transitionend: "TransitionEnd",
   transitionrun: "TransitionRun",

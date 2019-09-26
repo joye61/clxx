@@ -27,13 +27,13 @@ Activable 类的构造函数也可以接受对象参数进行高级定制：
 ```typescript
 // 新建一个可响应实例
 const ac = new Activable({
-  // 相当于上述参数target，可以时css选择器，也可以时DOM元素
+  // 相当于上述参数target，可以是css选择器，也可以是DOM元素
   target: Target;
   // 点击时可以添加一个class类到元素上。可选
   activeClass?: string;
   // 点击时应用到元素上的样式。可选
   activeStyle?: React.CSSProperties;
-  // 是否允许点击穿透，默认不能。可选
+  // 是否允许点击穿透，默认不允许。可选
   bubblable?: boolean;
   // 点击时的事件回调
   onClick?: () => void;

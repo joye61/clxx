@@ -2,8 +2,6 @@ import React from "react";
 import { is } from "../is";
 import { css } from "emotion";
 import ReactDOM from "react-dom";
-import raf from "raf";
-import anime from "animejs";
 import { compat } from "../compat";
 
 export interface BSOption {
@@ -14,7 +12,9 @@ export interface BSOption {
 const bulletClass = css({
   position: "absolute",
   left: 0,
-  zIndex: 9
+  zIndex: 9,
+  transitionProperty: "transform",
+  transitionTimingFunction: "linear"
 });
 
 export class BulletScreen {
@@ -55,34 +55,39 @@ export class BulletScreen {
   }
 
   /**
-   *
+   * 向舞台中插入一条弹幕
    * @param item 弹幕内容，可以是任意ReactNode元素
    * @param duration 弹幕在屏幕上漂过持续时间
    */
   push(item: React.ReactNode, duration: number = 5000) {
+    // 创建一个承载单条弹幕的容器
     const bulletContainer = document.createElement("div");
-    bulletContainer.classList.add(bulletClass);
-    ReactDOM.render(<>{item}</>, bulletContainer);
     (this.target as HTMLElement).appendChild(bulletContainer);
 
-    // 在下一帧计算出元素的尺寸信息
-    raf(() => {
+    // 设置每一条弹幕容器的初始样式
+    bulletContainer.classList.add(bulletClass);
+    bulletContainer.style[
+      (compat as any).transform
+    ] = `translateX(${this.screenWidth}px)`;
+    bulletContainer.style[(compat as any).transitionDuration] = `${duration}ms`;
+
+    // 弹幕渲染进舞台
+    ReactDOM.render(<>{item}</>, bulletContainer, () => {
+      // 获取当前弹幕的尺寸
       const rect = bulletContainer.getBoundingClientRect();
-      const height = rect.height;
-      const transform = (compat as any).transform;
-      bulletContainer.style[transform] = `translateX(${this.screenWidth}px)`;
+      // 设置当前弹幕的高度为随机
       bulletContainer.style.top =
-        Math.random() * (this.screenHeight - height) + "px";
-      anime({
-        targets: bulletContainer,
-        translateX: -rect.width + "px",
-        duration,
-        easing: "linear",
-        complete() {
-          ReactDOM.unmountComponentAtNode(bulletContainer);
-          bulletContainer.remove();
-        }
-      });
+        Math.random() * (this.screenHeight - rect.height) + "px";
+      // 让弹幕飘过舞台
+      bulletContainer.style[
+        (compat as any).transform
+      ] = `translateX(-${rect.width}px)`;
+    });
+
+    // 创建一个监听弹幕动画完成的事件
+    bulletContainer.addEventListener((compat as any).transitionend, () => {
+      ReactDOM.unmountComponentAtNode(bulletContainer);
+      bulletContainer.remove();
     });
   }
 }
