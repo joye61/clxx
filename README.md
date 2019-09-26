@@ -19,7 +19,7 @@
 
 # 功能预览
 
-- [可定制弹框](./src/Likeit/README.md)
+- [点赞特效](./src/Likeit/README.md)
 
   <p>
     <img src="assets/likeit.gif" width="50%">
