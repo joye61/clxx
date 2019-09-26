@@ -980,11 +980,6 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@types/animejs@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.npm.taobao.org/@types/animejs/download/@types/animejs-3.1.0.tgz#9fa31e5fcf3a0304aa097a2a357e03630d820ab1"
-  integrity sha1-n6MeX886AwSqCXoqNX4DYw2CCrE=
-
 "@types/babel__core@^7.1.0":
   version "7.1.3"
   resolved "https://registry.npm.taobao.org/@types/babel__core/download/@types/babel__core-7.1.3.tgz#e441ea7df63cd080dfcd02ab199e6d16a735fc30"
@@ -1180,11 +1175,6 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
-
-animejs@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npm.taobao.org/animejs/download/animejs-3.1.0.tgz#748a90fc1d4bef3efed64508af9a6a82babf5c47"
-  integrity sha1-dIqQ/B1L7z7+1kUIr5pqgrq/XEc=
 
 ansi-escapes@^3.0.0, ansi-escapes@^3.2.0:
   version "3.2.0"

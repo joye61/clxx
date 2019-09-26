@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { jsx, InterpolationWithTheme, css } from "@emotion/core";
+import { jsx, InterpolationWithTheme, SerializedStyles } from "@emotion/core";
 import { is } from "../is";
 import { style } from "./style";
 import { useInterval } from "react-use";
-import { useRef, useEffect } from "react";
-import anime, { AnimeAnimParams } from "animejs";
+import { useRef, useEffect, useState } from "react";
+import { compat } from "../compat";
+import raf from "raf";
 
 export interface RollingNoticeProps<E = string> {
   className?: string;
@@ -14,7 +15,6 @@ export interface RollingNoticeProps<E = string> {
   list?: Array<E>;
   interval?: number;
   easingDuration?: number;
-  // 支持所有animejs的easing属性
   easing?: string;
 }
 
@@ -25,77 +25,87 @@ export function RollingNotice<E>(props: RollingNoticeProps<E>) {
   let interval = is.number(props.interval) ? props.interval : 3000;
   let easeingDuration = is.number(props.easingDuration)
     ? props.easingDuration
-    : 800;
-  let easing = is.string(props.easing) ? props.easing : "easeOutExpo";
+    : 300;
+  let easing = is.string(props.easing) ? props.easing : "linear";
 
   // 滚动间隔不能小于过度间隔
   if (interval < easeingDuration + 100) {
     interval = easeingDuration + 100;
   }
-  let list: Array<E> = is.array(props.list) ? props.list : [];
 
-  const customHeight: InterpolationWithTheme<any> = {};
-  if (props.height) {
-    customHeight.height = props.height;
-    customHeight.lineHeight = props.height;
-  }
-
-  if (list.length > 0) {
+  // 注意：不能直接将props.list的应用赋值给list
+  let list: Array<E> = is.array(props.list) ? [...props.list] : [];
+  if (list.length > 1) {
     list.push(list[0]);
   }
 
-  const indexRef = useRef<number>(0);
-  const container = useRef<null | HTMLElement>(null);
-  const heightRef = useRef<number>(0);
+  // 设置滚动列表的动画样式
+  const transitionStyle: InterpolationWithTheme<any> = {
+    transitionProperty: "transform",
+    transitionTimingFunction: easing,
+    transitionDuration: `${easeingDuration}ms`
+  };
 
+  const indexRef = useRef<number>(0);
+  const container = useRef<HTMLElement>(null);
+  const heightRef = useRef<number>(0);
+  const [noTransition, setNoTransition] = useState<boolean>(false);
+
+  // 设置被滚动容器的样式
+  const containerStyle: InterpolationWithTheme<SerializedStyles>[] = [style.ul];
+  if (noTransition === false) {
+    containerStyle.push(transitionStyle);
+  }
+
+  // 独立出来的原因是为了防止每一次滚动都要加载
   useEffect(() => {
     const ul = container.current as HTMLElement;
     const containerElement = ul.parentElement as Element;
     heightRef.current = containerElement.getBoundingClientRect().height;
-  }, []);
+  });
 
   useInterval(() => {
-    if (list.length > 2) {
-      // 获取容器高度，也就是每一个滚动元素的高度
-      const height = heightRef.current;
-
-      // 计算即将更新的索引和位置
-      const animeOption: AnimeAnimParams = {
-        targets: container.current as HTMLElement,
-        translateY: -(indexRef.current + 1) * height,
-        duration: easeingDuration,
-        easing
-      };
-
-      // 如果当前为倒数第二个，跳转到倒数第一个
-      if (indexRef.current === list.length - 2) {
-        animeOption.complete = () => {
-          // 此时已经跳转到倒数第一个，立即返回到头部
-          indexRef.current = 0;
-          anime({
-            targets: container.current as HTMLElement,
-            translateY: 0,
-            duration: 0,
-            easing: "steps(1)"
-          });
-        };
-      } else {
-        indexRef.current += 1;
-      }
-
-      // 执行动画
-      anime(animeOption);
+    if (list.length > 1) {
+      // 当前显示的索引值自动+1
+      indexRef.current += 1;
+      const target = container.current as HTMLElement;
+      target.style[
+        (compat as any).transform
+      ] = `translateY(-${heightRef.current * indexRef.current}px)`;
     }
   }, interval);
 
+  useEffect(() => {
+    // 只要 noTransition === true 可以确认滚动到了最后一个
+    if (noTransition) {
+      // 首先立即无动画切换到第一个
+      indexRef.current = 0;
+      const target = container.current as HTMLElement;
+      target.style[(compat as any).transform] = `translateY(0)`;
+      // 然后把动画属性恢复
+      raf(() => setNoTransition(false));
+    }
+  }, [noTransition]);
+
+  const transitionEnd = () => {
+    // 如果滚动到最后一个，要无动画立即切换到第一个，达到流程动画效果
+    if (indexRef.current === list.length - 1) {
+      setNoTransition(true);
+    }
+  };
+
   return (
-    <div css={[style.container, css(customHeight)]} className={className}>
-      <ul css={style.ul} ref={container as any}>
+    <div css={style.container(props.height)} className={className}>
+      <ul
+        css={containerStyle as any}
+        ref={container as any}
+        onTransitionEnd={transitionEnd}
+      >
         {list.map((item, index) => {
           return (
             <li
               key={index}
-              css={[style.li, customHeight]}
+              css={style.li(props.height)}
               style={itemStyle}
               className={itemClass}
             >
