@@ -8,7 +8,7 @@ export interface ActivableOption {
   activeClass?: string;
   activeStyle?: React.CSSProperties;
   bubblable?: boolean;
-  onClick?: () => void;
+  onClick?: (e: Activable) => void;
 }
 
 export class Activable {
@@ -16,7 +16,7 @@ export class Activable {
   activeClass: string | undefined;
   activeStyle: string | undefined = css({ opacity: 0.5 });
   bubbleable = false;
-  onClick = () => {};
+  onClick = (e: Activable) => {};
 
   // 当前是否处于活跃状态
   isActive = false;
@@ -91,7 +91,7 @@ export class Activable {
       const endElement = document.elementFromPoint(pointX, pointY);
       // 只有当触摸结束时在目标元素上才触发事件
       if (this.target.contains(endElement)) {
-        this.onClick();
+        this.onClick(this);
       }
     }
 

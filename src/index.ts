@@ -21,3 +21,4 @@ export { BulletScreen } from "./BulletScreen";
 export { ScrollBinder } from "./ScrollView/ScrollBinder";
 export { ScrollView } from "./ScrollView";
 export { compat } from "./compat";
+export { Likeit } from "./Likeit";
