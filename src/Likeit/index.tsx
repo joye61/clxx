@@ -38,7 +38,7 @@ export function Likeit(
   }
 
   let likeEffect: React.ReactNode = defaultEffect;
-  if (!effect) {
+  if (effect) {
     likeEffect = effect;
   }
 
