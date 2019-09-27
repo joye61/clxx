@@ -28,7 +28,7 @@ export function Likeit(
 ) {
   let likeTarget: HTMLElement | null = null;
   if (is.string(target)) {
-    likeTarget = document.querySelector(target) as any;
+    likeTarget = document.querySelector(target);
   } else if (is.element(target)) {
     likeTarget = target;
   }
@@ -43,10 +43,9 @@ export function Likeit(
   }
 
   // 前置更新目标元素的样式属性
-  likeTarget = likeTarget as HTMLElement;
-  const position = window.getComputedStyle(likeTarget).position;
+  const position = window.getComputedStyle(likeTarget!).position;
   if (position === "static") {
-    likeTarget.classList.add(
+    likeTarget!.classList.add(
       rawCss({
         position: "relative"
       })
@@ -66,5 +65,5 @@ export function Likeit(
 
   // 点赞效果插入到元素中
   ReactDOM.render(<React.Fragment>{likeEffect}</React.Fragment>, container);
-  likeTarget.appendChild(container);
+  likeTarget!.appendChild(container);
 }

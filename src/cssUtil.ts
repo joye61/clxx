@@ -9,6 +9,28 @@ export function vw(num: number): string {
 }
 
 /**
+ * 生成一个自适应页面宽度的尺寸
+ * @param designSize 设计稿的元素尺寸
+ * @param designWidth 设计稿的总宽度
+ * @param criticalWidth 移动端和PC端的临界尺寸
+ */
+export function px(
+  designSize: number,
+  designWidth: number = 375,
+  criticalWidth: number = 576
+) {
+  const trueWidth = window.innerWidth;
+  const rate = designSize / designWidth;
+  if (trueWidth >= criticalWidth) {
+    return `${criticalWidth * rate}px`;
+  } else {
+    return `${trueWidth * rate}px`;
+  }
+}
+
+
+
+/**
  * 获取1像素的物理宽度
  */
 export function ppxWidth(): number {
