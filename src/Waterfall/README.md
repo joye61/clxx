@@ -4,7 +4,7 @@
   <img src="../../assets/waterfall.gif" width="50%">
 </p>
 
-瀑布流布局是一种多列布局方式，常见于信息流列表的呈现！瀑布流布局的特点是可能存在多列，每一列的每个元素高度不一致，当前实现的瀑布流布局具备以下特点：
+瀑布流布局是一种多列布局方式，常见于信息流列表的呈现！瀑布流布局的特点是可能存在多列，每一列的每个元素高度不一致，当前实现的瀑布流布局具备以下特点：（一个子项就是对应一个UI块）
 
 - 能保证输入的每一个子项的顺序
 - 每一项进入瀑布流布局时会选择当前瀑布流中最矮的列进行插入
@@ -22,7 +22,7 @@ const container = document.getElementById("container");
 const wf = new Waterfall(container);
 // 参数也可以是一个配置对象
 const wf = new Waterfall({
-  container: root,
+  container: container,
   column: 1,
   gutter: "10em"
 });
@@ -51,8 +51,8 @@ interface WaterFallOption {
   gutter?: number | string;
   // 瀑布流一共有多少列；默认2列
   column?: number;
-  // 瀑布列间距空白的呈现方式，around：gutter环绕，between：gutter在列中间
-  // 这个值得效果类似flex布局的justify-content，默认为around
+  // 瀑布列间距空白的呈现方式，around：gutter环绕；between：gutter在列中间
+  // 这个参数UI呈现效果类似flex布局中的justify-content属性，默认为：around
   justify?: "around" | "between";
 }
 ```
@@ -90,7 +90,7 @@ wf.push(new Promise(resolve => {
 }))
 ```
 
-注意：如果`push`的参数不是一个`Promise`，会被自动的进行`Promise.resolve(参数)`
+注意：如果`push`的参数不是一个`Promise`，会被自动的通过`Promise.resolve(参数)`进行包装
 
 试想如果不这么做，计算的高度就会出错，显示就不能按照正确的输入顺序来了。
 
