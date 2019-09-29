@@ -29,7 +29,7 @@ Likeit(
 );
 ```
 
-# 参数说明
+## 参数说明
 
 点赞函数比较简单，接收 `3` 个参数，具体作用如下签名所示：
 
@@ -44,3 +44,36 @@ Likeit(
 点赞函数最大的特点在于第二个参数 `effect` 可以是任意复杂的`ReactNode`元素，基于此可以随意定制点赞效果的UI
 
 当`effect` 参数可以判定为`false`时（`null`, `undefined` ...），默认的点赞效果是一个红心，这是一个svg图像
+
+
+# `LikeitComponent` 组件
+
+点赞的React组件化，主要是提供对Likeit函数的组件化封装，非常简单易用，推荐使用:
+
+```js
+// 引入
+import {LikeitComponent} from "cl-utils";
+
+// 使用
+<LikeitComponent>可点赞的按钮测试</LikeitComponent>
+
+```
+
+`LikeitComponent` 组件默认表现为行内框，可接收的参数签名如下：
+
+```ts
+interface LikeitOption {
+  // 组件的类名
+  className?: string;
+  // 组件的id
+  id?: string;
+  // 行内样式
+  style?: React.CSSProperties;
+  // 组件内容，可以任意定制
+  children: React.ReactNode;
+  // 点赞效果
+  effect?: React.ReactNode;
+  // 同onEnd
+  onEffectEnd?: () => void;
+}
+```

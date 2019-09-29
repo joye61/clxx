@@ -24,7 +24,7 @@ const defaultEffect = (
 export function Likeit(
   target: string | HTMLElement,
   effect?: React.ReactNode,
-  onEnd?: () => {}
+  onEnd?: () => void
 ) {
   let likeTarget: HTMLElement | null = null;
   if (is.string(target)) {

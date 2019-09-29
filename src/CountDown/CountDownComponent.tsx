@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { is } from "../is";
 import React from "react";
 
-export interface CountDownerProps extends CountDownOption {
+export interface CountDownComponentProps extends CountDownOption {
   // 没有单位，以分隔符分割
   noUnit?: boolean;
   // 分隔符
@@ -36,7 +36,7 @@ function useFrame(option: CountDownOption, update: updateCallback) {
   }, [option]);
 }
 
-export function CountDowner(props: CountDownerProps) {
+export function CountDownComponent(props: CountDownComponentProps) {
   const noUnit = is.boolean(props.noUnit) ? props.noUnit : true;
   const separator = props.separator || ":";
   const className = is.string(props.className) ? props.className : undefined;

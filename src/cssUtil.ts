@@ -28,7 +28,22 @@ export function px(
   }
 }
 
+export interface DefaultStyleProps {
+  className?: string;
+  id?: string;
+  style?: React.CSSProperties;
+}
 
+/**
+ * 默认的组件样式属性
+ * @param props 
+ */
+export function getStyleProps(props: DefaultStyleProps) {
+  const className = is.string(props.className) ? props.className : undefined;
+  const id = is.string(props.id) ? props.id : undefined;
+  const style = is.plainObject(props.style) ? props.style : undefined;
+  return { className, id, style };
+}
 
 /**
  * 获取1像素的物理宽度
