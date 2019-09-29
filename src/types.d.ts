@@ -1,0 +1,1 @@
+type DOMElement = Element | string;

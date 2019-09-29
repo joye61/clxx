@@ -1,7 +1,5 @@
 import { is } from "./is";
 
-export type DOMElement = string | Element;
-
 /**
  * 根据参数类型获取对应的DOM元素
  * @param target 

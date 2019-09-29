@@ -1,4 +1,4 @@
-import { getDomElement, DOMElement } from "../domUtil";
+import { getDomElement } from "../domUtil";
 import React from "react";
 import ReactDOM from "react-dom";
 import { is } from "../is";

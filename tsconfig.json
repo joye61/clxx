@@ -64,5 +64,8 @@
   },
   "exclude": [
     "**/__tests__/**"
+  ],
+  "include": [
+    "./src/types.d.ts"
   ]
 }
