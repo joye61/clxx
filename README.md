@@ -26,63 +26,63 @@
 - [瀑布流布局](./src/Waterfall/README.md)
 
   <p>
-    <img src="assets/waterfall.gif" width="50%">
+    <img src="assets/waterfall.gif" width="30%">
   </p>
 
 - [点赞特效](./src/Likeit/README.md)
 
   <p>
-    <img src="assets/likeit.gif" width="50%">
+    <img src="assets/likeit.gif" width="30%">
   </p>
 
 - [可定制弹框](./src/Alert/README.md)
 
   <p>
-    <img src="assets/alert-with-cancel.gif" width="50%">
+    <img src="assets/alert-with-cancel.gif" width="30%">
   </p>
 
 - [弹幕效果](./src/BulletScreen/README.md)
 
   <p>
-    <img src="assets/bullet-screen.gif" width="50%">
+    <img src="assets/bullet-screen.gif" width="30%">
   </p>
 
 - [可响应元素](./src/Clickable/README.md)
 
   <p>
-    <img src="assets/clickable.gif" width="50%">
+    <img src="assets/clickable.gif" width="30%">
   </p>
 
 - [倒计时](./src/CountDown/README.md)
 
   <p>
-    <img src="assets/countdown.gif" width="50%">
+    <img src="assets/countdown.gif" width="30%">
   </p>
 
 - [纯JS加载](./src/Loading/README.md)
 
   <p>
-    <img src="assets/helix-loading.gif" height="150">
-    <img src="assets/wave-loading.gif" height="150">
+    <img src="assets/helix-loading.gif" width="15%">
+    <img src="assets/wave-loading.gif" width="15%">
   </p>
 
 
 - [滚动公告](./src/RollingNotice/README.md)
 
   <p>
-    <img src="assets/rolling-notice.gif" width="50%">
+    <img src="assets/rolling-notice.gif" width="30%">
   </p>
 
 - [防穿透滚动](./src/ScrollView/README.md)
 
   <p>
-    <img src="assets/scroll.gif" width="50%">
+    <img src="assets/scroll.gif" width="30%">
   </p>
 
 - [可定制Toast](./src/Toast/README.md)
 
   <p>
-    <img src="assets/toast.gif" width="50%">
+    <img src="assets/toast.gif" width="30%">
   </p>
 
 - [自适应组件](./src/Normalize/README.md)
