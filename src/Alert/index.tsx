@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {is} from "../is";
-import { AlertComponent, AlertComponentProps } from "./AlertComponent";
+import { is } from "../is";
+import { Alert as AlertComponent, AlertProps } from "./Alert";
 
 /**
  * 弹框提示
  * @param option
  */
-export function Alert<T>(option: T | AlertComponentProps<T>) {
-  let props: AlertComponentProps<T>;
-  if (is.plainObject(option)) {
-    props = option as AlertComponentProps<T>;
+export function Alert(option: React.ReactNode | AlertProps) {
+  let props: AlertProps;
+  if (is.plainObject(option) && (option as AlertProps).content) {
+    props = option as AlertProps;
   } else {
     props = {
-      content: option as T
+      content: option
     };
   }
 

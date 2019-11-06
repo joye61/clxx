@@ -3,7 +3,7 @@ import { is } from "./is";
 // 属性相关的vendor前缀
 const propertyVendors = ["Webkit", "Moz", "ms", "O"];
 // 函数相关的vendor前缀
-const functionVendors = ["Webkit", "moz", "ms", "o"];
+// const functionVendors = ["Webkit", "moz", "ms", "o"];
 
 // 待检查的列表，主要用于动画库中属性兼容判断
 const checkList = {

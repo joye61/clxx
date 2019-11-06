@@ -1,16 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ToastComponent, ToastComponentProps } from "./ToastComponent";
-import {is} from "../is";
+import { Toast as ToastComponent, ToastProps } from "./Toast";
+import { is } from "../is";
 
 export interface ToastType {
   container: null | HTMLElement;
-  create<T>(option: T | ToastComponentProps<T>): void;
+  create(option: React.ReactNode | ToastProps): void;
 }
 
 export const Toast: ToastType = {
   container: null,
-  create<T>(option: T | ToastComponentProps<T>) {
+  create(option) {
     if (this.container === null) {
       this.container = document.createElement("div");
       document.body.appendChild(this.container);
@@ -18,12 +18,12 @@ export const Toast: ToastType = {
       ReactDOM.unmountComponentAtNode(this.container);
     }
 
-    let props: ToastComponentProps<T>;
-    if (is.plainObject(option)) {
-      props = option as ToastComponentProps<T>;
+    let props: ToastProps;
+    if (is.plainObject(option) && (option as ToastProps).content) {
+      props = option as ToastProps;
     } else {
       props = {
-        content: option as T
+        content: option
       };
     }
 
@@ -31,6 +31,7 @@ export const Toast: ToastType = {
       if (this.container instanceof HTMLElement) {
         ReactDOM.unmountComponentAtNode(this.container);
         this.container.remove();
+        this.container = null;
       }
     };
 

@@ -2,10 +2,12 @@ import { injectGlobal } from "emotion";
 import { is } from "./is";
 
 /**
- * 只适用于移动端的vw自适应
+ * 以vw单位做自适应
+ * @param num 设计稿显示尺寸
+ * @param designWidth 设计稿总宽度
  */
-export function vw(num: number): string {
-  return `${(100 * num) / 375}vw`;
+export function vw(num: number, designWidth: number = 375) {
+  return `${(num * 100) / designWidth}vw`;
 }
 
 /**
