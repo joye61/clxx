@@ -25,7 +25,7 @@ import { Alert } from "cl-utils";
 
 这种方式下，只需要传递简单值作为函数的第一个参数即可。如数字和字符串
 
-<p><img src="../../assets/alert.gif" width="50%"></p>
+<p><img src="../../assets/alert.gif" width="30%"></p>
 
 ```javascript
 // 传递简单值
@@ -65,17 +65,18 @@ Alert({
 type Callback = () => void;
 
 // 当参数为对象时，对象的类型定义
-interface AlertComponentProps<T> {
+interface AlertComponentProps {
   // 弹框内容，可以为React组件，也可以是普通文本，数字等。必填项
-  content: T;
+  content: React.ReactNode;
   // 是否显示遮罩，即弹框背景有个半透明黑色遮挡内容，默认：true
   showMask?: boolean;
   // 是否显示取消按钮；默认：false
   showCancel?: boolean;
-  // 取消按钮文本；默认：取消
-  cancelText?: string;
-  // 确定按钮文本；默认：确定
-  confirmText?: string;
+  // 取消按钮内容，可以是任意内容，默认：取消
+  cancelContent?: React.ReactNode;
+  // 确认按钮内容，可以是任意内容，默认：确认
+  confirmContent?: React.ReactNode;
+
   // 点击确定按钮时触发的回调；选填
   onConfirm?: Callback;
   // 点击取消按钮时触发的回调；选填

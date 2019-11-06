@@ -1,8 +1,7 @@
 import { css } from "@emotion/core";
 import { vw } from "../cssUtil";
-
 export const style = {
-  mask: css`
+    mask: css `
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +12,7 @@ export const style = {
     align-items: center;
     z-index: 9999;
   `,
-  container: css`
+    container: css `
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -28,8 +27,8 @@ export const style = {
       border-radius: 10px;
     }
   `,
-  hint(hintColor: string) {
-    return css`
+    hint(hintColor) {
+        return css `
       color: ${hintColor};
       padding: 0;
       margin: 0;
@@ -40,5 +39,5 @@ export const style = {
         margin-top: 10px;
       }
     `;
-  }
+    }
 };

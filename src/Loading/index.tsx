@@ -6,26 +6,25 @@ import { WaveLoading } from "./WaveLoading";
 import { HelixLoading } from "./HelixLoading";
 import { style } from "./style";
 
-export interface LoadingOption<H> {
+export interface LoadingOption {
   type: "wave" | "helix";
   color?: string;
-  hint?: H;
+  hint?: React.ReactNode;
 }
 
-export class Loading<H> {
+export class Loading {
   container = document.createElement("div");
 
-  constructor(option?: LoadingOption<H>) {
+  constructor(option?: LoadingOption) {
     // 默认配置
-    let config: LoadingOption<H> = {
+    let config: LoadingOption = {
       type: "wave",
       color: "#fff"
     };
-    if (typeof option === "string") {
-      config.hint = option;
-    }
-    if (typeof option === "object") {
+    if (typeof option === "object" && option.type) {
       config = { ...config, ...option };
+    } else {
+      config.hint = option;
     }
 
     // 默认Loading样式是转菊花

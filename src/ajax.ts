@@ -3,7 +3,7 @@ import { Loading, LoadingOption } from "./Loading";
 import querystring from "qs";
 import { is } from "./is";
 
-export interface RequestLoadingOption extends LoadingOption<any> {
+export interface RequestLoadingOption extends LoadingOption {
   minExistTime?: number;
 }
 
