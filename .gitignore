@@ -60,6 +60,5 @@ typings/
 # next.js build output
 .next
 
-libs/
-
-types/
+/es5/
+/es6/
