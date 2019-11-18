@@ -11,5 +11,5 @@ export function HelixLoading() {
   for (let i = 0; i < barNum; i++) {
     list.push(<span css={style[`bar-${i}`]} key={i} />);
   }
-  return <div css={style.container}>{list}</div>;
+  return <div css={style.container} className="cl-HelixLoading">{list}</div>;
 }

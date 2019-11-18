@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/core";
-import { vw } from "../cssUtil";
+import { vw, vwWithMediaQuery } from "../cssUtil";
 
 export const barNum = 6;
 
@@ -10,8 +10,8 @@ export const wave = keyframes`
 }
 
 20% {
-    transform: scaleY(2);
-    opacity: 1;
+  transform: scaleY(2);
+  opacity: 1;
 }
 `;
 
@@ -21,25 +21,27 @@ export const style: any = {
   container: css`
     font-size: 0;
   `,
-  item(barColor: string = "#000") {
-    return css`
-      display: inline-block;
-      width: ${vw(2)};
-      height: ${vw(12)};
-      margin-right: ${vw(4)};
-      @media screen and (min-width: 576px) {
-        width: 2px;
-        height: 12px;
-        margin-right: 4px;
+  item: css({
+    display: "inline-block",
+    backgroundColor: "#fff",
+    animation: `${wave} ${duration}ms ease-in-out infinite`,
+    ...vwWithMediaQuery(
+      {
+        width: vw(2),
+        height: vw(12),
+        marginRight: vw(4)
+      },
+      {
+        width: "2px",
+        height: "12px",
+        marginRight: "4px"
       }
-      background-color: ${barColor};
-      animation: ${wave} ${duration}ms ease-in-out infinite;
-    `;
-  }
+    )
+  })
 };
 
 for (let i = 0; i < barNum; i++) {
-  style[`bar-${i}`] = css`
-    animation-delay: ${i * 100 - duration}ms;
-  `;
+  style[`bar-${i}`] = css({
+    animationDelay: `${i * 100 - duration}ms`
+  });
 }

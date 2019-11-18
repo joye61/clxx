@@ -7,12 +7,7 @@ export { Activable } from "./Clickable/Activable";
 export { Alert } from "./Alert";
 export { Loading } from "./Loading";
 export { Toast } from "./Toast";
-export {
-  vw,
-  ppxWidth,
-  pureRemAdaption,
-  normalizeWithAdaption
-} from "./cssUtil";
+export { vw } from "./cssUtil";
 export { Normalize } from "./Normalize";
 export { RollingNotice } from "./RollingNotice";
 export { CountDown } from "./CountDown";
