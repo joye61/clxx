@@ -1,6 +1,4 @@
 import { css } from "@emotion/core";
-import { vw } from "../cssUtil";
-import { is } from "../is";
 
 /**
  * 滚动公告样式
