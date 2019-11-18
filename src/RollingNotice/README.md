@@ -26,21 +26,15 @@ import { RollingNotice } from "cl-utils";
 
 ```ts
 interface RollingNoticeProps<E = string> {
-  // CSS类名
-  className?: string;
-  // 滚动列表中单项的样式
-  itemClass?: string;
-  // 滚动列表中单项的样式
-  itemStyle?: React.CSSProperties;
-  // 滚动公告的高度，必须带CSS长度单位
-  height?: string;
-  // 列表数据
-  list?: Array<E>;
-  // 滚动的间隔，默认为3000毫秒，单位为毫秒
-  interval?: number;
-  // 滚动动画的时长
-  easingDuration?: number;
-  // 滚动动画函数
-  easing?: string;
+  // 滚动列表
+  list?: Array<React.ReactNode>;
+  // 滚动容器的高度，每个元素的高度和容器的高度一致
+  height?: string | number;
+  // 如果时纯文字列表，代表文字的尺寸
+  fontSize?: string | number;
+  // 每次冒泡等待时长
+  duration?: number;
+  // 冒泡动画的时长
+  bubbleDuration?: number;
 }
 ```
