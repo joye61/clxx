@@ -57,3 +57,4 @@ export function getStyleProps(props: DefaultStyleProps) {
   const style = is.plainObject(props.style) ? props.style : undefined;
   return { className, id, style };
 }
+
