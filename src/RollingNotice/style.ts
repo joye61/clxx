@@ -7,7 +7,11 @@ import { is } from "../is";
  * @param height 容器高度
  * @param fontSize 默认滚动字体的尺寸
  */
-export const style = (height: number | string, fontSize: number | string) => {
+export const style = (
+  height: number | string,
+  fontSize: number | string,
+  bubbleDuration: number
+) => {
   return {
     container: css({
       position: "relative",
@@ -15,7 +19,7 @@ export const style = (height: number | string, fontSize: number | string) => {
       overflow: "hidden"
     }),
     withScroll: css({
-      transition: `transform 300ms ease`,
+      transition: `transform ${bubbleDuration}ms ease`,
       transform: `translateY(-${
         typeof height === "number" ? height + "px" : height
       })`

@@ -13,21 +13,28 @@ export interface RollingNoticeProps
   height?: string | number;
   fontSize?: string | number;
   duration?: number;
+  bubbleDuration?: number;
 }
 
 export function RollingNotice(props: RollingNoticeProps) {
   /**
    * 默认配置
    */
-  const {
+  let {
     list = [],
     height = 32,
     fontSize = 16,
     duration = 3000,
+    bubbleDuration = 300,
     ...defaultProps
   } = props;
 
-  const styles = style(height, fontSize);
+  // 冒泡时间必须大于间隔时间
+  if (duration < bubbleDuration + 100) {
+    duration = bubbleDuration + 100;
+  }
+
+  const styles = style(height, fontSize, bubbleDuration);
 
   const [current, setCurrent] = useState<number>(0);
   const [scroll, setScroll] = useState<SerializedStyles | undefined>(undefined);
