@@ -19,3 +19,4 @@ export { compat } from "./compat";
 export { Likeit } from "./Likeit";
 export { LikeitComponent } from "./Likeit/LikeitComponent";
 export { useInterval } from "./useInterval";
+export { Waterfall } from "./Waterfall";
