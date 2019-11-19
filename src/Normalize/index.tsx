@@ -16,7 +16,7 @@ export interface NormalizeProps {
  * @param props AdaptiveOption
  */
 export function Normalize(props: NormalizeProps) {
-  const { designWidth = 375, criticalWidth = 769, styles } = props;
+  const { designWidth = 375, criticalWidth = 576, styles } = props;
 
   /**
    * 获取HTML根元素的计算尺寸

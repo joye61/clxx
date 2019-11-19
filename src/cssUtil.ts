@@ -13,7 +13,7 @@ export function vw(num: number, designWidth: number = 375) {
 export function vwWithMediaQuery(
   css: ObjectInterpolation<undefined>,
   cssWithMediaQuery: ObjectInterpolation<undefined> = {},
-  criticalWidth: number = 769
+  criticalWidth: number = 576
 ) {
   return {
     ...css,
@@ -30,7 +30,7 @@ export function vwWithMediaQuery(
 export function px(
   designSize: number,
   designWidth: number = 375,
-  criticalWidth: number = 769
+  criticalWidth: number = 576
 ) {
   const trueWidth = window.innerWidth;
   const rate = designSize / designWidth;

@@ -47,7 +47,7 @@ export const style: CLStyle = {
     borderRadius: vw(10),
     overflow: "hidden",
     boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
-    "@media screen and (min-width: 769px)": {
+    "@media screen and (min-width: 576px)": {
       width: "320px",
       borderRadius: "10px"
     }
@@ -65,7 +65,7 @@ export const style: CLStyle = {
     textAlign: "center",
     color: "#333",
     lineHeight: 1.6,
-    "@media screen and (min-width: 769px)": {
+    "@media screen and (min-width: 576px)": {
       fontSize: "16px",
       padding: "30px"
     }
@@ -97,7 +97,7 @@ export const style: CLStyle = {
     userSelect: "none",
     WebkitTapHighlightColor: "tansparent",
     fontWeight: 500,
-    "@media screen and (min-width: 769px)": {
+    "@media screen and (min-width: 576px)": {
       fontSize: "15px",
       lineHeight: "50px"
     }
