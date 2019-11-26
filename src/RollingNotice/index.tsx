@@ -2,7 +2,7 @@
 import { jsx, SerializedStyles } from "@emotion/core";
 import { style } from "./style";
 import { useState } from "react";
-import { useInterval } from "../useInterval";
+import { useInterval } from "../Effect/useInterval";
 
 export interface RollingNoticeProps
   extends React.DetailedHTMLProps<
@@ -22,8 +22,8 @@ export function RollingNotice(props: RollingNoticeProps) {
    */
   let {
     list = [],
-    height = 32,
-    fontSize = 16,
+    height,
+    fontSize,
     duration = 3000,
     bubbleDuration = 300,
     ...defaultProps

@@ -2,12 +2,37 @@ import { ObjectInterpolation } from "@emotion/core";
 import { is } from "./is";
 
 /**
+ * 全局窗口信息
+ */
+export interface WindowInfo {
+  // 窗口实际宽度
+  width: number;
+  // 窗口实际高度
+  height: number;
+  // 窗口设计宽度
+  designWidth: number;
+  // 移动和非移动的临界宽度
+  criticalWidth: number;
+}
+
+export const win: WindowInfo = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+  designWidth: 375,
+  criticalWidth: 576
+};
+
+/**
  * 以vw单位做自适应
  * @param num 设计稿显示尺寸
  * @param designWidth 设计稿总宽度
  */
-export function vw(num: number, designWidth: number = 375) {
-  return `${(num * 100) / designWidth}vw`;
+export function vw(num: number) {
+  if (win.width <= win.criticalWidth) {
+    return `${(num * 100) / win.designWidth}vw`;
+  } else {
+    return `${(num * win.criticalWidth) / win.designWidth}px`;
+  }
 }
 
 export function vwWithMediaQuery(
@@ -57,4 +82,3 @@ export function getStyleProps(props: DefaultStyleProps) {
   const style = is.plainObject(props.style) ? props.style : undefined;
   return { className, id, style };
 }
-

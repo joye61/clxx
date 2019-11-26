@@ -43,14 +43,10 @@ export const style: CLStyle = {
   },
   container: {
     backgroundColor: "#fff",
-    width: "80%",
+    width: vw(300),
     borderRadius: vw(10),
     overflow: "hidden",
-    boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
-    "@media screen and (min-width: 576px)": {
-      width: "320px",
-      borderRadius: "10px"
-    }
+    boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)"
   },
   containerShow: {
     animation: `${showAnimation} 100ms ease-in`
@@ -64,11 +60,7 @@ export const style: CLStyle = {
     padding: vw(20),
     textAlign: "center",
     color: "#333",
-    lineHeight: 1.6,
-    "@media screen and (min-width: 576px)": {
-      fontSize: "16px",
-      padding: "30px"
-    }
+    lineHeight: 1.6
   },
   btn: {
     display: "flex",
@@ -96,11 +88,7 @@ export const style: CLStyle = {
     boxSizing: "border-box",
     userSelect: "none",
     WebkitTapHighlightColor: "tansparent",
-    fontWeight: 500,
-    "@media screen and (min-width: 576px)": {
-      fontSize: "15px",
-      lineHeight: "50px"
-    }
+    fontWeight: 500
   },
   confirm: {
     border: "none",

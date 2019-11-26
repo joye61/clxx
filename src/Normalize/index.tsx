@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global, css, SerializedStyles } from "@emotion/core";
-import { useEffect, useState, useLayoutEffect, useRef } from "react";
+import { useState, useLayoutEffect, useRef } from "react";
+import { useWindowResize } from "../Effect/useWindowResize";
 
 export interface NormalizeProps {
   // 设计稿尺寸
@@ -54,23 +55,7 @@ export function Normalize(props: NormalizeProps) {
   /**
    * 监听页面尺寸变化
    */
-  useEffect(() => {
-    const onresize = () => {
-      setBaseFontSize(() => computeFontSize());
-    };
-
-    window.addEventListener("resize", onresize);
-    if (window.onorientationchange !== undefined) {
-      window.addEventListener("orientationchange", onresize);
-    }
-
-    return () => {
-      window.removeEventListener("resize", onresize);
-      if (window.onorientationchange !== undefined) {
-        window.removeEventListener("orientationchange", onresize);
-      }
-    };
-  }, [designWidth, criticalWidth]);
+  useWindowResize(() => setBaseFontSize(() => computeFontSize()));
 
   return (
     <Global
