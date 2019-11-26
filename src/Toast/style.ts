@@ -29,16 +29,25 @@ export const style = {
     maxWidth: "80%",
     left: "50%",
     transform: "translate3d(-50%, 0, 0)",
-    zIndex: 9
+    zIndex: 9,
+    "@media screen and (min-width: 576px)": {
+      maxWidth: "400px"
+    }
   }),
   containerShow: css({ animation: `${showAnimation} 0.2s ease-in` }),
   containerHide: css({ animation: `${hideAnimation} 0.2s ease-out` }),
   top: css({
-    top: vw(30)
+    top: vw(30),
+    "@media screen and (min-width: 576px)": {
+      top: "30px"
+    }
   }),
   middle: css({ top: "50%" }),
   bottom: css({
-    bottom: vw(30)
+    bottom: vw(30),
+    "@media screen and (min-width: 576px)": {
+      bottom: "30px"
+    }
   }),
   content: (rounded: boolean) => {
     return css({
@@ -51,7 +60,13 @@ export const style = {
       fontSize: vw(14),
       lineHeight: vw(36),
       padding: `0 ${vw(15)}`,
-      borderRadius: rounded ? vw(18) : 0
+      borderRadius: rounded ? vw(18) : 0,
+      "@media screen and (min-width: 576px)": {
+        fontSize: "14px",
+        lineHeight: "36px",
+        padding: "0 15px",
+        borderRadius: rounded ? "20px" : 0
+      }
     });
   }
 };

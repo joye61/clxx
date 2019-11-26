@@ -1,5 +1,5 @@
 import { css, keyframes, SerializedStyles } from "@emotion/core";
-import { vw } from "../cssUtil";
+import { vw, vwWithMediaQuery } from "../cssUtil";
 
 export const barNum = 13;
 export const duration = 600;
@@ -26,24 +26,44 @@ export const style: {
   [key: string]: SerializedStyles;
 } = {
   container: css({
-    width: vw(30),
-    height: vw(30),
+    ...vwWithMediaQuery(
+      {
+        width: vw(30),
+        height: vw(30)
+      },
+      {
+        width: "30px",
+        height: "30px"
+      }
+    ),
     position: "relative",
     span: {
       position: "absolute",
       top: 0,
       height: "100%",
       boxSizing: "border-box",
-      width: vw(2),
-      marginLeft: vw(-1),
-      left: "50%",
-      "&::after": {
-        display: "block",
-        content: `""`,
-        backgroundColor: "#fff",
-        borderRadius: vw(1),
-        height: vw(8)
-      }
+      ...vwWithMediaQuery(
+        {
+          width: vw(2),
+          marginLeft: vw(-1),
+          left: "50%",
+          "&::after": {
+            display: "block",
+            content: `""`,
+            backgroundColor: "#fff",
+            borderRadius: vw(1),
+            height: vw(8)
+          }
+        },
+        {
+          width: "2px",
+          marginLeft: "-1px",
+          "&::after": {
+            borderRadius: "1px",
+            height: "8px"
+          }
+        }
+      )
     }
   })
 };

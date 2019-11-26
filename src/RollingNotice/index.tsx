@@ -22,8 +22,8 @@ export function RollingNotice(props: RollingNoticeProps) {
    */
   let {
     list = [],
-    height,
-    fontSize,
+    height = 32,
+    fontSize = 16,
     duration = 3000,
     bubbleDuration = 300,
     ...defaultProps

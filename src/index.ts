@@ -1,5 +1,6 @@
 export { ajax } from "./ajax";
 export { is } from "./is";
+export { touchHover } from "./touchHover";
 export { Ticker } from "./Ticker";
 export { Clickable } from "./Clickable";
 export { Activable } from "./Clickable/Activable";
@@ -21,5 +22,5 @@ export { LikeitComponent } from "./Likeit/LikeitComponent";
 export { Waterfall } from "./Waterfall";
 
 export { useInterval } from "./Effect/useInterval";
-export { useWindowResize } from "./Effect/useWindowResize";
 export { useEffectOnce } from "./Effect/useEffectOnce";
+export { useWindowResize } from "./Effect/useWindowResize";

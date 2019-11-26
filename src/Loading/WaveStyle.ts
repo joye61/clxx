@@ -25,9 +25,18 @@ export const style: any = {
     display: "inline-block",
     backgroundColor: "#fff",
     animation: `${wave} ${duration}ms ease-in-out infinite`,
-    width: vw(2),
-    height: vw(12),
-    marginRight: vw(4)
+    ...vwWithMediaQuery(
+      {
+        width: vw(2),
+        height: vw(12),
+        marginRight: vw(4)
+      },
+      {
+        width: "2px",
+        height: "12px",
+        marginRight: "4px"
+      }
+    )
   })
 };
 
