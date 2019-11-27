@@ -49,3 +49,4 @@ export {
 } from "./Layout/Row";
 
 export { check } from "./check";
+export { LazyImage } from "./LazyImage";

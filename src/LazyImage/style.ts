@@ -26,6 +26,6 @@ export const styles = {
   image: css({
     width: "100%",
     height: "100%",
-    animation: `${imageShow} 150ms`
+    animation: `${imageShow} 500ms ease-in`
   })
 };

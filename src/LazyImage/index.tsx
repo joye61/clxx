@@ -27,7 +27,7 @@ export function LazyImage(props: LazyImageProps) {
   const [source, setSource] = useState<string | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const {
+  let {
     src,
     alt = "",
     width,
