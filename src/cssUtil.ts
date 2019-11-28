@@ -1,24 +1,41 @@
-import { ObjectInterpolation } from "@emotion/core";
 import { is } from "./is";
 
 /**
- * 以vw单位做自适应
- * @param num 设计稿显示尺寸
- * @param designWidth 设计稿总宽度
+ * 根据数值获取自适应单位
+ *
+ * @param num 设计稿尺寸
+ * @param overLimit 是否超过临界尺寸
+ * @param designWidth 设计稿宽度
+ * @param limitWidth 临界宽度，超过临界宽度失去自适应能力
  */
-export function vw(num: number, designWidth: number = 375) {
-  return `${(num * 100) / designWidth}vw`;
+export function vw(
+  num: number,
+  overLimit = false,
+  designWidth = 375,
+  limitWidth = 576
+) {
+  if (overLimit) {
+    return (limitWidth * num) / designWidth + "px";
+  } else {
+    return (num * 100) / designWidth + "vw";
+  }
 }
 
-export function vwWithMediaQuery(
-  css: ObjectInterpolation<undefined>,
-  cssWithMediaQuery: ObjectInterpolation<undefined> = {},
-  criticalWidth: number = 576
-) {
-  return {
-    ...css,
-    [`@media (min-width: ${criticalWidth}px)`]: cssWithMediaQuery
-  };
+/**
+ * 标准化长度值单位
+ * @param value 长度值
+ * @param defaultUnit 默认长度值单位
+ */
+export function normalizeUnit(value: number | string, defaultUnit = "px") {
+  if (typeof value === "number") {
+    return value + defaultUnit;
+  }
+  if (typeof value === "string") {
+    const regUnit = /(?:cap|ch|em|ex|ic|lh|rem|rlh|vh|vw|vi|vb|vmin|vmax|px|cm|mm|Q|in|pc|pt)$/;
+    return regUnit.test(value) ? value : parseFloat(value) + defaultUnit;
+  }
+
+  throw new Error("Invalid numeric format");
 }
 
 /**
@@ -57,4 +74,3 @@ export function getStyleProps(props: DefaultStyleProps) {
   const style = is.plainObject(props.style) ? props.style : undefined;
   return { className, id, style };
 }
-

@@ -1,5 +1,5 @@
 import { css, keyframes, SerializedStyles } from "@emotion/core";
-import { vw, vwWithMediaQuery } from "../cssUtil";
+import { vw } from "../cssUtil";
 
 export const barNum = 13;
 export const duration = 600;
@@ -26,44 +26,36 @@ export const style: {
   [key: string]: SerializedStyles;
 } = {
   container: css({
-    ...vwWithMediaQuery(
-      {
-        width: vw(30),
-        height: vw(30)
-      },
-      {
-        width: "30px",
-        height: "30px"
-      }
-    ),
     position: "relative",
+    width: vw(30),
+    height: vw(30),
+    "@media (min-width: 576px)": {
+      width: "30px",
+      height: "30px"
+    },
     span: {
       position: "absolute",
       top: 0,
       height: "100%",
       boxSizing: "border-box",
-      ...vwWithMediaQuery(
-        {
-          width: vw(2),
-          marginLeft: vw(-1),
-          left: "50%",
-          "&::after": {
-            display: "block",
-            content: `""`,
-            backgroundColor: "#fff",
-            borderRadius: vw(1),
-            height: vw(8)
-          }
-        },
-        {
-          width: "2px",
-          marginLeft: "-1px",
-          "&::after": {
-            borderRadius: "1px",
-            height: "8px"
-          }
+      width: vw(2),
+      marginLeft: vw(-1),
+      left: "50%",
+      "&::after": {
+        display: "block",
+        content: `""`,
+        backgroundColor: "#fff",
+        borderRadius: vw(1),
+        height: vw(8)
+      },
+      "@media (min-width: 576px)": {
+        width: "2px",
+        marginLeft: "-1px",
+        "&::after": {
+          borderRadius: "1px",
+          height: "8px"
         }
-      )
+      }
     }
   })
 };

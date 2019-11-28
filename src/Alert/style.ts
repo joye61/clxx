@@ -1,4 +1,4 @@
-import { keyframes, Interpolation } from "@emotion/core";
+import { keyframes, ObjectInterpolation } from "@emotion/core";
 import { vw } from "../cssUtil";
 
 export const showAnimation = keyframes`
@@ -22,34 +22,35 @@ to {
 }
 `;
 
+const maskShow = keyframes`
+  from {opacity: 0}
+  to {opacity: 1}
+`;
+const maskHide = keyframes`
+  from {opacity: 1}
+  to {opacity: 0}
+`;
+
 type CLStyle = {
-  [key: string]: Interpolation;
+  [key: string]: ObjectInterpolation<any>;
 };
 
 export const style: CLStyle = {
-  alert: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 9
+  maskShow: {
+    animation: `${maskShow} 100ms`
   },
-  alertMask: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)"
+  maskHide: {
+    animation: `${maskHide} 100ms`
   },
   container: {
     backgroundColor: "#fff",
-    width: "80%",
     overflow: "hidden",
     boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
+    width: "80%",
     borderRadius: vw(10),
     "@media (min-width: 576px)": {
-      width: "320px",
-      borderRadius: "10px"
+      width: `${576*0.8}px`,
+      borderRadius: vw(10, true)
     }
   },
   containerShow: {
@@ -66,8 +67,8 @@ export const style: CLStyle = {
     color: "#333",
     lineHeight: 1.6,
     "@media (min-width: 576px)": {
-      fontSize: "16px",
-      padding: "30px"
+      fontSize: vw(16, true),
+      padding: vw(20, true)
     }
   },
   btn: {
@@ -98,8 +99,8 @@ export const style: CLStyle = {
     WebkitTapHighlightColor: "tansparent",
     fontWeight: 500,
     "@media (min-width: 576px)": {
-      fontSize: "15px",
-      lineHeight: "50px"
+      fontSize: vw(16, true),
+      lineHeight: vw(40, true)
     }
   },
   confirm: {

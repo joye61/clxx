@@ -2,6 +2,7 @@
 import { jsx, Interpolation } from "@emotion/core";
 import React, { useState } from "react";
 import { style, hideAnimation } from "./style";
+import { FixContainer } from "../Layout/FixContainer";
 
 type Callback = () => void;
 export interface AlertProps
@@ -38,6 +39,9 @@ export function Alert(props: AlertProps) {
   const [animation, setAnimation] = useState<Interpolation>(
     style.containerShow
   );
+  const [maskAnimation, setMaskAnimation] = useState<Interpolation>(
+    style.maskShow
+  );
 
   // 动画结束回调
   const animationEnd = (event: React.AnimationEvent) => {
@@ -49,12 +53,14 @@ export function Alert(props: AlertProps) {
   // 取消按钮点击
   const cancel = () => {
     setAnimation(style.containerHide);
+    setMaskAnimation(style.maskHide);
     typeof onCancel === "function" && onCancel();
   };
 
   // 确认按钮点击
   const confirm = () => {
     setAnimation(style.containerHide);
+    setMaskAnimation(style.maskHide);
     typeof onConfirm === "function" && onConfirm();
   };
 
@@ -68,11 +74,6 @@ export function Alert(props: AlertProps) {
         {content}
       </p>
     );
-  }
-
-  const wrapperCss = [style.alert];
-  if (showMask) {
-    wrapperCss.push(style.alertMask);
   }
 
   /**
@@ -106,7 +107,7 @@ export function Alert(props: AlertProps) {
     if (!showConfirm) {
       return null;
     }
-    
+
     if (React.isValidElement(confirmContent)) {
       return confirmContent;
     }
@@ -137,7 +138,12 @@ export function Alert(props: AlertProps) {
   };
 
   return (
-    <div css={wrapperCss} {...htmlProps}>
+    <FixContainer
+      {...htmlProps}
+      showMask={showMask}
+      centerChild={true}
+      css={maskAnimation}
+    >
       <div
         className="cl-Alert-container"
         css={[style.container, animation]}
@@ -146,6 +152,6 @@ export function Alert(props: AlertProps) {
         {showContent}
         {showBtn()}
       </div>
-    </div>
+    </FixContainer>
   );
 }

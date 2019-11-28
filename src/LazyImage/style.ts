@@ -15,17 +15,11 @@ export const styles = {
     overflow: "hidden",
     fontSize: 0
   }),
-  placeholder: css({
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#f5f5f5"
-  }),
   image: css({
     width: "100%",
-    height: "100%",
-    animation: `${imageShow} 500ms ease-in`
+    height: "100%"
+  }),
+  imageFadeIn: css({
+    animation: `${imageShow} 400ms ease-in`
   })
 };

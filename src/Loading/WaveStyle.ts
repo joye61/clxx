@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/core";
-import { vw, vwWithMediaQuery } from "../cssUtil";
+import { vw } from "../cssUtil";
 
 export const barNum = 6;
 
@@ -25,18 +25,14 @@ export const style: any = {
     display: "inline-block",
     backgroundColor: "#fff",
     animation: `${wave} ${duration}ms ease-in-out infinite`,
-    ...vwWithMediaQuery(
-      {
-        width: vw(2),
-        height: vw(12),
-        marginRight: vw(4)
-      },
-      {
-        width: "2px",
-        height: "12px",
-        marginRight: "4px"
-      }
-    )
+    width: vw(2),
+    height: vw(12),
+    marginRight: vw(4),
+    "@media (min-width: 576px)": {
+      width: "2px",
+      height: "12px",
+      marginRight: "4px"
+    }
   })
 };
 

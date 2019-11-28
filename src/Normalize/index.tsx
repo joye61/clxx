@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, Global, css, SerializedStyles } from "@emotion/core";
-import { useEffect, useState, useLayoutEffect, useRef } from "react";
+import { useState, useLayoutEffect, useRef } from "react";
 import { useWindowResize } from "../Effect/useWindowResize";
 
 export interface NormalizeProps {

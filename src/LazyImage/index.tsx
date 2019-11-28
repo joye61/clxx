@@ -3,6 +3,7 @@ import { jsx, Interpolation } from "@emotion/core";
 import { WidthProperty, HeightProperty } from "csstype";
 import { useEffect, useState, useRef } from "react";
 import { styles } from "./style";
+import { normalizeUnit } from "../cssUtil";
 
 export interface LazyImageProps
   extends React.DetailedHTMLProps<
@@ -15,6 +16,7 @@ export interface LazyImageProps
   alt?: string;
   rounded?: boolean;
   placeholder?: React.ReactNode & string;
+  fadeIn?: boolean;
   /**
    * 是否在DOM渲染之后立即加载
    * true: 立即加载
@@ -32,6 +34,7 @@ export function LazyImage(props: LazyImageProps) {
     alt = "",
     width,
     height,
+    fadeIn = true,
     rounded = false,
     loadImmediately = true,
     ...attributes
@@ -39,7 +42,7 @@ export function LazyImage(props: LazyImageProps) {
 
   const containerStyle: Interpolation<any> = [
     styles.container,
-    { width, height }
+    { width: normalizeUnit(width), height: normalizeUnit(height) }
   ];
   if (rounded && width === height) {
     containerStyle.push({ borderRadius: "50%" });
@@ -56,7 +59,7 @@ export function LazyImage(props: LazyImageProps) {
   /**
    * 图片占位标记
    */
-  let placeholder: React.ReactNode = <div css={styles.placeholder} />;
+  let placeholder: React.ReactNode = null;
   if (typeof props.placeholder !== "undefined") {
     placeholder = props.placeholder;
   }
@@ -66,9 +69,13 @@ export function LazyImage(props: LazyImageProps) {
    */
   let content: React.ReactNode = placeholder;
   if (typeof source === "string" && source) {
+    const imageStyle = [styles.image];
+    if (fadeIn) {
+      imageStyle.push(styles.imageFadeIn);
+    }
     content = (
       <img
-        css={styles.image}
+        css={imageStyle}
         src={source}
         alt={typeof alt === "string" ? alt : ""}
       />
