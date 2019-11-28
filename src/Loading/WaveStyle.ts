@@ -29,9 +29,9 @@ export const style: any = {
     height: vw(12),
     marginRight: vw(4),
     "@media (min-width: 576px)": {
-      width: "2px",
-      height: "12px",
-      marginRight: "4px"
+      width: vw(2, true),
+      height: vw(12, true),
+      marginRight: vw(4, true)
     }
   })
 };

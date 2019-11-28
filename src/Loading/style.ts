@@ -23,9 +23,9 @@ export const style = {
     height: vw(90),
     borderRadius: vw(10),
     "@media (min-width: 576px)": {
-      width: "90px",
-      height: "90px",
-      borderRadius: "10px"
+      width: vw(90, true),
+      height: vw(90, true),
+      borderRadius: vw(10, true)
     }
   }),
   hint: css({
@@ -35,8 +35,8 @@ export const style = {
     fontSize: vw(12),
     marginTop: vw(10),
     "@media (min-width: 576px)": {
-      fontSize: "12px",
-      marginTop: "10px"
+      fontSize: vw(12, true),
+      marginTop: vw(12, true)
     }
   })
 };

@@ -5,12 +5,14 @@ import ReactDOM from "react-dom";
 import { WaveLoading } from "./WaveLoading";
 import { HelixLoading } from "./HelixLoading";
 import { style } from "./style";
+import { FixContainer } from "../Layout/FixContainer";
 
 export interface LoadingOption
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
+  showMask?: boolean;
   type?: "wave" | "helix";
   hint?: React.ReactNode;
 }
@@ -19,7 +21,12 @@ export class Loading {
   container = document.createElement("div");
 
   constructor(option: LoadingOption = {}) {
-    let { type = "helix", hint = undefined, ...defaultProps } = option;
+    let {
+      type = "helix",
+      hint = undefined,
+      showMask = false,
+      ...defaultProps
+    } = option;
     // 默认Loading样式是转菊花
     let Component = null;
     type = type.toLowerCase() as "wave" | "helix";
@@ -45,12 +52,12 @@ export class Loading {
 
     document.body.appendChild(this.container);
     ReactDOM.render(
-      <div css={style.mask} {...defaultProps}>
+      <FixContainer {...defaultProps} showMask={showMask}>
         <div css={style.container} className="cl-Loading-container">
           <Component />
           {hintComponent}
         </div>
-      </div>,
+      </FixContainer>,
       this.container
     );
   }

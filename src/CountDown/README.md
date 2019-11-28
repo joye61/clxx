@@ -44,7 +44,7 @@ new CountDown({
 
 ```typescript
 // 完全等价于
-new CountDown({
+new CountDowner({
   // 倒计时剩余时间1000秒
   remainTime: 1000,
 
@@ -93,22 +93,22 @@ onUpdate 回调的参数如下所示
 
 如上例中的当前倒计时剩余时间为：还剩 `10天1小时4分钟58秒`
 
-## CountDownComponent 组件
+## CountDown 组件
 
-CountDown 类提供了原生的面向 JavaScript 编程的能力，而`CountDownComponent`是对`CountDown`的组件化封装，简单易用，推荐在日常开发中以此方式使用：
+CountDown 类提供了原生的面向 JavaScript 编程的能力，而`CountDown`是对`CountDowner`的组件化封装，简单易用，推荐在日常开发中以此方式使用：
 
 ```typescript
 // 引入CountDowner组件
-import { CountDownComponent } from "cl-utils";
+import { CountDown } from "cl-utils";
 
 // 使用方式
-<CountDownComponent remainTime={8888}>
+<CountDown remainTime={8888}>
 ```
 
-`CountDowner` 接受 `CountDown` 的所有属性，除此之外，还有一些自定义属性:
+`CountDown` 接受 `CountDowner` 的所有属性，除此之外，还有一些自定义属性:
 
 ```typescript
-<CountDownComponent
+<CountDown
   {...其他CountDown属性}
   remainTime={8888}
   noUnit={false}

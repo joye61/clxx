@@ -30,8 +30,8 @@ export const style: {
     width: vw(30),
     height: vw(30),
     "@media (min-width: 576px)": {
-      width: "30px",
-      height: "30px"
+      width: vw(30, true),
+      height: vw(30, true)
     },
     span: {
       position: "absolute",
@@ -49,11 +49,11 @@ export const style: {
         height: vw(8)
       },
       "@media (min-width: 576px)": {
-        width: "2px",
-        marginLeft: "-1px",
+        width: vw(2, true),
+        marginLeft: vw(-1, true),
         "&::after": {
-          borderRadius: "1px",
-          height: "8px"
+          borderRadius: vw(1, true),
+          height: vw(8, true)
         }
       }
     }

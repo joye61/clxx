@@ -1,4 +1,5 @@
 import { css } from "@emotion/core";
+import { normalizeUnit } from "../cssUtil";
 
 /**
  * 滚动公告样式
@@ -13,14 +14,13 @@ export const style = (
   return {
     container: css({
       position: "relative",
-      height,
-      overflow: "hidden"
+      overflow: "hidden",
+      boxSizing: "content-box",
+      height
     }),
     withScroll: css({
       transition: `transform ${bubbleDuration}ms ease`,
-      transform: `translateY(-${
-        typeof height === "number" ? height + "px" : height
-      })`
+      transform: `translateY(-${normalizeUnit(height)})`
     }),
     ul: css({
       listStyleType: "none",
@@ -29,11 +29,13 @@ export const style = (
       position: "absolute",
       left: 0,
       top: 0,
-      fontSize: 0
+      fontSize: 0,
+      width: "100%"
     }),
     li: css({
       margin: 0,
       padding: 0,
+      width: "100%",
       height
     }),
     textItem: css({

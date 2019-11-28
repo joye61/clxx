@@ -34,7 +34,7 @@ export function FixContainer(props: FixContainerProps) {
   const styles: ObjectInterpolation<any> = {
     position: "fixed",
     left: "50%",
-    zIndex: 99,
+    zIndex: 9,
     width: "100%",
     maxWidth: "576px",
     transform: `translateX(-50%)`,

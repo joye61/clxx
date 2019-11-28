@@ -33,21 +33,8 @@ export type updateResult = {
 };
 export type updateCallback = (current: updateResult[]) => void;
 
-export class CountDown {
-  option: CountDownOption = {
-    remainTime: 0,
-    interval: 1,
-    format: "his", // 默认输出时分秒
-    unitMap: {
-      d: "天",
-      h: "时",
-      i: "分",
-      s: "秒"
-    },
-    onUpdate: () => {},
-    onEnd: () => {},
-    startImmediately: true
-  };
+export class CountDowner {
+  option: CountDownOption;
 
   // 默认的格式列表
   // 由于年份和月份天数不固定，年份和月份不进入格式维度
@@ -63,25 +50,37 @@ export class CountDown {
   // 计时器句柄
   framer: number = 0;
 
-  constructor(option: CountDownOption | number) {
-    if (is.number(option)) {
-      this.option.remainTime = option;
-    } else if (is.plainObject(option)) {
-      // 防止浅拷贝覆盖默认值
-      if (is.plainObject(option.unitMap)) {
-        this.option.unitMap = { ...this.option.unitMap, ...option.unitMap };
-        delete option.unitMap;
-      }
-      // 覆盖默认值
-      this.option = { ...this.option, ...(option as CountDownOption) };
-    } else {
-      throw new Error("Constructor parameter format error");
-    }
+  constructor(option: CountDownOption) {
+    const {
+      remainTime = 0,
+      interval = 1,
+      format = "his", // 默认输出时分秒
+      unitMap = {
+        d: "天",
+        h: "时",
+        i: "分",
+        s: "秒"
+      },
+      onUpdate = () => {},
+      onEnd = () => {},
+      startImmediately = true
+    } = option;
 
-    const format = this.option.format.toLowerCase().split("");
+    // 获取配置对象的默认值
+    this.option = {
+      remainTime,
+      interval,
+      format, // 默认输出时分秒
+      unitMap,
+      onUpdate,
+      onEnd,
+      startImmediately
+    };
+
+    const arr = this.option.format.toLowerCase().split("");
     // 格式化保证了顺序
     for (let key of this.fullFormat) {
-      if (format.includes(key)) {
+      if (arr.includes(key)) {
         this.formatArr.push(key);
       }
     }
