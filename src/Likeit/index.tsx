@@ -12,7 +12,7 @@ export interface LikeitProps
   children?: React.ReactNode;
   effect?: React.ReactNode;
   once?: boolean;
-  onAnimationEnd?: () => void;
+  onEnd?: () => void;
 }
 
 export interface EffectMap {
@@ -28,7 +28,8 @@ export function Likeit(props: LikeitProps) {
       </svg>
     ),
     once = true,
-    onAnimationEnd,
+    onEnd,
+    onClick,
     ...attributes
   } = props;
 
@@ -39,7 +40,11 @@ export function Likeit(props: LikeitProps) {
   /**
    * 点击元素时触发
    */
-  const clickEffect = () => {
+  const clickEffect = (event: React.MouseEvent<any>) => {
+    // 首先触发点击
+    typeof onClick === "function" && onClick(event);
+
+    // 处理动画逻辑
     if (once && clicked) {
       return;
     }
@@ -55,8 +60,8 @@ export function Likeit(props: LikeitProps) {
   const animationEnd = (key: string | number) => {
     delete map[key];
     setMap({ ...map });
-    if (typeof props.onAnimationEnd === "function") {
-      props.onAnimationEnd();
+    if (typeof onEnd === "function") {
+      onEnd();
     }
   };
 
