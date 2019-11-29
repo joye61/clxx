@@ -75,7 +75,7 @@ export function Likeit(props: LikeitProps) {
 
   return (
     <div css={style.container} onClick={clickEffect} {...attributes}>
-      {props.children}
+      {children}
       {list}
     </div>
   );
