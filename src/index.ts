@@ -16,7 +16,6 @@ export { ScrollBinder } from "./ScrollView/ScrollBinder";
 export { ScrollView } from "./ScrollView";
 export { compat } from "./compat";
 export { Likeit } from "./Likeit";
-export { LikeitComponent } from "./Likeit/LikeitComponent";
 
 export { Waterfall } from "./Waterfall";
 

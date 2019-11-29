@@ -22,6 +22,9 @@ export interface LazyImageProps
   height?: HeightProperty<number>;
   mode?: FillMode;
   alt?: string;
+  /**
+   * 是否是圆形的，圆形要求width和height一致，两个值都需要传
+   */
   rounded?: boolean;
   /**
    * 图片未加载完成时的
@@ -56,6 +59,8 @@ export function LazyImage(props: LazyImageProps) {
     rounded = false,
     mode = "fill",
     placeholder = null,
+    onLoad = () => {},
+    onError = () => {},
     ...attributes
   } = props;
 
@@ -139,17 +144,38 @@ export function LazyImage(props: LazyImageProps) {
   });
 
   useEffect(() => {
+    /**
+     * 创建一个临时加载对象
+     */
     const image = new Image();
     image.src = src;
-    const loadHandler = () => {
+
+    /**
+     * 加载成功处理函数
+     */
+    const loadHandler = (event: Event) => {
       // 在下一个渲染周期渲染图片
       window.setTimeout(() => {
+        typeof onLoad === "function" && onLoad(event as any);
         handleRef.current(image.width, image.height);
       }, 0);
     };
+
+    /**
+     * 加载失败处理函数
+     */
+    const errorHandler = (event: Event) => {
+      typeof onError === "function" && onError(event as any);
+    };
     image.addEventListener("load", loadHandler);
+    image.addEventListener("error", errorHandler);
+
+    /**
+     * 执行理论可能存在的清理逻辑
+     */
     return () => {
       image.removeEventListener("load", loadHandler);
+      image.removeEventListener("error", errorHandler);
     };
   }, [src]);
 
