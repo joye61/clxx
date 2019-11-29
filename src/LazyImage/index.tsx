@@ -1,9 +1,16 @@
 /** @jsx jsx */
-import { jsx, Interpolation } from "@emotion/core";
+import { jsx, ObjectInterpolation } from "@emotion/core";
 import { WidthProperty, HeightProperty } from "csstype";
 import { useEffect, useState, useRef } from "react";
-import { styles } from "./style";
-import { normalizeUnit } from "../cssUtil";
+import { imageShow } from "./style";
+import { normalizeUnit, splitValue } from "../cssUtil";
+
+export type FillMode =
+  | "cover"
+  | "contain"
+  | "fill"
+  | "fill-width"
+  | "fill-height";
 
 export interface LazyImageProps
   extends React.DetailedHTMLProps<
@@ -11,80 +18,183 @@ export interface LazyImageProps
     HTMLDivElement
   > {
   src: string;
-  width: WidthProperty<number>;
-  height: HeightProperty<number>;
+  width?: WidthProperty<number>;
+  height?: HeightProperty<number>;
+  mode?: FillMode;
   alt?: string;
   rounded?: boolean;
+  /**
+   * 图片未加载完成时的
+   */
   placeholder?: React.ReactNode & string;
+  /**
+   * 是否淡入图片
+   */
   fadeIn?: boolean;
   /**
-   * 是否在DOM渲染之后立即加载
-   * true: 立即加载
-   * false: 会等到出现在屏幕视窗之后才开始加载
+   * 图片淡入时长
    */
-  loadImmediately?: boolean;
+  fadeDuration?: number | string;
+}
+
+export interface ImageInfo {
+  src?: string;
+  width?: number | string;
+  height?: number | string;
+  containerWidth?: number | string;
+  containerHeight?: number | string;
 }
 
 export function LazyImage(props: LazyImageProps) {
-  const [source, setSource] = useState<string | undefined>(undefined);
-  const containerRef = useRef<HTMLDivElement>(null);
-
   let {
     src,
     alt = "",
     width,
     height,
     fadeIn = true,
+    fadeDuration = 400,
     rounded = false,
-    loadImmediately = true,
+    mode = "fill",
+    placeholder = null,
     ...attributes
   } = props;
 
-  const containerStyle: Interpolation<any> = [
-    styles.container,
-    { width: normalizeUnit(width), height: normalizeUnit(height) }
-  ];
-  if (rounded && width === height) {
-    containerStyle.push({ borderRadius: "50%" });
-  }
+  // 数值单位标准化
+  width = normalizeUnit(width);
+  height = normalizeUnit(height);
+
+  /**
+   * 图片信息
+   */
+  const [info, setInfo] = useState<ImageInfo>({
+    // 初始化时不加载图片，设为undefined
+    src: undefined,
+    width,
+    height,
+    containerWidth: width,
+    containerHeight: height
+  });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  type Handle = (sw: number, sh: number) => void;
+  const handler: Handle = (sw, sh) => {
+    if (!width && !height) {
+      // 宽高都没有指定，默认容器尺寸等于图片原始尺寸，mode无效
+      setInfo({
+        src,
+        width: sw,
+        height: sh
+      });
+    } else if (width && !height) {
+      // 指定了宽度，高度没有指定，高度自适应，mode无效
+      setInfo({ ...info, src, width: "100%" });
+    } else if (!width && height) {
+      // 指定了高度，没有指定宽度，宽度自适应，mode无效
+      setInfo({ ...info, src, height: "100%" });
+    } else {
+      const iw = splitValue(width!);
+      const ih = splitValue(height!);
+      // 宽度和高度都指定了，此时mode模式生效，默认：mode=fill
+      switch (mode) {
+        case "cover":
+          // 图片的最小边能覆盖容器的最长边
+          if (iw.num / sw > ih.num / sh) {
+            // 扩大宽度
+            setInfo({ ...info, src, width: "100%", height: undefined });
+          } else {
+            // 扩大高度
+            setInfo({ ...info, src, width: undefined, height: "100%" });
+          }
+          break;
+        case "contain":
+          // 图片的最长边能覆盖容器的最长边
+          if (iw.num / sw > ih.num / sh) {
+            // 扩大宽度
+            setInfo({ ...info, src, width: undefined, height: "100%" });
+          } else {
+            // 扩大高度
+            setInfo({ ...info, src, width: "100%", height: undefined });
+          }
+          break;
+        case "fill-width":
+          // 宽度始终填充容器的100%
+          setInfo({ ...info, src, width: "100%", height: undefined });
+          break;
+        case "fill-height":
+          // 高度始终填充容器的100%
+          setInfo({ ...info, src, width: undefined, height: "100%" });
+          break;
+        default:
+          // 默认模式和mode=fill等价，这种模式下，图片会发生变形
+          setInfo({ ...info, src, width: "100%", height: "100%" });
+          break;
+      }
+    }
+  };
+
+  const handleRef = useRef<Handle>(handler);
+  useEffect(() => {
+    handleRef.current = handler;
+  });
 
   useEffect(() => {
     const image = new Image();
     image.src = src;
-    const onload = () => setSource(src);
-    image.onload = onload;
-    image.onerror = onload;
+    const loadHandler = () => {
+      // 在下一个渲染周期渲染图片
+      window.setTimeout(() => {
+        handleRef.current(image.width, image.height);
+      }, 0);
+    };
+    image.addEventListener("load", loadHandler);
+    return () => {
+      image.removeEventListener("load", loadHandler);
+    };
   }, [src]);
 
   /**
-   * 图片占位标记
+   * 图片元素的样式
    */
-  let placeholder: React.ReactNode = null;
-  if (typeof props.placeholder !== "undefined") {
-    placeholder = props.placeholder;
+  const imageStyle: ObjectInterpolation<any> = {
+    width: info.width,
+    height: info.height
+  };
+  if (fadeIn) {
+    imageStyle.animation = `${imageShow} ${normalizeUnit(
+      fadeDuration,
+      "ms"
+    )} ease-in`;
   }
 
   /**
-   * 内容
+   * 容器元素的样式
    */
-  let content: React.ReactNode = placeholder;
-  if (typeof source === "string" && source) {
-    const imageStyle = [styles.image];
-    if (fadeIn) {
-      imageStyle.push(styles.imageFadeIn);
-    }
-    content = (
-      <img
-        css={imageStyle}
-        src={source}
-        alt={typeof alt === "string" ? alt : ""}
-      />
-    );
+  const containerStyle: ObjectInterpolation<any> = {
+    display: "inline-block",
+    position: "relative",
+    overflow: "hidden",
+    flexGrow: 0,
+    flexShrink: 0,
+    fontSize: 0,
+    width: info.containerWidth,
+    height: info.containerHeight
+  };
+  if (rounded && info.containerWidth === info.containerHeight) {
+    containerStyle.borderRadius = "50%";
   }
 
   return (
     <div ref={containerRef} css={containerStyle} {...attributes}>
-      {content}
+      {typeof info.src === "string" && info.src ? (
+        <img
+          css={imageStyle}
+          src={info.src}
+          alt={typeof alt === "string" ? alt : ""}
+        />
+      ) : (
+        placeholder
+      )}
     </div>
   );
 }

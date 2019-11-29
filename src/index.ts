@@ -50,3 +50,4 @@ export {
 
 export { check } from "./check";
 export { LazyImage } from "./LazyImage";
+export { FullImage } from "./LazyImage/FullImage";
