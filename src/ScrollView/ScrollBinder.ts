@@ -2,7 +2,7 @@ import { is } from "../is";
 import { css } from "emotion";
 import { Interpolation, CSSProperties } from "@emotion/serialize";
 import { Ticker } from "../Ticker";
-import { scroll } from "./scroll";
+import { defaultScroll } from "./defaultScroll";
 import { vw } from "../cssUtil";
 import {compat} from "../compat";
 
@@ -295,7 +295,7 @@ export class ScrollBinder {
       // 阻止冒泡可以防止滚动穿透
       event.stopPropagation();
       // 防止浏览器默认滚动
-      scroll.stop();
+      defaultScroll.stop();
       /**
        * 连续滚动时有可能上一个惯性还没停止
        * 需要将惯性滚动停止下来
@@ -333,7 +333,7 @@ export class ScrollBinder {
       this.isControlling = false;
       this.current = 0;
       // 开启浏览器默认滚动
-      scroll.enable();
+      defaultScroll.enable();
 
       /**
        * 惯性滚动必须满足两个条件

@@ -18,7 +18,7 @@ try {
 /**
  * 禁用和启用默认滚动
  */
-export const scroll = {
+export const defaultScroll = {
   handler(event: TouchEvent) {
     event.preventDefault();
   },
