@@ -7,5 +7,7 @@ export function useEffectOnce(effect: React.EffectCallback) {
     effectRef.current = effect;
   });
 
-  useEffect(() => effectRef.current, []);
+  useEffect(() => {
+    effectRef.current();
+  }, []);
 }
