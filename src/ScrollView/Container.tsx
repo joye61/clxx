@@ -6,12 +6,12 @@ import {
   EventHandlerMap,
   MoveData,
   SizeInfo,
-  InertiaData
+  ScrollDirection
 } from "./types";
 import { useRef, useState, useEffect, CSSProperties, TouchEvent } from "react";
 import { is } from "../is";
-import raf from "raf";
 import { useInertia } from "./useInertia";
+import { correctOffset } from "./correctOffset";
 
 export function Container(props: ContainerProps) {
   let {
@@ -24,16 +24,16 @@ export function Container(props: ContainerProps) {
     /**
      * 默认设置的是每毫秒的减速度值
      */
-    friction = 0.015,
+    decayFactor = 0.98,
     ...attributes
   } = props;
 
   // 状态信息
   const [state, setState] = useState<ScrollViewState>({
     offsetX,
-    offsetY
+    offsetY,
+    runInertia: false
   });
-  const [runInertia, setRunInertia] = useState<boolean>(false);
 
   // 尺寸信息
   const size = useRef<SizeInfo>({
@@ -72,94 +72,24 @@ export function Container(props: ContainerProps) {
     };
   });
 
-  const correctOffset = (offsetX: number, offsetY: number) => {
-    if (offsetX > 0) offsetX = 0;
-    if (offsetY > 0) offsetY = 0;
-    const minX = size.current.containerWidth - size.current.contentWidth;
-    const minY = size.current.containerHeight - size.current.contentHeight;
-    if (offsetX < minX) offsetX = minX;
-    if (offsetY < minY) offsetY = minY;
-
-    return { offsetX, offsetY };
-  };
-
-  useInertia(() => {
-    if (runInertia) {
-      /**
-       * 计算惯性开始时的初始速度
-       */
-      let speedX = moveData.current.currentX - moveData.current.lastX;
-      let speedY = moveData.current.currentY - moveData.current.lastY;
-      
-      // 惯性时速度不能为0
-      if (
-        (direction === "horizontal" && speedX === 0) ||
-        (direction === "vertical" && speedY === 0)
-      ) {
-        setRunInertia(false);
-        return;
-      }
-
-      friction = Math.abs(friction);
-      const ax = speedX > 0 ? friction : -friction;
-      const ay = speedY > 0 ? friction : -friction;
-
-      let last = Date.now();
-      let framer: number = 0;
-      const frame = () => {
-        console.log(runInertia);
-        if (!runInertia) {
-          raf.cancel(framer);
-          return;
-        }
-
-        // 优先将下一次更新排上刷新队列
-        framer = raf(frame);
-
-        const now = Date.now();
-        const duration = now - last;
-        last = now;
-
-        // 计算最新速度
-        let newSpeedX = speedX + ax * duration;
-        let newSpeedY = speedY + ay * duration;
-
-        // 如果最新的速度变成反向了，需要终止动画
-        if (speedX * newSpeedX <= 0) newSpeedX = 0;
-        if (speedY * newSpeedY <= 0) newSpeedY = 0;
-
-        // 速度降低到0或反方向，停止运行
-        if (
-          (direction === "horizontal" && newSpeedX === 0) ||
-          (direction === "vertical" && newSpeedY === 0)
-        ) {
-          raf.cancel(framer);
-          setRunInertia(false);
-          return;
-        }
-
-        // 更新上一次速度
-        speedX = newSpeedX;
-        speedY = newSpeedY;
-
-        // 更新滚动容器位移
-        const { offsetX, offsetY } = correctOffset(
-          state.offsetX + speedX,
-          state.offsetY + speedY
-        );
-        setState({ offsetX, offsetY });
-      };
-
-      framer = raf(frame);
-    }
-  }, runInertia);
+  useInertia(
+    {
+      speedX: moveData.current.currentX - moveData.current.lastX,
+      speedY: moveData.current.currentY - moveData.current.lastY,
+      decayFactor,
+      direction: direction as ScrollDirection,
+      size: size.current
+    },
+    state,
+    setState
+  );
 
   const eventHandlerMap: EventHandlerMap = {};
   if (is.touchable()) {
     eventHandlerMap.onTouchStart = (event: TouchEvent) => {
       if (!moveData.current.isMove) {
         // 只要进入触摸状态，立即停止惯性状态
-        setRunInertia(false);
+        setState({ ...state, runInertia: false });
 
         // 初始化触摸状态数据
         moveData.current = {
@@ -181,7 +111,17 @@ export function Container(props: ContainerProps) {
         const offsetX = state.offsetX + currentX - moveData.current.lastX;
         const offsetY = state.offsetY + currentY - moveData.current.lastY;
         // 更新位置
-        setState(correctOffset(offsetX, offsetY));
+        setState({
+          ...state,
+          ...correctOffset(
+            offsetX,
+            offsetY,
+            size.current,
+            direction as ScrollDirection,
+            state,
+            setState
+          )
+        });
         // 更新滚动临时数据
         moveData.current = {
           ...moveData.current,
@@ -200,8 +140,7 @@ export function Container(props: ContainerProps) {
           isMove: false
         };
         if (Date.now() - moveData.current.lastMoveTime < 300) {
-          console.log(1, moveData);
-          setRunInertia(true);
+          setState({ ...state, runInertia: true });
         }
       }
     };

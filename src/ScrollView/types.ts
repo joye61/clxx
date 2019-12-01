@@ -31,10 +31,10 @@ export interface ContainerProps
    */
   direction?: "vertical" | "horizontal";
   /**
-   * 反向摩擦力系数，惯性时的减速度系数，这是个很小的值
+   * 惯性速度的衰减系数，这是个很小的值
    * 一般情况下，不建议手动设置，系统默认即可
    */
-  friction?: number;
+  decayFactor?: number;
   onReachBottom?: () => void;
 }
 
@@ -50,6 +50,7 @@ export interface ScrollBarProps
 export interface ScrollViewState {
   offsetX: number;
   offsetY: number;
+  runInertia: boolean;
 }
 
 /**
@@ -79,5 +80,9 @@ export interface MoveData {
 }
 
 export interface InertiaData {
-  runInertia: boolean;
+  speedX: number;
+  speedY: number;
+  decayFactor: number;
+  direction: ScrollDirection;
+  size: SizeInfo;
 }
