@@ -12,6 +12,7 @@ import { useRef, useState, useEffect, CSSProperties, TouchEvent } from "react";
 import { is } from "../is";
 import { useInertia } from "./useInertia";
 import { correctOffset } from "./correctOffset";
+import { defaultScroll } from "./defaultScroll";
 
 export function Container(props: ContainerProps) {
   let {
@@ -88,6 +89,10 @@ export function Container(props: ContainerProps) {
   if (is.touchable()) {
     eventHandlerMap.onTouchStart = (event: TouchEvent) => {
       if (!moveData.current.isMove) {
+
+        // 阻止冒泡，使滚动容器可以嵌套
+        event.stopPropagation();
+
         // 只要进入触摸状态，立即停止惯性状态
         setState({ ...state, runInertia: false });
 
@@ -104,6 +109,8 @@ export function Container(props: ContainerProps) {
     };
     eventHandlerMap.onTouchMove = (event: TouchEvent) => {
       if (moveData.current.isMove) {
+        event.preventDefault();
+        // event.nativeEvent.preventDefault();
         // 当前移动事件
 
         const currentX = event.touches.item(0).clientX;
@@ -135,6 +142,8 @@ export function Container(props: ContainerProps) {
     };
     const onEnd = () => {
       if (moveData.current.isMove) {
+        // 激活浏览器默认滚动
+
         moveData.current = {
           ...moveData.current,
           isMove: false

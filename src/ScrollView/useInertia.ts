@@ -14,6 +14,7 @@ export function useInertia(
   const stateRef = useRef<ScrollViewState>(state);
   const inertiaRef = useRef<InertiaData>(inertiaData);
   useEffect(() => {
+    console.log("更新逻辑这里", stateRef.current.runInertia);
     stateRef.current = state;
     inertiaRef.current = inertiaData;
   });
@@ -48,8 +49,6 @@ export function useInertia(
         speedX *= decayFactor;
         speedY *= decayFactor;
 
-        console.log(speedY);
-
         // 速度降低到0或反方向，停止运行
         const ratio = 1 / window.devicePixelRatio;
         if (
@@ -77,7 +76,6 @@ export function useInertia(
 
       // 清理的时候停止执行动画
       return () => {
-        console.log(stateRef.current.runInertia, 12312);
         raf.cancel(framer);
       };
     }
