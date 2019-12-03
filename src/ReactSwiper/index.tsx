@@ -6,6 +6,7 @@ import Swiper, { SwiperOptions } from "swiper";
 import React from "react";
 import { WidthProperty, HeightProperty } from "csstype";
 import { reactSwiperStyle } from "./style";
+import { is } from "../is";
 
 export interface ReactSwiperProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -14,7 +15,7 @@ export interface ReactSwiperProps
   showPagination?: boolean;
   showNavigation?: boolean;
   showScrollBar?: boolean;
-  children: React.ReactNode[];
+  children: React.ReactNode;
   swiperOption?: SwiperOptions;
 }
 
@@ -41,54 +42,62 @@ export function ReactSwiper(props: ReactSwiperProps) {
   const scrollbar = useRef<HTMLDivElement>(null);
 
   useEffectOnce(() => {
-    if (showPagination) {
-      if (typeof swiperOption.pagination === "object") {
-        swiperOption.pagination.el = pagination.current!;
-      } else {
-        swiperOption.pagination = { el: pagination.current! };
+    if (!!children) {
+      if (showPagination) {
+        if (typeof swiperOption.pagination === "object") {
+          swiperOption.pagination.el = pagination.current!;
+        } else {
+          swiperOption.pagination = { el: pagination.current! };
+        }
       }
-    }
-    if (showNavigation) {
-      if (typeof swiperOption.navigation === "object") {
-        swiperOption.navigation.prevEl = prev.current!;
-        swiperOption.navigation.nextEl = next.current!;
-      } else {
-        swiperOption.navigation = {
-          prevEl: prev.current!,
-          nextEl: next.current!
-        };
+      if (showNavigation) {
+        if (typeof swiperOption.navigation === "object") {
+          swiperOption.navigation.prevEl = prev.current!;
+          swiperOption.navigation.nextEl = next.current!;
+        } else {
+          swiperOption.navigation = {
+            prevEl: prev.current!,
+            nextEl: next.current!
+          };
+        }
       }
-    }
-    if (showScrollBar) {
-      if (typeof swiperOption.scrollbar === "object") {
-        swiperOption.scrollbar.el = scrollbar.current!;
-      } else {
-        swiperOption.scrollbar = { el: scrollbar.current! };
+      if (showScrollBar) {
+        if (typeof swiperOption.scrollbar === "object") {
+          swiperOption.scrollbar.el = scrollbar.current!;
+        } else {
+          swiperOption.scrollbar = { el: scrollbar.current! };
+        }
       }
-    }
 
-    const swiper = new Swiper(container.current!, swiperOption);
-    return () => {
-      swiper.destroy(true, true);
-    };
+      const swiper = new Swiper(container.current!, swiperOption);
+      return () => {
+        swiper.destroy(true, true);
+      };
+    }
   });
 
-  return (
+  const showChildren = () => {
+    if (is.array(children)) {
+      return children.map((child, index) => {
+        return (
+          <div className="swiper-slide" key={index}>
+            {child}
+          </div>
+        );
+      });
+    } else {
+      return <div className="swiper-slide">{children}</div>;
+    }
+  };
+
+  return !!children ? (
     <div css={[reactSwiperStyle, { width, height }]} {...attributes}>
       <div
-        css={[reactSwiperStyle, { width: "100%", height: "100%" }]}
+        css={{ width: "100%", height: "100%" }}
         className="swiper-container"
         ref={container}
       >
-        <div className="swiper-wrapper">
-          {children.map((child, index) => {
-            return (
-              <div className="swiper-slide" key={index}>
-                {child}
-              </div>
-            );
-          })}
-        </div>
+        <div className="swiper-wrapper">{showChildren()}</div>
         {showPagination ? (
           <div className="swiper-pagination" ref={pagination}></div>
         ) : null}
@@ -103,5 +112,5 @@ export function ReactSwiper(props: ReactSwiperProps) {
         ) : null}
       </div>
     </div>
-  );
+  ) : null;
 }

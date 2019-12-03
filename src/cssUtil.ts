@@ -15,16 +15,16 @@ export const CSSLenfthUnitReg = /(cap|ch|em|ex|ic|lh|rem|rlh|vh|vw|vi|vb|vmin|vm
  * @param num 设计稿尺寸
  * @param overLimit 是否超过临界尺寸
  * @param designWidth 设计稿宽度
- * @param limitWidth 临界宽度，超过临界宽度失去自适应能力
+ * @param criticalWidth 临界宽度，超过临界宽度失去自适应能力
  */
 export function vw(
   num: number,
   overLimit = false,
   designWidth = 375,
-  limitWidth = 576
+  criticalWidth = 576
 ) {
   if (overLimit) {
-    return (limitWidth * num) / designWidth + "px";
+    return (criticalWidth * num) / designWidth + "px";
   } else {
     return (num * 100) / designWidth + "vw";
   }

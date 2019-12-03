@@ -14,14 +14,13 @@ export const reactSwiperStyle = css`
   font-weight: 400;
   font-style: normal;
 }
-&.swiper-container {
+.swiper-container {
   margin-left: auto;
   margin-right: auto;
   position: relative;
   overflow: hidden;
   list-style: none;
   padding: 0;
-  /* Fix of Webkit flickering */
   z-index: 1;
 }
 .swiper-container-vertical > .swiper-wrapper {
@@ -61,7 +60,6 @@ export const reactSwiperStyle = css`
 .swiper-slide-invisible-blank {
   visibility: hidden;
 }
-/* Auto Height */
 .swiper-container-autoheight,
 .swiper-container-autoheight .swiper-slide {
   height: auto;
@@ -70,7 +68,6 @@ export const reactSwiperStyle = css`
   align-items: flex-start;
   transition-property: transform, height;
 }
-/* 3D Effects */
 .swiper-container-3d {
   perspective: 1200px;
 }
@@ -107,13 +104,10 @@ export const reactSwiperStyle = css`
 .swiper-container-3d .swiper-slide-shadow-bottom {
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
 }
-/* CSS Mode */
 .swiper-container-css-mode > .swiper-wrapper {
   overflow: auto;
   scrollbar-width: none;
-  /* For Firefox */
   -ms-overflow-style: none;
-  /* For Internet Explorer and Edge */
 }
 .swiper-container-css-mode > .swiper-wrapper::-webkit-scrollbar {
   display: none;
@@ -174,11 +168,9 @@ export const reactSwiperStyle = css`
 .swiper-container-rtl .swiper-button-prev:after {
   content: 'next';
 }
-
 .swiper-button-lock {
   display: none;
 }
-
 .swiper-pagination {
   position: absolute;
   text-align: center;
@@ -189,7 +181,6 @@ export const reactSwiperStyle = css`
 .swiper-pagination.swiper-pagination-hidden {
   opacity: 0;
 }
-/* Common Styles */
 .swiper-pagination-fraction,
 .swiper-pagination-custom,
 .swiper-container-horizontal > .swiper-pagination-bullets {
@@ -197,7 +188,6 @@ export const reactSwiperStyle = css`
   left: 0;
   width: 100%;
 }
-/* Bullets */
 .swiper-pagination-bullets-dynamic {
   overflow: hidden;
   font-size: 0;
@@ -280,7 +270,6 @@ button.swiper-pagination-bullet {
 .swiper-container-horizontal.swiper-container-rtl > .swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
   transition: 200ms transform, 200ms right;
 }
-/* Progress */
 .swiper-pagination-progressbar {
   background: rgba(0, 0, 0, 0.25);
   position: absolute;
@@ -315,7 +304,6 @@ button.swiper-pagination-bullet {
 .swiper-pagination-lock {
   display: none;
 }
-/* Scrollbar */
 .swiper-scrollbar {
   border-radius: 10px;
   position: relative;
@@ -392,7 +380,6 @@ button.swiper-pagination-bullet {
     transform: rotate(360deg);
   }
 }
-/* a11y */
 .swiper-container .swiper-notification {
   position: absolute;
   left: 0;

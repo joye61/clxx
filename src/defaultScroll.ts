@@ -14,7 +14,6 @@ try {
   );
 } catch (err) {}
 
-
 /**
  * 禁用和启用默认滚动
  */
@@ -22,7 +21,7 @@ export const defaultScroll = {
   handler(event: TouchEvent) {
     event.preventDefault();
   },
-  stop() {
+  disable() {
     document.documentElement.addEventListener(
       "touchmove",
       this.handler,

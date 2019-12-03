@@ -12,8 +12,7 @@ export { RollingNotice } from "./RollingNotice";
 export { CountDowner } from "./CountDown";
 export { CountDown } from "./CountDown/CountDown";
 export { BulletScreen } from "./BulletScreen";
-export { ScrollBinder } from "./ScrollView/ScrollBinder";
-export { ScrollView } from "./ScrollView";
+
 export { compat } from "./compat";
 
 export { Waterfall } from "./Waterfall";
@@ -29,6 +28,7 @@ export { useWindowResize } from "./Effect/useWindowResize";
  * 简化布局相关
  */
 export { FixContainer } from "./Layout/FixContainer";
+export { FixWidth } from "./Layout/FixWidth";
 export {
   Col,
   ColBetween,
@@ -47,5 +47,17 @@ export {
 } from "./Layout/Row";
 
 export { check } from "./check";
+
+/**
+ * 图片加载相关
+ */
 export { LazyImage } from "./LazyImage";
 export { FullImage } from "./LazyImage/FullImage";
+
+/**
+ * swiper相关
+ */
+export { ReactSwiper } from "./ReactSwiper";
+export { BannerSwiper } from "./ReactSwiper/BannerSwiper";
+export { PageView } from "./ReactSwiper/PageView";
+export { ScrollView } from "./ReactSwiper/ScrollView";

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Global, css, SerializedStyles } from "@emotion/core";
+import { jsx, Global, css, Interpolation } from "@emotion/core";
 import { useState, useLayoutEffect, useRef } from "react";
 import { useWindowResize } from "../Effect/useWindowResize";
 
@@ -9,7 +9,7 @@ export interface NormalizeProps {
   // 移动和非移动的临界尺寸
   criticalWidth?: number;
   // 用户自定义的全局样式
-  styles?: SerializedStyles;
+  styles?: Interpolation;
 }
 
 /**
