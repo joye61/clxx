@@ -1,13 +1,12 @@
 export { ajax } from "./ajax";
 export { is } from "./is";
-export { Ticker } from "./Ticker";
 export { Clickable } from "./Clickable";
 export { Activable } from "./Clickable/Activable";
 export { Alert } from "./Alert";
 export { Loading } from "./Loading";
 export { Toast } from "./Toast";
 export { vw } from "./cssUtil";
-export { Normalize } from "./Normalize";
+
 export { RollingNotice } from "./RollingNotice";
 export { CountDowner } from "./CountDown";
 export { CountDown } from "./CountDown/CountDown";
@@ -16,6 +15,12 @@ export { BulletScreen } from "./BulletScreen";
 export { compat } from "./compat";
 
 export { Waterfall } from "./Waterfall";
+
+/**
+ * 页面自适应和自适应容器
+ */
+export { Normalize } from "./Normalize";
+export { AppContainer } from "./Normalize/AppContainer";
 
 /**
  * Hooks副作用相关
