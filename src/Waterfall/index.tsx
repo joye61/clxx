@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import { is } from "../is";
 import { css as rawCss, Interpolation } from "emotion";
 import { px } from "../cssUtil";
+import raf from "raf";
 
 export interface WaterFallOption {
   // 瀑布流绑定的容器
@@ -155,7 +156,11 @@ export class Waterfall {
   async runTask() {
     this.isTraversing = true;
     while (this.queue.length !== 0) {
-      await this.queue.shift()!();
+      await new Promise(resolve => {
+        raf(() => {
+          this.queue.shift()!().then(() => resolve());
+        });
+      });
     }
     this.isTraversing = false;
   }

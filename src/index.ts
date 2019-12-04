@@ -1,18 +1,13 @@
 export { ajax } from "./ajax";
 export { is } from "./is";
-export { Clickable } from "./Clickable";
-export { Activable } from "./Clickable/Activable";
 export { Alert } from "./Alert";
 export { Loading } from "./Loading";
 export { Toast } from "./Toast";
-export { vw } from "./cssUtil";
+export { Clickable } from "./Clickable";
 
 export { RollingNotice } from "./RollingNotice";
-export { CountDowner } from "./CountDown";
 export { CountDown } from "./CountDown/CountDown";
 export { BulletScreen } from "./BulletScreen";
-
-export { compat } from "./compat";
 
 export { Waterfall } from "./Waterfall";
 
@@ -65,4 +60,4 @@ export { FullImage } from "./LazyImage/FullImage";
 export { ReactSwiper } from "./ReactSwiper";
 export { BannerSwiper } from "./ReactSwiper/BannerSwiper";
 export { PageView } from "./ReactSwiper/PageView";
-export { ScrollView } from "./ReactSwiper/ScrollView";
+export { ScrollSnap } from "./ReactSwiper/ScrollSnap";
