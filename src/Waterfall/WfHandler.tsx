@@ -10,11 +10,30 @@ export class WfHandler {
   queue: Array<() => Promise<void>> = [];
   isTraversing: boolean = false;
 
+  container?: HTMLElement;
+
   constructor(
-    public container: HTMLElement,
+    container: HTMLElement | string,
     private option: WfContainerOption = {}
   ) {
-    delete this.option.onReady;
+    if (container instanceof HTMLElement) {
+      this.container = container;
+    } else if (typeof container === "string") {
+      const el = document.querySelector(container);
+      if (el instanceof HTMLElement) {
+        this.container = el;
+      } else {
+        throw new Error(
+          `Invalid selector <${container}> to get container element`
+        );
+      }
+    } else {
+      throw new Error("Container element parameter is invalid");
+    }
+
+    if (typeof option === "object") {
+      delete this.option.onReady;
+    }
 
     // 初始化先插入瀑布流容器
     ReactDOM.render(
@@ -24,7 +43,7 @@ export class WfHandler {
         }}
         {...this.option}
       />,
-      this.container
+      this.container!
     );
   }
 
@@ -33,7 +52,7 @@ export class WfHandler {
    */
   private async ensureReady() {
     const that = this;
-    return new Promise(resolve=>{
+    return new Promise(resolve => {
       function frame() {
         if (typeof that.columns !== undefined) {
           resolve();
