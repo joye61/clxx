@@ -9,8 +9,6 @@ export { RollingNotice } from "./RollingNotice";
 export { CountDown } from "./CountDown/CountDown";
 export { BulletScreen } from "./BulletScreen";
 
-export { Waterfall } from "./Waterfall";
-
 /**
  * 页面自适应和自适应容器
  */
@@ -61,3 +59,8 @@ export { ReactSwiper } from "./ReactSwiper";
 export { BannerSwiper } from "./ReactSwiper/BannerSwiper";
 export { PageView } from "./ReactSwiper/PageView";
 export { ScrollSnap } from "./ReactSwiper/ScrollSnap";
+
+/**
+ * 瀑布流相关组件
+ */
+export { WfHandler } from "./Waterfall/WfHandler";

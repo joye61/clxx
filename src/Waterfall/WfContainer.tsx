@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import { useRef } from "react";
-import { WfHandler } from "./WfHandler";
 import { useEffectOnce } from "../Effect/useEffectOnce";
-import { is } from "../../es5";
+import { is } from "../is";
+import { splitValue } from "../cssUtil";
 
-export interface WaterfallProps
+export interface WfContainerOption
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -21,27 +21,35 @@ export interface WaterfallProps
   /**
    * 瀑布流容器准备就绪时触发
    */
-  onReady?: (handler: WfHandler) => void;
+  onReady?: (columns: Array<HTMLElement>) => void;
 }
 
-export function Waterfall(props: WaterfallProps) {
+export function WfContainer(props: WfContainerOption) {
   const { gap = 10, cols = 2, onReady = () => {}, ...attributes } = props;
 
   const container = useRef<HTMLDivElement>(null);
 
   const showCols = () => {
     const list: React.ReactNode[] = [];
+    const {num, unit} = splitValue(gap);
     for (let i = 0; i < cols; i++) {
       list.push(
         <div
           css={{
             flexGrow: 1,
             flexShrink: 0,
-            marginLeft: gap,
+            boxSizing: "border-box",
+            width: `${100 / cols}%`,
             marginTop: gap,
             marginBottom: gap,
+            paddingLeft: num/2 + unit,
+            paddingRight: num/2 + unit,
+            overflow: "hidden",
+            "&:first-child": {
+              paddingLeft: gap,
+            },
             "&:last-child": {
-              marginRight: gap
+              paddingRight: gap
             },
             "& > div": {
               marginBottom: gap
@@ -61,16 +69,16 @@ export function Waterfall(props: WaterfallProps) {
     /**
      * 获取瀑布流的每一条流
      */
-    const colsList: Array<HTMLElement> = [];
+    const columns: Array<HTMLElement> = [];
     for (let i = 0; i < container.current!.children.length; i++) {
       const child = container.current!.children.item(i);
       if (child!.tagName.toLowerCase() === "div") {
-        colsList.push(child as HTMLElement);
+        columns.push(child as HTMLElement);
       }
     }
 
     // 瀑布流容器准备就绪，将瀑布流处理实例传递给外部
-    is.function(onReady) && onReady(new WfHandler(colsList));
+    is.function(onReady) && onReady(columns);
   });
 
   return (
