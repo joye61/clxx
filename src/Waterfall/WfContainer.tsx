@@ -2,7 +2,6 @@
 import { jsx } from "@emotion/core";
 import { useRef } from "react";
 import { useEffectOnce } from "../Effect/useEffectOnce";
-import { is } from "../is";
 import { splitValue } from "../cssUtil";
 
 export interface WfContainerOption
@@ -45,16 +44,16 @@ export function WfContainer(props: WfContainerOption) {
             paddingLeft: num/2 + unit,
             paddingRight: num/2 + unit,
             overflow: "hidden",
-            "&:first-child": {
+            "&:first-of-type": {
               paddingLeft: gap,
             },
-            "&:last-child": {
+            "&:last-of-type": {
               paddingRight: gap
             },
             "& > div": {
               marginBottom: gap
             },
-            "& > div:last-child": {
+            "& > div:last-of-type": {
               marginBottom: 0
             }
           }}
@@ -78,7 +77,7 @@ export function WfContainer(props: WfContainerOption) {
     }
 
     // 瀑布流容器准备就绪，将瀑布流处理实例传递给外部
-    is.function(onReady) && onReady(columns);
+    typeof onReady === "function" && onReady(columns);
   });
 
   return (

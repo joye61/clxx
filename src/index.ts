@@ -2,7 +2,7 @@ export { ajax } from "./ajax";
 export { is } from "./is";
 export { Alert } from "./Alert";
 export { Loading } from "./Loading";
-export { Toast } from "./Toast";
+export { showToast } from "./Toast";
 export { Clickable } from "./Clickable";
 
 export { RollingNotice } from "./RollingNotice";

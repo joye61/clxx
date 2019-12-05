@@ -17,12 +17,12 @@ export interface ToastProps
 
 export function Toast(props: ToastProps) {
   const {
-    content,
+    content = "",
     position = "middle",
     duration = 3000,
     rounded = true,
     onEnd = () => {},
-    ...htmlProps
+    ...attributes
   } = props;
 
   const [animation, setAnimation] = useState<SerializedStyles>(
@@ -60,7 +60,7 @@ export function Toast(props: ToastProps) {
     <div
       css={[style.container, style[position], animation]}
       onAnimationEnd={animationEnd}
-      {...htmlProps}
+      {...attributes}
     >
       {showContent}
     </div>

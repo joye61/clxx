@@ -1,1 +1,0 @@
-type DOMElement = Element | string;
