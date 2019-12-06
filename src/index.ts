@@ -7,7 +7,6 @@ export { Clickable } from "./Clickable";
 
 export { RollingNotice } from "./RollingNotice";
 export { CountDown } from "./CountDown/CountDown";
-export { BulletScreen } from "./BulletScreen";
 
 /**
  * 页面自适应和自适应容器

@@ -27,7 +27,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "axios": "^0.19.0",
-    "emotion": "^10.0.23",
+    "dayjs": "^1.8.17",
     "lodash": "^4.17.15",
     "qs": "^6.9.1",
     "raf": "^3.4.1",

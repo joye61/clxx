@@ -1,49 +1,55 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { useEffectOnce } from "../Effect/useEffectOnce";
 import Swiper, { SwiperOptions } from "swiper";
 import { WidthProperty, HeightProperty } from "csstype";
-import { HTMLAttributes, DetailedHTMLProps, useRef } from "react";
+import { HTMLAttributes, DetailedHTMLProps, useRef, useEffect } from "react";
 import { reactSwiperStyle } from "./style";
-import { is } from "../is";
 
 export interface ScrollSnapProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  direction?: "vertical" | "horizontal";
   width?: WidthProperty<number>;
   height?: HeightProperty<number>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  swiperOption?: SwiperOptions;
+  extra?: React.ReactNode;
 }
 
 export function ScrollSnap(props: ScrollSnapProps) {
-  const {
+  let {
     width,
     height,
-    direction = "vertical",
     children,
+    swiperOption = {},
+    extra,
     ...attributes
   } = props;
 
   const container = useRef<HTMLDivElement>(null);
 
-  useEffectOnce(() => {
-    const option: SwiperOptions = {
-      direction,
-      slidesPerView: "auto",
-      freeMode: true,
-      mousewheel: true,
-      freeModeSticky: true,
-      freeModeMomentumRatio: 1.2
-    };
+  useEffect(() => {
+    if (typeof swiperOption === "object") {
+      swiperOption = {
+        ...{
+          touchEventsTarget: "container",
+          direction: "vertical",
+          slidesPerView: "auto",
+          freeMode: true,
+          mousewheel: true,
+          freeModeSticky: true,
+          centeredSlides: true
+        },
+        ...swiperOption
+      };
+    }
 
-    const swiper = new Swiper(container.current!, option);
+    const swiper = new Swiper(container.current!, swiperOption);
     return () => {
       swiper.destroy(true, true);
     };
   });
 
   const showChildren = () => {
-    const list = is.array(children) ? children : [children];
+    const list = Array.isArray(children) ? children : [children];
     return list.map((item, index) => {
       return (
         <div key={index} className="swiper-slide">
@@ -61,6 +67,7 @@ export function ScrollSnap(props: ScrollSnapProps) {
         ref={container}
       >
         <div className="swiper-wrapper">{showChildren()}</div>
+        {extra}
       </div>
     </div>
   );

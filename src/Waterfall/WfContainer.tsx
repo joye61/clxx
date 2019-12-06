@@ -47,13 +47,13 @@ export function WfContainer(props: WfContainerOption) {
             "&:first-of-type": {
               paddingLeft: gap,
             },
-            "&:last-of-type": {
+            "&:last-child": {
               paddingRight: gap
             },
             "& > div": {
               marginBottom: gap
             },
-            "& > div:last-of-type": {
+            "& > div:last-child": {
               marginBottom: 0
             }
           }}
