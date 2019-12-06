@@ -4,6 +4,7 @@ import Swiper, { SwiperOptions } from "swiper";
 import { WidthProperty, HeightProperty } from "csstype";
 import { HTMLAttributes, DetailedHTMLProps, useRef, useEffect } from "react";
 import { reactSwiperStyle } from "./style";
+import { useEffectOnce } from "../Effect/useEffectOnce";
 
 export interface ScrollSnapProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -26,7 +27,7 @@ export function ScrollSnap(props: ScrollSnapProps) {
 
   const container = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useEffectOnce(() => {
     if (typeof swiperOption === "object") {
       swiperOption = {
         ...{
