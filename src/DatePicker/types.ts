@@ -1,6 +1,6 @@
 import { SerializedStyles } from "@emotion/core";
 import { ConfigType, Dayjs } from "dayjs";
-import { SetStateAction } from "react";
+import { SetStateAction, Dispatch } from "react";
 
 export interface AnimationState {
   background: SerializedStyles;
@@ -40,20 +40,12 @@ export interface DatePickerProps
 }
 
 /**
- * 选择器的配置
+ * 上下文对象
  */
-export interface DatePickerConfig {
-  max: ConfigType;
-  min: ConfigType;
-  mode: string;
-}
-
-export interface DateInfo {
-  current: Dayjs;
-}
-
-export interface DateItemProps {
-  config: DatePickerConfig;
-  dateInfo: DateInfo;
-  setDateInfo: React.Dispatch<SetStateAction<DateInfo>>;
+export interface DatePickerContext {
+  value?: Dayjs;
+  max?: ConfigType;
+  min?: ConfigType;
+  mode?: string;
+  setValue?: Dispatch<SetStateAction<Dayjs>>;
 }

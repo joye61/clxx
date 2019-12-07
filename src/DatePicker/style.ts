@@ -73,6 +73,10 @@ export const style = {
       height: vw(itemHeight)
     }
   }),
+  swiperInnerContainer: css({
+    width: "100%",
+    height: "100%"
+  }),
   btnGroup: css({
     position: "relative",
     backgroundColor: "#f5f6f7",
@@ -113,5 +117,48 @@ export const style = {
     fontSize: vw(12),
     marginLeft: vw(2),
     color: "#999"
+  })
+};
+
+export const maskStyle = {
+  container: css({
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 2
+  }),
+  item: css({
+    position: "relative"
+  }),
+  item1: css({
+    height: vw(itemHeight * 2),
+    backgroundColor: "#fff",
+    maskImage: `linear-gradient(to top, transparent, rgba(255,255,255,.9), #fff)`
+  }),
+  item2: css({
+    position: "relative",
+    height: vw(itemHeight),
+    backgroundColor: `rgba(0,0,0,.1)`,
+    "&::before, &::after": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      width: "100%",
+      height: "1px",
+      transform: `scaleY(${1 / window.devicePixelRatio})`
+    },
+    "&::before": {
+      top: 0
+    },
+    "&::after": {
+      bottom: 0
+    }
+  }),
+  item3: css({
+    height: vw(itemHeight * 2),
+    backgroundColor: "#fff",
+    maskImage: `linear-gradient(to bottom, transparent, rgba(255,255,255,.9), #fff)`
   })
 };

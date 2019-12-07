@@ -1,62 +1,41 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 
-import { DateItemProps } from "./types";
-import { useState, useEffect } from "react";
-import { Extra } from "./Extra";
-import { ScrollSnap } from "../ReactSwiper/ScrollSnap";
-import { style } from "./style";
-import Swiper, { SwiperOptions } from "swiper";
+import { ScrollSnap } from "./ScrollSnap";
 import dayjs from "dayjs";
-import { RowCenter } from "../Layout/Row";
+import { useContext } from "react";
+import { dpContext } from "./context";
 
-export function Year(props: DateItemProps) {
-  const { config, dateInfo, setDateInfo } = props;
+export function Year() {
+  const { min, max, value, setValue } = useContext(dpContext);
 
   // 获取年份区间列表
   let initialSlide = 0;
-  const start = dayjs(config.min).year();
-  const end = dayjs(config.max).year();
-  const yearList: React.ReactNode[] = [];
+  const start = dayjs(min).year();
+  const end = dayjs(max).year();
   let index = 0;
   for (let year = start; year <= end; year++) {
-    if (dateInfo.current.year() === year) {
+    if (value!.year() === year) {
       initialSlide = index;
     }
-    yearList.push(
-      <RowCenter css={style.item} key={year}>
-        {year}
-        <span css={style.unit}>年</span>
-      </RowCenter>
-    );
     index++;
   }
 
   /**
-   * swiper配置函数
+   * 年份改变时触发函数
+   * @param index
    */
-  const swiperOption: SwiperOptions = {
-    initialSlide,
-    on: {
-      slideChangeTransitionEnd(this: Swiper) {
-        setDateInfo({
-          current: dateInfo.current.year(start + this.realIndex)
-        });
-      }
-    }
+  const yearChange = (index: number) => {
+    setValue!(value!.year(start + index));
   };
-
-  useEffect(()=>{
-    console.log('year', dateInfo.current.year());
-  });
 
   return (
     <ScrollSnap
-      extra={<Extra />}
-      css={style.swiperContainer}
-      swiperOption={swiperOption}
-    >
-      {yearList}
-    </ScrollSnap>
+      mode="y"
+      start={start}
+      end={end}
+      slideIndex={initialSlide}
+      onIndexChange={yearChange}
+    />
   );
 }

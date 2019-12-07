@@ -4,31 +4,31 @@ import { ScrollSnap } from "./ScrollSnap";
 import { useContext } from "react";
 import { dpContext } from "./context";
 
-export function Month() {
+export function DateDay() {
   const { value, setValue } = useContext(dpContext);
 
-  let initialSlide = 0;
   const start = 1;
-  const end = 12;
+  const end = value!.endOf("month").date();
+  let initialSlide = 0;
   let index = 0;
-  for (let month = start; month <= end; month++) {
-    if (value!.month() + 1 === month) {
+  for (let date = start; date <= end; date++) {
+    if (value!.date() === date) {
       initialSlide = index;
     }
     index++;
   }
 
-  const monthChange = (index: number) => {
-    setValue!(value!.month(index));
+  const dateChange = (index: number) => {
+    setValue!(value!.date(start + index));
   };
 
   return (
     <ScrollSnap
-      mode="m"
+      mode="d"
       start={start}
       end={end}
       slideIndex={initialSlide}
-      onIndexChange={monthChange}
+      onIndexChange={dateChange}
     />
   );
 }
