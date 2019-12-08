@@ -72,15 +72,17 @@ export function ScrollSnap(props: ScrollSnapProps) {
     (swiper as any).current = new Swiper(container.current!, {
       // 只取重新初始化时的showIndex作为初始值
       initialSlide: slideIndex,
-      touchEventsTarget: "container",
+      // touchEventsTarget: "container",
       direction: "vertical",
       slidesPerView: "auto",
       freeMode: true,
       mousewheel: true,
       freeModeSticky: true,
       centeredSlides: true,
-      // freeModeMomentumRatio: 0.8,
-      // freeModeMomentumVelocityRatio: 0.8
+      touchMoveStopPropagation: true,
+      freeModeMomentumRatio: 0.8,
+      // freeModeMomentumVelocityRatio: 0.8,
+      // freeModeMomentumBounceRatio: 0.5
     });
 
     /**
@@ -104,7 +106,7 @@ export function ScrollSnap(props: ScrollSnapProps) {
     return () => {
       swiper.current!.destroy(true, true);
     };
-  });
+  }, []);
 
   useEffect(()=>{
     if (swiper.current instanceof Swiper) {

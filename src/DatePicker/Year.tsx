@@ -26,7 +26,10 @@ export function Year() {
    * @param index
    */
   const yearChange = (index: number) => {
-    setValue!(value!.year(start + index));
+    setTimeout(()=>{
+      setValue!(value!.year(start + index));
+    }, 100);
+    // setValue!(value!.year(start + index));
   };
 
   return (

@@ -48,6 +48,7 @@ export const style = {
     animation: `${backgroundHide} 400ms ease`
   }),
   container: css({
+    userSelect: "none",
     backgroundColor: "#fff",
     width: "100%",
     overflow: "hidden",
