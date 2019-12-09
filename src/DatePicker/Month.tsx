@@ -3,9 +3,10 @@ import { jsx } from "@emotion/core";
 import { ScrollSnap } from "./ScrollSnap";
 import { useContext } from "react";
 import { dpContext } from "./context";
+import { getFinalValue } from "./util";
 
 export function Month() {
-  const { value, setValue } = useContext(dpContext);
+  const { min, max, value, setValue } = useContext(dpContext);
 
   let initialSlide = 0;
   const start = 1;
@@ -19,7 +20,8 @@ export function Month() {
   }
 
   const monthChange = (index: number) => {
-    setValue!(value!.month(index));
+    const changed = value!.month(index);
+    setValue!(getFinalValue(changed, min!, max!));
   };
 
   return (

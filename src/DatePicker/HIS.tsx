@@ -3,10 +3,11 @@ import { jsx } from "@emotion/core";
 import { ScrollSnap } from "./ScrollSnap";
 import { useContext } from "react";
 import { dpContext } from "./context";
+import { getFinalValue } from "./util";
 
 export function HIS(props: { mode: "h" | "i" | "s" }) {
   const mode = props.mode;
-  const { value, setValue } = useContext(dpContext);
+  const { min, max, value, setValue } = useContext(dpContext);
 
   let start: number = 0;
   let end: number = 0;
@@ -34,7 +35,26 @@ export function HIS(props: { mode: "h" | "i" | "s" }) {
     index++;
   }
 
+  const onChange = (index: number) => {
+    if (mode === "h") {
+      const changed = value!.hour(index);
+      setValue!(getFinalValue(changed, min!, max!));
+    } else if (mode === "i") {
+      const changed = value!.minute(index);
+      setValue!(getFinalValue(changed, min!, max!));
+    } else if (mode === "s") {
+      const changed = value!.second(index);
+      setValue!(getFinalValue(changed, min!, max!));
+    }
+  };
+
   return (
-    <ScrollSnap mode={mode} start={start} end={end} slideIndex={initialSlide} />
+    <ScrollSnap
+      mode={mode}
+      start={start}
+      end={end}
+      slideIndex={initialSlide}
+      onIndexChange={onChange}
+    />
   );
 }

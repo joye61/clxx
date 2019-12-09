@@ -5,6 +5,7 @@ import { ScrollSnap } from "./ScrollSnap";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { dpContext } from "./context";
+import { getFinalValue } from "./util";
 
 export function Year() {
   const { min, max, value, setValue } = useContext(dpContext);
@@ -26,10 +27,8 @@ export function Year() {
    * @param index
    */
   const yearChange = (index: number) => {
-    setTimeout(()=>{
-      setValue!(value!.year(start + index));
-    }, 100);
-    // setValue!(value!.year(start + index));
+    const changed = value!.year(start + index);
+    setValue!(getFinalValue(changed, min!, max!));
   };
 
   return (

@@ -42,10 +42,10 @@ export const itemHeight = 46;
 
 export const style = {
   backgroundShow: css({
-    animation: `${backgroundShow} 400ms ease`
+    animation: `${backgroundShow} 300ms ease`
   }),
   backgroundHide: css({
-    animation: `${backgroundHide} 400ms ease`
+    animation: `${backgroundHide} 300ms ease`
   }),
   container: css({
     userSelect: "none",
@@ -55,23 +55,33 @@ export const style = {
     position: "absolute",
     left: 0,
     bottom: 0,
+    boxShadow: `0 -1px 5px 0px #00000022`,
     borderTopLeftRadius: vw(10),
     borderTopRightRadius: vw(10),
-    boxShadow: `0 -1px 5px 0px #00000022`
+    "@media (min-width: 576px)": {
+      borderTopLeftRadius: vw(10, true),
+      borderTopRightRadius: vw(10, true)
+    }
   }),
   containerUp: css({
-    animation: `${containerUp} 400ms ease`
+    animation: `${containerUp} 300ms ease`
   }),
   containerDown: css({
-    animation: `${containerDown} 400ms ease`
+    animation: `${containerDown} 300ms ease`
   }),
   swiperContainer: css({
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: 0,
+    // flexBasis: 0,
     height: vw(itemHeight * 5),
     ".swiper-wrapper .swiper-slide": {
       height: vw(itemHeight)
+    },
+    "@media (min-width: 576px)": {
+      height: vw(itemHeight * 5, true),
+      ".swiper-wrapper .swiper-slide": {
+        height: vw(itemHeight, true)
+      }
     }
   }),
   swiperInnerContainer: css({
@@ -98,6 +108,12 @@ export const style = {
     lineHeight: vw(itemHeight),
     padding: `0 ${vw(12)}`,
     letterSpacing: vw(1),
+    "@media (min-width: 576px)": {
+      fontSize: vw(16, true),
+      lineHeight: vw(itemHeight, true),
+      padding: `0 ${(vw(12), true)}`,
+      letterSpacing: vw(1, true)
+    },
     "&.cancel": {
       color: "#6c757d"
     },
@@ -106,18 +122,27 @@ export const style = {
     }
   }),
   item: css({
-    fontSize: vw(20),
     color: "#000",
     fontFamily: "Tahoma, Arial, Verdana, Tahoma",
     height: "100%",
-    userSelect: "none"
+    userSelect: "none",
+    fontSize: vw(20),
+    "@media (min-width: 576px)": {
+      fontSize: vw(20, true)
+    }
   }),
   unit: css({
     position: "relative",
+
+    color: "#999",
     top: vw(2),
     fontSize: vw(12),
     marginLeft: vw(2),
-    color: "#999"
+    "@media (min-width: 576px)": {
+      top: vw(2, true),
+      fontSize: vw(12, true),
+      marginLeft: vw(2, true)
+    }
   })
 };
 
@@ -135,30 +160,25 @@ export const maskStyle = {
   }),
   item1: css({
     height: vw(itemHeight * 2),
+    "@media (min-width: 576px)": {
+      height: vw(itemHeight * 2, true)
+    },
     backgroundColor: "#fff",
     maskImage: `linear-gradient(to top, transparent, rgba(255,255,255,.9), #fff)`
   }),
   item2: css({
     position: "relative",
     height: vw(itemHeight),
-    backgroundColor: `rgba(0,0,0,.1)`,
-    "&::before, &::after": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      width: "100%",
-      height: "1px",
-      transform: `scaleY(${1 / window.devicePixelRatio})`
+    "@media (min-width: 576px)": {
+      height: vw(itemHeight, true)
     },
-    "&::before": {
-      top: 0
-    },
-    "&::after": {
-      bottom: 0
-    }
+    backgroundColor: `rgba(0,0,0,.1)`
   }),
   item3: css({
     height: vw(itemHeight * 2),
+    "@media (min-width: 576px)": {
+      height: vw(itemHeight * 2, true)
+    },
     backgroundColor: "#fff",
     maskImage: `linear-gradient(to bottom, transparent, rgba(255,255,255,.9), #fff)`
   })

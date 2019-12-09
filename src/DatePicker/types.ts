@@ -7,11 +7,7 @@ export interface AnimationState {
   container: SerializedStyles;
 }
 
-export interface DatePickerProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+export interface DatePickerProps{
   /**
    * 一个dayjs可以解析的合法值，如果没有传递，则默认取当前时间
    */
@@ -37,6 +33,23 @@ export interface DatePickerProps
    * s：秒
    */
   mode?: string;
+  /**
+   * 值每次变化都会触发
+   */
+  // onChange?: (value: Dayjs & any)=>void;
+  /**
+   * 取消按钮点击时触发
+   */
+  onCancel?: () => void;
+  /**
+   * 确定按钮点击时触发
+   */
+  onConfirm?: (value: Dayjs) => void;
+
+  /**
+   * 选择器收起动画结束时触发
+   */
+  onHide?: ()=>void;
 }
 
 /**

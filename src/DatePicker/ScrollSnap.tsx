@@ -6,6 +6,7 @@ import React, { useRef, useEffect } from "react";
 import { prefix0 } from "./util";
 import { RowCenter } from "../Layout/Row";
 import Swiper from "swiper";
+import debounce from "lodash/debounce";
 
 export type changeFunc = (index: number) => void;
 export type Mode = "y" | "m" | "d" | "h" | "i" | "s";
@@ -72,7 +73,7 @@ export function ScrollSnap(props: ScrollSnapProps) {
     (swiper as any).current = new Swiper(container.current!, {
       // 只取重新初始化时的showIndex作为初始值
       initialSlide: slideIndex,
-      // touchEventsTarget: "container",
+      touchEventsTarget: "container",
       direction: "vertical",
       slidesPerView: "auto",
       freeMode: true,
@@ -80,9 +81,8 @@ export function ScrollSnap(props: ScrollSnapProps) {
       freeModeSticky: true,
       centeredSlides: true,
       touchMoveStopPropagation: true,
-      freeModeMomentumRatio: 0.8,
-      // freeModeMomentumVelocityRatio: 0.8,
-      // freeModeMomentumBounceRatio: 0.5
+      freeModeMomentumRatio: 0.5,
+      freeModeMomentumBounceRatio: 0.5
     });
 
     /**
@@ -90,15 +90,23 @@ export function ScrollSnap(props: ScrollSnapProps) {
      * 此处用transitionEnd代替，并添加触发条件
      */
     let lastSlideIndex = swiper.current!.realIndex;
-    swiper.current!.on("transitionEnd", () => {
-      if (
-        typeof slideIndexChange.current === "function" &&
-        swiper.current!.realIndex !== lastSlideIndex
-      ) {
-        slideIndexChange.current(swiper.current!.realIndex);
+    const transitionEnd = debounce(
+      () => {
+        if (
+          typeof slideIndexChange.current === "function" &&
+          swiper.current!.realIndex !== lastSlideIndex
+        ) {
+          slideIndexChange.current(swiper.current!.realIndex);
+        }
+        lastSlideIndex = swiper.current!.realIndex;
+      },
+      100,
+      {
+        leading: false,
+        trailing: true
       }
-      lastSlideIndex = swiper.current!.realIndex;
-    });
+    );
+    swiper.current!.on("transitionEnd", transitionEnd);
 
     /**
      * 清理swiper
@@ -108,7 +116,7 @@ export function ScrollSnap(props: ScrollSnapProps) {
     };
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (swiper.current instanceof Swiper) {
       swiper.current!.update();
     }
