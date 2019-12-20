@@ -1,18 +1,15 @@
-# 常用组件集合
+# 移动端H5功能集合
 
-依赖于`React Hooks`和`CSS-IN-JS`技术，**零CSS依赖**。主要针对移动端 H5 页面
+特色
 
-# 安装
+- 基于 `React` 和 `React Hooks` 开发
+- 纯基于 [`CSS-IN-JS`](https://github.com/emotion-js/emotion) 技术，零文件依赖
+- 完全的自适应UI，易于使用
+- 覆盖大量非主流场景
 
-```
-npm install cl-utils
-```
 
-或
 
-```
-yarn add cl-utils
-```
+**🚀🚀🚀🚀正在进行巨大的升级改造，敬请期待🚀🚀🚀🚀**
 
 
 # TODO列表
@@ -28,6 +25,8 @@ yarn add cl-utils
 
 
 # 已实现列表
+
+> 以下列表正在进行文档更新，新版本即将到来
 
 - [瀑布流布局](./src/Waterfall/README.md)
 
