@@ -1,0 +1,38 @@
+{
+  "name": "@clxx/loading",
+  "version": "0.0.0",
+  "description": "Pure componentized loading effect",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/loading"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "react",
+    "css-in-js",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@clxx/base": "^0.0.0",
+    "@clxx/layout": "^0.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}

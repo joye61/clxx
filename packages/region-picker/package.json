@@ -1,0 +1,29 @@
+{
+  "name": "@clxx/region-picker",
+  "version": "0.0.0",
+  "description": "modern mobile region picker",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/region-picker"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "react",
+    "css-in-js",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.7.3"
+  }
+}

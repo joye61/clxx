@@ -1,0 +1,36 @@
+{
+  "name": "@clxx/rolling-notice",
+  "version": "0.0.0",
+  "description": "Scroll to notice",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/rolling-notice"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "react",
+    "css-in-js",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@clxx/base": "^0.0.0",
+    "@clxx/effect": "^0.0.0",
+    "react": "^16.12.0"
+  }
+}

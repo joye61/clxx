@@ -1,13 +1,12 @@
+/**
+ * 编译之前先删除旧的编译目标
+ */
 const fs = require("fs-extra");
-const path = require("path");
 const chalk = require("chalk");
+const path = require("path");
 
-const rmList = [
-  path.resolve(__dirname, "../es5"),
-  path.resolve(__dirname, "../es6")
-];
+const oldBuildPath = path.resolve(process.cwd(), "./build")
 
-rmList.forEach(item => {
-  console.log(`Removing build directory: ${chalk.yellow(item)}`);
-  fs.removeSync(item);
-});
+fs.remove(oldBuildPath);
+
+console.log(oldBuildPath, chalk.green("REMOVED"));

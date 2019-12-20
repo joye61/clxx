@@ -1,0 +1,24 @@
+{
+  "name": "@clxx/base",
+  "version": "0.0.0",
+  "description": "base utility for all cl's packages",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/base"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.7.3"
+  }
+}

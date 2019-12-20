@@ -60,5 +60,7 @@ typings/
 # next.js build output
 .next
 
-/es5/
-/es6/
+build/
+
+package-lock.json
+yarn.lock

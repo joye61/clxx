@@ -1,51 +1,13 @@
 {
-  "name": "cl-utils",
-  "version": "0.3.5",
-  "description": "Most common used utility for web develop",
-  "main": "./es5/index.js",
-  "module": "./es6/index.js",
-  "types": "./es6/index.d.ts",
-  "scripts": {
-    "start": "tsc -w --pretty",
-    "build": "node ./scripts/clear.js && tsc && tsc -t es5 -m commonjs --outDir ./es5"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/joye61/cl-utils.git"
-  },
-  "keywords": [
-    "library",
-    "react"
-  ],
-  "author": "joye",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/joye61/cl-utils/issues"
-  },
-  "homepage": "https://github.com/joye61/cl-utils#readme",
-  "registry": "https://registry.npmjs.org",
+  "name": "root",
+  "private": true,
   "dependencies": {
-    "@emotion/core": "^10.0.22",
-    "axios": "^0.19.0",
-    "dayjs": "^1.8.17",
-    "lodash": "^4.17.15",
-    "qs": "^6.9.1",
-    "raf": "^3.4.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-use": "^13.8.0",
-    "swiper": "^5.2.1"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.149",
-    "@types/node": "^12.12.9",
-    "@types/qs": "^6.9.0",
-    "@types/raf": "^3.4.0",
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
-    "@types/swiper": "^5.2.0",
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
-    "typescript": "^3.7.2"
+    "lerna": "^3.19.0"
+  },
+  "scripts": {
+    "new": "node ./scripts/create.js",
+    "lerna": "lerna"
   }
 }

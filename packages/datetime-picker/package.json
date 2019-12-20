@@ -1,0 +1,45 @@
+{
+  "name": "@clxx/datetime-picker",
+  "version": "0.0.0",
+  "description": "modern datetime picker",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/datetime-picker"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "react",
+    "css-in-js",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/lodash": "^4.14.149",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "@types/swiper": "^5.2.0",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@clxx/base": "^0.0.0",
+    "@clxx/clickable": "^0.0.0",
+    "@clxx/layout": "^0.0.0",
+    "@clxx/swiper": "^0.0.0",
+    "dayjs": "^1.8.18",
+    "lodash": "^4.17.15",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "swiper": "^5.2.1"
+  }
+}

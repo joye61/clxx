@@ -1,0 +1,36 @@
+{
+  "name": "@clxx/countdown",
+  "version": "0.0.0",
+  "description": "countdown",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "start": "tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/cl-utils/tree/master/packages/countdown"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "react",
+    "css-in-js",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@types/raf": "^3.4.0",
+    "raf": "^3.4.1",
+    "react": "^16.12.0"
+  }
+}
