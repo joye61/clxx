@@ -1,6 +1,6 @@
 {
   "name": "@clxx/clickable",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Clickable element",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -28,9 +28,9 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
+    "@clxx/base": "^0.0.1",
+    "@clxx/effect": "^0.0.1",
     "@emotion/core": "^10.0.22",
-    "@clxx/base": "^0.0.0",
-    "@clxx/effect": "^0.0.0",
     "react": "^16.12.0"
   }
 }

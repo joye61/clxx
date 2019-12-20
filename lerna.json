@@ -1,10 +1,14 @@
 {
-  "packages": ["packages/*"],
-  "version": "0.0.0",
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.0.1",
   "npmClient": "yarn",
   "command": {
     "publish": {
-      "ignoreChanges": ["*.md"],
+      "ignoreChanges": [
+        "*.md"
+      ],
       "registry": "https://registry.npmjs.org"
     }
   }
