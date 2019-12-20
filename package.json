@@ -1,10 +1,15 @@
 {
   "name": "root",
   "private": true,
+  "description": "Various common components based on mobile H5",
   "dependencies": {
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
     "lerna": "^3.19.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joye61/clxx"
   },
   "scripts": {
     "new": "node ./scripts/create.js",
