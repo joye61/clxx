@@ -1,0 +1,37 @@
+{
+	"name": "@clxx/dialog",
+	"version": "0.0.0",
+	"description": "Dialog container",
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"scripts": {
+		"start": "tsc -w --pretty",
+		"build": "node ../../scripts/clear.js && tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/joye61/clxx/tree/master/packages/dialog"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
+	},
+	"keywords": [
+		"react",
+		"css-in-js",
+		"typescript"
+	],
+	"author": "joye",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^16.9.17",
+		"@types/react-dom": "^16.9.4",
+		"typescript": "^3.7.3"
+	},
+	"dependencies": {
+		"@clxx/layout": "^0.0.1",
+		"@emotion/core": "^10.0.22",
+		"react": "^16.12.0",
+		"react-dom": "^16.12.0"
+	}
+}

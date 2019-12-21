@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joye61/cl-utils/tree/master/packages/lazyimage"
+    "url": "https://github.com/joye61/clxx/tree/master/packages/lazyimage"
   },
   "publishConfig": {
     "access": "public",

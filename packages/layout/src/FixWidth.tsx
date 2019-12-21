@@ -12,6 +12,10 @@ export interface FixWidthProps
   children?: React.ReactNode;
 }
 
+/**
+ * 水平方向填满的，fixed定位的容器
+ * @param props 
+ */
 export function FixWidth(props: FixWidthProps) {
   const { top, bottom, children, ...attributes } = props;
   return (

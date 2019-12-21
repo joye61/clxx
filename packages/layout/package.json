@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joye61/cl-utils/tree/master/packages/layout"
+    "url": "https://github.com/joye61/clxx/tree/master/packages/layout"
   },
   "publishConfig": {
     "access": "public",
@@ -25,10 +25,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "typescript": "^3.7.3"
   },
   "dependencies": {
     "@emotion/core": "^10.0.22",
-    "react": "^16.12.0"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }
