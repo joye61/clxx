@@ -25,13 +25,17 @@
 	"author": "joye",
 	"license": "MIT",
 	"devDependencies": {
+		"@types/lodash": "^4.14.149",
 		"@types/react": "^16.9.17",
 		"@types/swiper": "^5.2.0",
 		"typescript": "^3.7.3"
 	},
 	"dependencies": {
 		"@clxx/base": "^0.0.2",
+		"@clxx/layout": "^0.0.2",
+		"@clxx/dialog": "^0.0.2",
 		"@emotion/core": "^10.0.22",
+		"lodash": "^4.17.15",
 		"react": "^16.12.0",
 		"swiper": "^5.2.1"
 	}
