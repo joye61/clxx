@@ -1,6 +1,6 @@
 {
   "name": "@clxx/base",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "base utility for all cl's packages",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

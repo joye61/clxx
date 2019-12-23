@@ -1,6 +1,6 @@
 {
   "name": "@clxx/loading",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Pure componentized loading effect",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,8 +29,8 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.2",
-    "@clxx/layout": "^0.0.2",
+    "@clxx/base": "^0.0.3",
+    "@clxx/layout": "^0.0.3",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
