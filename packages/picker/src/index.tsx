@@ -1,8 +1,18 @@
 import React from "react";
 import { Dialog } from "@clxx/dialog";
-import { PickerDialog } from "./PickerDialog";
+import { PickerDialog, PickerDialogProps } from "./PickerDialog";
 import pick from "lodash/pick";
 import omit from "lodash/omit";
+
+export interface PickerProps
+  extends PickerDialogProps,
+    React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLDivElement>,
+      HTMLDivElement
+    > {
+  children?: React.ReactNode;
+  placeholder?: React.ReactNode & any;
+}
 
 /**
  * 一个可以唤起选择器的Picker对象
@@ -44,8 +54,8 @@ export function showPicker(option: PickerDialogProps) {
           onCancel?.();
           dialog.close();
         }}
-        onConfirm={result => {
-          onConfirm?.(result);
+        onConfirm={(index: number, value?: any) => {
+          onConfirm?.(index, value);
           dialog.close();
         }}
       />

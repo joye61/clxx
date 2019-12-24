@@ -1,57 +1,48 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import { style } from "./PickerDialogStyle";
-import { RowBetween } from "@clxx/layout";
 import { useState } from "react";
 import { ScrollContent } from "./ScrollContent";
+import { ControlsProps, Controls } from "./Controls";
+import { ColCenter } from "@clxx/layout";
+
+export type PickerConfirm = (result: { index: number; value: any }) => void;
+
+export interface PickerDialogProps extends ControlsProps {
+  list?: Array<string | React.ReactElement>;
+  selected?: number;
+  onConfirm?: ((index: number, value?: any) => void) & any;
+}
 
 export function PickerDialog(props: PickerDialogProps) {
   const {
     list = [],
     selected = 0,
-    confirmText = "确定",
-    cancelText = "取消",
-    showResult = false,
+    onCancel,
     onConfirm,
-    onCancel
+    ...controlsProps
   } = props;
 
   const [current, setCurrent] = useState<number>(selected || 0);
 
   return (
     <div css={style.container}>
-      <RowBetween css={style.btnGroup}>
-        <div
-          css={style.btn}
-          className="cancel"
-          onTouchStart={() => {}}
-          onClick={() => {
-            onCancel?.();
-          }}
-        >
-          {cancelText}
-        </div>
-        <div
-          css={style.btn}
-          onTouchStart={() => {}}
-          className="confirm"
-          onClick={() => {
-            onConfirm?.({
-              index: current,
-              value: list?.[current]
-            });
-          }}
-        >
-          {confirmText}
-        </div>
-        {showResult ? (
-          <div css={style.currentValue}>{list?.[current]}</div>
-        ) : null}
-      </RowBetween>
+      <Controls
+        {...controlsProps}
+        onCancel={() => onCancel?.()}
+        onConfirm={() => {
+          onConfirm(current, list?.[current]);
+        }}
+      >
+        <ColCenter css={style.resultBox}>
+          <div css={style.hint}>当前选择</div>
+          <div css={style.result}>{list?.[current]}</div>
+        </ColCenter>
+      </Controls>
       <ScrollContent
         list={list}
         selected={selected}
-        onChange={index => {
+        onChange={(index: any) => {
           setCurrent(index);
         }}
       />

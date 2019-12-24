@@ -41,12 +41,22 @@ export const style = {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      color: "#000",
       height: vw(itemHeight),
-      fontSize: vw(18),
       "@media (min-width: 576px)": {
         height: vw(itemHeight, true),
-        fontSize: vw(18, true),
+        fontSize: vw(18, true)
+      }
+    }),
+    ".swiper-slide-text": css({
+      color: "#000",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      margin: 0,
+      padding: 0,
+      fontSize: vw(18),
+      "@media (min-width: 576px)": {
+        fontSize: vw(18, true)
       }
     })
   }),
@@ -67,11 +77,11 @@ export const style = {
       width: "100%",
       height: "100%",
       backgroundColor: "#fff",
-      maskImage: `linear-gradient(0deg, #fff 0, transparent ${vw(
+      maskImage: `linear-gradient(0deg, #fff 0, rgba(255,255,255,0.6) ${vw(
         itemHeight * 2
       )}, transparent ${vw(itemHeight * 2)}, transparent ${vw(
         itemHeight * 3
-      )}, transparent ${vw(itemHeight * 3)}, #fff 100%)`,
+      )}, rgba(255,255,255,0.6) ${vw(itemHeight * 3)}, #fff 100%)`,
       "@media (min-width: 576px)": {
         maskImage: `linear-gradient(0deg, #fff 0, transparent ${vw(
           itemHeight * 2,

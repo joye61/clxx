@@ -4,17 +4,39 @@ import { style } from "./ScrollContentStyle";
 import { useRef, useEffect } from "react";
 import Swiper from "swiper";
 import debounce from "lodash/debounce";
+import React from "react";
+
+export type PickerChangeFunc = (index: number) => void;
+
+export interface ScrollContentProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
+  selected?: number;
+  list?: Array<string | React.ReactElement>;
+  onChange?: PickerChangeFunc & any;
+  debounceDuration?: number;
+}
 
 export function ScrollContent(props: ScrollContentProps) {
+  const {
+    selected = 0,
+    list = [],
+    debounceDuration = 100,
+    onChange,
+    ...attributes
+  } = props;
+
   const container = useRef<HTMLDivElement>(null);
   const swiper = useRef<Swiper>(null);
 
   /**
    * 将change监听器移除依赖，同时保持最新
    */
-  const onChange = useRef<PickerChangeFunc | undefined>(props.onChange);
+  const changeRef = useRef<PickerChangeFunc | undefined>(onChange);
   useEffect(() => {
-    onChange.current = props.onChange;
+    changeRef.current = onChange;
   });
 
   /**
@@ -45,14 +67,14 @@ export function ScrollContent(props: ScrollContentProps) {
     const transitionEnd = debounce(
       () => {
         if (
-          typeof onChange.current === "function" &&
+          typeof changeRef.current === "function" &&
           swiper.current!.realIndex !== lastSlideIndex
         ) {
-          onChange.current(swiper.current!.realIndex);
+          changeRef.current(swiper.current!.realIndex);
         }
         lastSlideIndex = swiper.current!.realIndex;
       },
-      100,
+      props.debounceDuration || 100,
       {
         leading: false,
         trailing: true
@@ -73,8 +95,8 @@ export function ScrollContent(props: ScrollContentProps) {
    * 更新当前选中的选项
    */
   useEffect(() => {
-    if (swiper.current instanceof Swiper && props.selected) {
-      swiper.current.slideTo(props.selected);
+    if (swiper.current instanceof Swiper) {
+      swiper.current.slideTo(props.selected!);
     }
   }, [props.selected]);
 
@@ -92,16 +114,20 @@ export function ScrollContent(props: ScrollContentProps) {
    */
   const showList = () => {
     return props.list?.map((item, index) => {
+      let child = item;
+      if (!React.isValidElement(item)) {
+        child = <p className="swiper-slide-text">{item}</p>;
+      }
       return (
         <div className="swiper-slide" key={index}>
-          {item}
+          {child}
         </div>
       );
     });
   };
 
   return (
-    <div css={style.container} className="clxx-Picker">
+    <div css={style.container} {...attributes}>
       <div className="swiper-container" ref={container}>
         <div className="swiper-wrapper">{showList()}</div>
         <div css={style.mask}></div>

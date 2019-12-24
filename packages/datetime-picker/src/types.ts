@@ -1,13 +1,8 @@
-import { SerializedStyles } from "@emotion/core";
 import { ConfigType, Dayjs } from "dayjs";
 import { SetStateAction, Dispatch } from "react";
+import { ControlsProps } from "@clxx/picker/build/Controls";
 
-export interface AnimationState {
-  background: SerializedStyles;
-  container: SerializedStyles;
-}
-
-export interface DatePickerProps{
+export interface WrapperProps extends ControlsProps {
   /**
    * 一个dayjs可以解析的合法值，如果没有传递，则默认取当前时间
    */
@@ -36,7 +31,8 @@ export interface DatePickerProps{
   /**
    * 值每次变化都会触发
    */
-  // onChange?: (value: Dayjs & any)=>void;
+  onChange?: (value: Dayjs & any) => void;
+
   /**
    * 取消按钮点击时触发
    */
@@ -44,12 +40,7 @@ export interface DatePickerProps{
   /**
    * 确定按钮点击时触发
    */
-  onConfirm?: (value: Dayjs) => void;
-
-  /**
-   * 选择器收起动画结束时触发
-   */
-  onHide?: ()=>void;
+  onConfirm?: ((value: Dayjs) => void) & any;
 }
 
 /**
@@ -57,8 +48,19 @@ export interface DatePickerProps{
  */
 export interface DatePickerContext {
   value?: Dayjs;
-  max?: ConfigType;
-  min?: ConfigType;
+  max?: Dayjs;
+  min?: Dayjs;
   mode?: string;
   setValue?: Dispatch<SetStateAction<Dayjs>>;
+}
+
+export interface DateTimePickerProps
+  extends WrapperProps,
+    React.DetailedHTMLProps<
+      React.HTMLAttributes<HTMLDivElement>,
+      HTMLDivElement
+    > {
+  children?: React.ReactNode;
+  placeholder?: string;
+  onChange?: any;
 }
