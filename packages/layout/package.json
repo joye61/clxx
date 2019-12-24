@@ -1,6 +1,6 @@
 {
   "name": "@clxx/layout",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Common layout components",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

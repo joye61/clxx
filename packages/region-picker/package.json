@@ -1,6 +1,6 @@
 {
   "name": "@clxx/region-picker",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "modern mobile region picker",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

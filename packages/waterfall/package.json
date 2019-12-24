@@ -1,6 +1,6 @@
 {
   "name": "@clxx/waterfall",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Waterfall flow component",
   "main": "./build/WfHandler.js",
   "types": "./build/WfHandler.d.ts",
@@ -30,8 +30,8 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.3",
-    "@clxx/effect": "^0.0.3",
+    "@clxx/base": "^0.0.4",
+    "@clxx/effect": "^0.0.4",
     "@emotion/core": "^10.0.22",
     "raf": "^3.4.1",
     "react": "^16.12.0",

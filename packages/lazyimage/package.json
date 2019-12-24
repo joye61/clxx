@@ -1,6 +1,6 @@
 {
   "name": "@clxx/lazyimage",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "lazyload image",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -27,7 +27,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.3",
+    "@clxx/base": "^0.0.4",
     "@emotion/core": "^10.0.22",
     "@types/react": "^16.9.17",
     "@types/swiper": "^5.2.0",

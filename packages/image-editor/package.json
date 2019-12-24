@@ -1,6 +1,6 @@
 {
   "name": "@clxx/image-editor",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "mobile image editor",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
