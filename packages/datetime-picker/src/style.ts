@@ -19,40 +19,6 @@ export const style = {
       borderTopRightRadius: vw(10, true)
     }
   }),
-
-  btnGroup: css({
-    position: "relative",
-    backgroundColor: "#f5f6f7",
-    "&::after": {
-      display: "block",
-      content: '""',
-      position: "absolute",
-      left: 0,
-      bottom: 0,
-      width: "100%",
-      height: "1px",
-      backgroundColor: "#6c757d82",
-      transform: `scaleY(${1 / window.devicePixelRatio})`
-    }
-  }),
-  btn: css({
-    fontSize: vw(16),
-    lineHeight: vw(itemHeight),
-    padding: `0 ${vw(12)}`,
-    letterSpacing: vw(1),
-    "@media (min-width: 576px)": {
-      fontSize: vw(16, true),
-      lineHeight: vw(itemHeight, true),
-      padding: `0 ${(vw(12), true)}`,
-      letterSpacing: vw(1, true)
-    },
-    "&.cancel": {
-      color: "#6c757d"
-    },
-    "&.confirm": {
-      color: "#007bff"
-    }
-  }),
   item: css({
     color: "#000",
     margin: 0,

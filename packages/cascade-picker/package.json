@@ -1,7 +1,7 @@
 {
-  "name": "@clxx/region-picker",
-  "version": "0.0.4",
-  "description": "modern mobile region picker",
+  "name": "@clxx/cascade-picker",
+  "version": "0.0.0",
+  "description": "common used cascade-picker",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joye61/clxx/tree/master/packages/region-picker"
+    "url": "https://github.com/joye61/clxx/tree/master/packages/cascade-picker"
   },
   "publishConfig": {
     "access": "public",
@@ -24,6 +24,14 @@
   "author": "joye",
   "license": "MIT",
   "devDependencies": {
+    "@types/react": "^16.9.17",
     "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@clxx/base": "^0.0.4",
+    "@clxx/layout": "^0.0.4",
+    "@clxx/picker": "^0.0.4",
+    "@emotion/core": "^10.0.27",
+    "react": "^16.12.0"
   }
 }
