@@ -1,0 +1,37 @@
+{
+	"name": "@clxx/calendar",
+	"version": "0.0.0",
+	"description": "package template",
+	"main": "./build/index.js",
+	"types": "./build/index.d.ts",
+	"scripts": {
+		"start": "tsc -w --pretty",
+		"build": "node ../../scripts/clear.js && tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/joye61/clxx/tree/master/packages/calendar"
+	},
+	"publishConfig": {
+		"access": "public",
+		"registry": "https://registry.npmjs.org"
+	},
+	"keywords": [
+		"react",
+		"css-in-js",
+		"typescript"
+	],
+	"author": "joye",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^16.9.17",
+		"typescript": "^3.7.3"
+	},
+	"dependencies": {
+		"@clxx/base": "^0.0.4",
+		"@clxx/effect": "^0.0.4",
+		"@emotion/core": "^10.0.27",
+		"dayjs": "^1.8.18",
+		"react": "^16.12.0"
+	}
+}
