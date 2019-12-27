@@ -1,6 +1,6 @@
 {
   "name": "@clxx/swiper",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "swiper wrapper with react",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,7 +29,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/effect": "^0.0.4",
+    "@clxx/effect": "^0.0.5",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0",
     "swiper": "^5.2.1"

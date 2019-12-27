@@ -1,6 +1,6 @@
 {
   "name": "@clxx/datetime-picker",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "modern datetime picker",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,10 +29,10 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.4",
-    "@clxx/dialog": "^0.0.4",
-    "@clxx/layout": "^0.0.4",
-    "@clxx/picker": "^0.0.4",
+    "@clxx/base": "^0.0.5",
+    "@clxx/dialog": "^0.0.5",
+    "@clxx/layout": "^0.0.5",
+    "@clxx/picker": "^0.0.5",
     "@emotion/core": "^10.0.22",
     "dayjs": "^1.8.18",
     "lodash": "^4.17.15",

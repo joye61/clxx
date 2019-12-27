@@ -1,6 +1,6 @@
 {
   "name": "@clxx/cascade-picker",
-  "version": "0.0.0",
+  "version": "0.0.5",
   "description": "common used cascade-picker",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -28,9 +28,9 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.4",
-    "@clxx/layout": "^0.0.4",
-    "@clxx/picker": "^0.0.4",
+    "@clxx/base": "^0.0.5",
+    "@clxx/layout": "^0.0.5",
+    "@clxx/picker": "^0.0.5",
     "@emotion/core": "^10.0.27",
     "react": "^16.12.0"
   }
