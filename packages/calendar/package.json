@@ -1,7 +1,7 @@
 {
 	"name": "@clxx/calendar",
 	"version": "0.0.0",
-	"description": "package template",
+	"description": "gnerate calendar view simply",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
 	"scripts": {
