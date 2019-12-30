@@ -20,6 +20,7 @@
 
 <p>
   <img src="assets/waterfall.gif" width="25%">
+  <img src="assets/calendar.gif" width="25%">
   <img src="assets/alert.gif" width="25%">
   <img src="assets/alert-with-cancel.gif" width="25%">
   <img src="assets/clickable.gif" width="25%">

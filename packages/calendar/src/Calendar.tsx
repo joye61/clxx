@@ -7,67 +7,80 @@ import { useState, useEffect, useRef } from "react";
 import { useWindowResize, useEffectOnce } from "@clxx/effect";
 import React from "react";
 
+export interface ItemStatus {
+  isSelect?: boolean;
+  isToday?: boolean;
+  isOutOfMonth?: boolean;
+}
+
 export interface CalendarProps {
+  // 是否显示星期几标题栏
   showWeekDayTitle?: boolean;
+  // 渲染星期几标题栏每一项内容
   renderTitleItem?: (index?: number, name?: string) => React.ReactNode;
-  renderItem?: (date: Dayjs) => React.ReactNode;
+  // 渲染表格每一项内容
+  renderItem?: (date: Dayjs, status?: ItemStatus) => React.ReactNode;
+  // 初始化时传入的日期，以月为基准，默认为当前月
   date?: ConfigType;
+  // 是否以星期天为第一列，默认星期天为最后一列
   startFromSunday?: boolean;
+  // 是否保证行数尺寸，默认始终显示6行
   sizeGuarantee?: boolean;
-  onChange?: (date?: Dayjs, isSelect?: boolean) => void;
+  // 单元格被选中时触发的事件
+  onSelect?: (date?: Dayjs) => void;
+  // 灰显的单元格是否可以响应交互，如点击等
+  outOfMonthDisabled?: boolean;
 }
 
 export function Calendar(props: CalendarProps) {
   let {
     renderTitleItem,
     renderItem,
+    onSelect,
     date = dayjs(),
     showWeekDayTitle = true,
     startFromSunday = false,
-    sizeGuarantee = true
+    sizeGuarantee = true,
+    outOfMonthDisabled = true
   } = props;
 
   if (typeof renderTitleItem === "undefined") {
     renderTitleItem = (index?: number, name?: string) => {
       return (
-        <div css={[style.defaultCommon, style.defaultTitleItem]}>{name}</div>
+        <div css={[style.defaultItemCommon, style.defaultTitleItem]}>
+          {name}
+        </div>
       );
     };
   }
 
   if (typeof renderItem === "undefined") {
-    renderItem = (item: Dayjs) => {
-      let styles = [style.defaultCommon, style.defaultItem];
+    renderItem = (item: Dayjs, status?: ItemStatus) => {
+      let styles = [style.defaultItemCommon, style.defaultItem];
 
-      /**
-       * 非本月的数据灰显
-       */
-      if (item.month() !== dayjs(date).month()) {
-        styles.push(style.defaultItemGray);
+      // 不是当月的数据灰显
+      if (status?.isOutOfMonth) {
+        styles.push(style.defaultItemOutOfMonth);
       } else {
         styles.push(style.defaultItemMonth);
       }
 
-      // 默认显示的逻辑
-      let child: React.ReactNode = item.date();
-
-      /**
-       * 显示今天
-       */
-      if (item.isSame(dayjs(), "date")) {
-        child = (
-          <div css={style.defaultToday}>
-            <span>{child}</span>
-            <span>今天</span>
-          </div>
-        );
+      // 判断当前日期是否选中
+      if (status?.isSelect) {
+        styles.push(style.defaultSelected);
       }
 
-      /**
-       * 判断当前是否选中
-       */
-      if(selectDate && item.isSame(selectDate, "date")) {
-        styles.push(style.defaultSelected);
+      // 默认显示的逻辑
+      let child: React.ReactNode = item.date();
+      // 显示今天
+      if (status?.isToday) {
+        styles.push(style.defaultToday);
+        child = (
+          <React.Fragment>
+            {child}
+            <span>今天</span>
+          </React.Fragment>
+        );
       }
 
       return <div css={styles}>{child}</div>;
@@ -106,15 +119,28 @@ export function Calendar(props: CalendarProps) {
     return (
       <div key={index} css={[style.row]}>
         {row.map((item: Dayjs) => {
+          /**
+           * 当前选项的状态
+           */
+          const status: ItemStatus = {
+            isSelect: selectDate && item.isSame(selectDate, "date"),
+            isToday: item.isSame(dayjs(), "date"),
+            isOutOfMonth: item.month() !== dayjs(date).month()
+          };
+
           return (
             <div
               key={item.valueOf()}
               css={[style.item, itemHeight]}
               onClick={() => {
-                setSelectDate(item);
+                const outOfMonth = item.month() !== dayjs(date).month();
+                if (!outOfMonth || !outOfMonthDisabled) {
+                  onSelect?.(item);
+                  setSelectDate(item);
+                }
               }}
             >
-              {renderItem!(item)}
+              {renderItem!(item, status)}
             </div>
           );
         })}

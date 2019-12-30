@@ -14,18 +14,32 @@ export const style = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    userSelect: "none"
+    userSelect: "none",
+    WebkitTapHighlightColor: "transparent",
+    outline: "none"
   }),
 
-  defaultCommon: css({
+  // 默认元素的通用样式
+  defaultItemCommon: css({
     width: "100%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    position: "relative"
   }),
 
+  // 默认标题元素的样式
+  defaultTitleItem: css({
+    fontSize: vw(16),
+    // backgroundColor: "#f5f5f5",
+    "@media (min-width: 576px)": {
+      fontSize: vw(16, true)
+    }
+  }),
+
+  // 默认元素的样式
   defaultItem: css({
     fontFamily: "Arial",
     fontSize: vw(18),
@@ -34,53 +48,36 @@ export const style = {
       fontSize: vw(18, true)
     }
   }),
-  defaultItemGray: css({
+  // 非当月的元素样式
+  defaultItemOutOfMonth: css({
     color: `rgb(187, 187, 187)`
   }),
+  // 当月的元素样式
   defaultItemMonth: css({
     fontWeight: 600
   }),
 
   defaultSelected: css({
+    borderRadius: "50%",
     backgroundColor: "#f5f5f5",
     color: "#108ee9"
   }),
 
   defaultToday: css({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
+    borderRadius: "50%",
+    color: "#f70e0e",
     span: {
-      fontWeight: "normal"
-    },
-    "span:nth-of-type(1)": {
-      backgroundColor: "#108ee9",
-      color: "#fff",
-      textAlign: "center",
-      borderRadius: "50%",
-      fontSize: vw(16),
-      width: vw(30),
-      height: vw(30),
-      lineHeight: vw(30),
+      position: "absolute",
+      left: "50%",
+      transform: `translateX(-50%)`,
+      fontWeight: "normal",
+      color: "#f70e0e",
+      fontSize: vw(9),
+      bottom: vw(8),
       "@media (min-width: 576px)": {
-        fontSize: vw(16, true),
-        width: vw(30, true),
-        height: vw(30, true),
-        lineHeight: vw(30, true)
+        fontSize: vw(9, true),
+        bottom: vw(8, true)
       }
-    },
-    "span:nth-of-type(2)": {
-      fontSize: vw(10),
-      color: "#108ee9"
-    }
-  }),
-
-  defaultTitleItem: css({
-    fontSize: vw(16),
-    backgroundColor: "#f5f5f5",
-    "@media (min-width: 576px)": {
-      fontSize: vw(16, true)
     }
   })
 };
