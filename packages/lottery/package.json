@@ -1,6 +1,6 @@
 {
   "name": "@clxx/lottery",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "mobile used lottery component",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
