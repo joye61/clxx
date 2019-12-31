@@ -5,7 +5,7 @@ import { AutoGrid, AutoGridProps } from "@clxx/layout/build/AutoGrid";
 import { ColCenter } from "@clxx/layout/build/Col";
 import { style } from "./style";
 import { useRef, ChangeEvent, useState, useEffect } from "react";
-import { LoadImageOption } from "./loadImageOption";
+import { LoadImageOption } from "./LoadImageOption";
 
 export interface PickedList {
   file: File;
@@ -14,16 +14,34 @@ export interface PickedList {
 }
 
 export interface ImagePickerProps extends AutoGridProps, LoadImageOption {
+  /**
+   * 最大选取图片数
+   */
   maxPick?: number;
+  /**
+   * 选取按钮文字提示
+   */
   pickHint?: string;
+  /**
+   * 正在选取文字提示
+   */
   pickingHint?: string;
-  overLimitHint?: string;
+  /**
+   * 是否支持多选
+   */
   multiple?: boolean;
+  /**
+   * 是否显示选取缩略图
+   */
+  showPickedThumb?: boolean;
+  /**
+   * 列表变化时触发，list对象可用户上传
+   */
   onChange?: ((list: PickedList) => void) | any;
 }
 
 export function ImagePicker(props: ImagePickerProps) {
-  const {
+  let {
     col = 4,
     gap = 10,
     maxPick = 9,
@@ -31,9 +49,15 @@ export function ImagePicker(props: ImagePickerProps) {
     autoHeight = false,
     pickHint = "选取照片",
     pickingHint = "正在选取",
+    showPickedThumb = true,
     onChange,
     ...loadImageOption
   } = props;
+
+  // 不显示缩略图的时候选取数量不受限制
+  if(!showPickedThumb) {
+    maxPick = Number.MAX_SAFE_INTEGER;
+  }
 
   /**
    * 当前选择的图片列表
@@ -101,8 +125,14 @@ export function ImagePicker(props: ImagePickerProps) {
             });
           } catch (error) {}
         }
-        const finalList = [...list, ...pickedList];
-        finalList.splice(maxPick);
+
+        let finalList: Array<PickedList> = [];
+        if(showPickedThumb) {
+          finalList = [...list, ...pickedList];
+          finalList.splice(maxPick);
+        } else {
+          finalList = pickedList;
+        }
         setList(finalList);
         // 清除被选择的文件列表
         event.target.value = "";
@@ -154,32 +184,38 @@ export function ImagePicker(props: ImagePickerProps) {
       className="clxx-ImagePicker"
     >
       {/* 已经选取的图片列表 */}
-      {list.map((item, index) => {
-        const autoStyle: ObjectInterpolation<any> = {};
-        if (item.canvas.width > item.canvas.height) {
-          autoStyle.height = "100%";
-        } else {
-          autoStyle.width = "100%";
-        }
-        return (
-          <div key={index} css={style.item} className="clxx-ImagePicker-item">
-            <img css={autoStyle} src={item.dataURL} alt={item.file.name} />
-            <ColCenter
-              css={style.remove}
-              onTouchStart={() => {}}
-              onClick={() => {
-                list.splice(index, 1);
-                setList([...list]);
-              }}
-              className="clxx-ImagePicker-remove"
-            >
-              <svg viewBox="0 0 1024 1024">
-                <path d="M384 853.333333c12.8 0 21.333333-10.666667 21.333333-21.333333l-32-512c0-12.8-10.666667-21.333333-21.333333-21.333333-12.8 0-21.333333 10.666667-21.333333 21.333333L362.666667 832C362.666667 844.8 373.333333 853.333333 384 853.333333zM874.666667 170.666667 661.333333 170.666667 661.333333 85.333333c0-23.466667-19.2-42.666667-42.666667-42.666667L405.333333 42.666667c-23.466667 0-42.666667 19.2-42.666667 42.666667l0 85.333333L149.333333 170.666667C136.533333 170.666667 128 179.2 128 192c0 12.8 8.533333 21.333333 21.333333 21.333333l42.666667 0 42.666667 682.666667c6.4 46.933333 38.4 85.333333 85.333333 85.333333l384 0c46.933333 0 76.8-38.4 85.333333-85.333333l42.666667-682.666667 42.666667 0c12.8 0 21.333333-8.533333 21.333333-21.333333C896 179.2 887.466667 170.666667 874.666667 170.666667zM405.333333 85.333333l213.333333 0 0 85.333333L405.333333 170.666667 405.333333 85.333333zM746.666667 896c-2.133333 23.466667-19.2 42.666667-42.666667 42.666667L320 938.666667c-23.466667 0-38.4-19.2-42.666667-42.666667l-42.666667-682.666667 554.666667 0L746.666667 896zM640 853.333333c12.8 0 21.333333-8.533333 21.333333-21.333333l32-512c0-12.8-8.533333-21.333333-21.333333-21.333333-12.8 0-21.333333 8.533333-21.333333 21.333333L618.666667 832C618.666667 842.666667 627.2 853.333333 640 853.333333zM512 853.333333c12.8 0 21.333333-8.533333 21.333333-21.333333L533.333333 320c0-12.8-8.533333-21.333333-21.333333-21.333333s-21.333333 8.533333-21.333333 21.333333l0 512C490.666667 844.8 499.2 853.333333 512 853.333333z" />
-              </svg>
-            </ColCenter>
-          </div>
-        );
-      })}
+      {showPickedThumb
+        ? list.map((item, index) => {
+            const autoStyle: ObjectInterpolation<any> = {};
+            if (item.canvas.width > item.canvas.height) {
+              autoStyle.height = "100%";
+            } else {
+              autoStyle.width = "100%";
+            }
+            return (
+              <div
+                key={index}
+                css={style.item}
+                className="clxx-ImagePicker-item"
+              >
+                <img css={autoStyle} src={item.dataURL} alt={item.file.name} />
+                <ColCenter
+                  css={style.remove}
+                  onTouchStart={() => {}}
+                  onClick={() => {
+                    list.splice(index, 1);
+                    setList([...list]);
+                  }}
+                  className="clxx-ImagePicker-remove"
+                >
+                  <svg viewBox="0 0 1024 1024">
+                    <path d="M384 853.333333c12.8 0 21.333333-10.666667 21.333333-21.333333l-32-512c0-12.8-10.666667-21.333333-21.333333-21.333333-12.8 0-21.333333 10.666667-21.333333 21.333333L362.666667 832C362.666667 844.8 373.333333 853.333333 384 853.333333zM874.666667 170.666667 661.333333 170.666667 661.333333 85.333333c0-23.466667-19.2-42.666667-42.666667-42.666667L405.333333 42.666667c-23.466667 0-42.666667 19.2-42.666667 42.666667l0 85.333333L149.333333 170.666667C136.533333 170.666667 128 179.2 128 192c0 12.8 8.533333 21.333333 21.333333 21.333333l42.666667 0 42.666667 682.666667c6.4 46.933333 38.4 85.333333 85.333333 85.333333l384 0c46.933333 0 76.8-38.4 85.333333-85.333333l42.666667-682.666667 42.666667 0c12.8 0 21.333333-8.533333 21.333333-21.333333C896 179.2 887.466667 170.666667 874.666667 170.666667zM405.333333 85.333333l213.333333 0 0 85.333333L405.333333 170.666667 405.333333 85.333333zM746.666667 896c-2.133333 23.466667-19.2 42.666667-42.666667 42.666667L320 938.666667c-23.466667 0-38.4-19.2-42.666667-42.666667l-42.666667-682.666667 554.666667 0L746.666667 896zM640 853.333333c12.8 0 21.333333-8.533333 21.333333-21.333333l32-512c0-12.8-8.533333-21.333333-21.333333-21.333333-12.8 0-21.333333 8.533333-21.333333 21.333333L618.666667 832C618.666667 842.666667 627.2 853.333333 640 853.333333zM512 853.333333c12.8 0 21.333333-8.533333 21.333333-21.333333L533.333333 320c0-12.8-8.533333-21.333333-21.333333-21.333333s-21.333333 8.533333-21.333333 21.333333l0 512C490.666667 844.8 499.2 853.333333 512 853.333333z" />
+                  </svg>
+                </ColCenter>
+              </div>
+            );
+          })
+        : null}
 
       {/* 选取图片按钮 */}
       <ColCenter

@@ -1,7 +1,7 @@
 {
 	"name": "@clxx/image-picker",
 	"version": "0.0.5",
-	"description": "image upload picker",
+	"description": "image picker component with full ui",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
 	"scripts": {

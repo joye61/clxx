@@ -24,7 +24,7 @@ export const style = {
     }
   }),
   canPick: css({
-    boxShadow: `0 0 1px black`,
+    boxShadow: `0 0 2px #666`,
     svg: {
       path: {
         fill: "gray"
@@ -49,7 +49,7 @@ export const style = {
     })
   }),
   item: css({
-    boxShadow: `0 0 1px black`,
+    boxShadow: `0 0 2px #666`,
     width: "100%",
     height: "100%",
     fontSize: 0,
