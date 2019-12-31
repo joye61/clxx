@@ -13,12 +13,12 @@
 - [ ] 日历宫格视图
 - [ ] 抽奖轮盘
 - [ ] 图片编辑器
-- [ ] 图片选择器
 - [ ] 级联选择器（→ 当前正在实现 ）
 
 # 预览（非全部功能）
 
 <p>
+  <img src="assets/image-picker.gif" width="25%">
   <img src="assets/waterfall.gif" width="25%">
   <img src="assets/calendar.gif" width="25%">
   <img src="assets/alert.gif" width="25%">
