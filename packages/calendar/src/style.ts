@@ -73,7 +73,7 @@ export const style = {
       fontWeight: "normal",
       color: "#f70e0e",
       fontSize: vw(9),
-      bottom: vw(8),
+      bottom: vw(6),
       "@media (min-width: 576px)": {
         fontSize: vw(9, true),
         bottom: vw(8, true)

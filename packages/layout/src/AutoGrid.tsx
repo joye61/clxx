@@ -5,7 +5,11 @@ import { style } from "./AutoGridStyle";
 import { splitValue } from "@clxx/base";
 import { useWindowResize } from "@clxx/effect";
 
-export interface AutoGridProps {
+export interface AutoGridProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   /**
    * 网格的空白区域尺寸，空白区域是等宽的
    */
@@ -25,7 +29,13 @@ export interface AutoGridProps {
 }
 
 export function AutoGrid(props: AutoGridProps) {
-  let { gap = 0, col = 1, autoHeight = false, children } = props;
+  let {
+    gap = 0,
+    col = 1,
+    autoHeight = false,
+    children,
+    ...attrributes
+  } = props;
 
   // 保证表格至少有一列
   if (col < 1 || typeof col !== "number") {
@@ -58,9 +68,20 @@ export function AutoGrid(props: AutoGridProps) {
    * 生成表格列表
    */
   useEffect(() => {
-    if (Array.isArray(children)) {
-      const list: Array<React.ReactNode[]> = [];
-      children.forEach(item => {
+    if (!children) {
+      return;
+    }
+
+    const list: Array<React.ReactNode[]> = [];
+    const pushList = (arr: any[]) => {
+      arr.forEach(item => {
+        if (!item) {
+          return;
+        }
+        if (Array.isArray(item)) {
+          pushList(item);
+          return;
+        }
         if (list.length === 0) {
           list.push([item]);
         } else {
@@ -72,10 +93,16 @@ export function AutoGrid(props: AutoGridProps) {
           }
         }
       });
-      setList(list);
+    };
+
+    if (Array.isArray(children)) {
+      pushList(children);
     } else {
-      setList([[children]]);
+      pushList([children]);
     }
+
+    // 更新列表
+    setList(list);
   }, [children, col]);
 
   /**
@@ -117,5 +144,9 @@ export function AutoGrid(props: AutoGridProps) {
     });
   };
 
-  return <div ref={container}>{showRows()}</div>;
+  return (
+    <div ref={container} {...attrributes}>
+      {showRows()}
+    </div>
+  );
 }
