@@ -13,6 +13,7 @@
   },
   "scripts": {
     "new": "node ./scripts/create.js",
+    "build": "lerna run build",
     "lerna": "lerna"
   }
 }
