@@ -68,7 +68,8 @@ export function SelfAdaption(props: SelfAdaptionProps) {
             WebkitTapHighlightColor: "transparent",
             WebkitOverflowScrolling: "touch",
             WebkitTextSizeAdjust: "100%",
-            fontSize: `${baseFontSize}px`
+            fontSize: `${baseFontSize}px`,
+            touchAction: `manipulation`
           },
           body: {
             // initial在textarea会遇到rem无法生效的bug
