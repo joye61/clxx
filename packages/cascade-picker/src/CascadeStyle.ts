@@ -1,5 +1,18 @@
-import { css } from "@emotion/core";
+import { css, ObjectInterpolation } from "@emotion/core";
 import { vw } from "@clxx/base";
+
+const borderBottom: ObjectInterpolation<any> = {
+  "&::after": {
+    content: "''",
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    height: "1px",
+    transform: `scaleY(${1 / window.devicePixelRatio})`,
+    backgroundColor: "#ccc"
+  }
+};
 
 export const style = {
   container: css({
@@ -12,16 +25,7 @@ export const style = {
   }),
   head: css({
     position: "relative",
-    "&::after": {
-      content: "''",
-      position: "absolute",
-      left: 0,
-      bottom: 0,
-      width: "100%",
-      height: "1px",
-      transform: `scaleY(${1 / window.devicePixelRatio})`,
-      backgroundColor: "#ccc"
-    }
+    ...borderBottom
   }),
   defaultTitle: css({
     color: "#333",
@@ -35,7 +39,7 @@ export const style = {
     right: vw(15),
     top: "50%",
     transform: `translateY(-50%)`,
-    transition: `transform 50ms, opacity 50ms`,
+    transition: `transform 100ms, opacity 100ms`,
     svg: {
       width: vw(20),
       path: {
@@ -50,7 +54,9 @@ export const style = {
 
   // 选择区域
   select: css({
-    padding: `0 ${vw(15)}`
+    padding: `0 ${vw(15)}`,
+    position: "relative",
+    ...borderBottom
   }),
   selectItem: css({
     position: "relative",
@@ -71,7 +77,12 @@ export const style = {
 
   // 列表区域
   optionItem: css({
-    color: "#333",
-    fontSize: vw(18)
+    fontSize: vw(18),
+    textAlign: "center"
+  }),
+  content: css({
+    ">div": {
+      flex: 1
+    }
   })
 };

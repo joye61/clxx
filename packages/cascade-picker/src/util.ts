@@ -1,49 +1,53 @@
-import { CascadeData, CascadeDataItem } from "./types";
+import { CascadeDataItem } from "./types";
 
-/**
- * 获取级联的级数
- * @param data
- */
-export function getLevel(data: CascadeData) {
-  let level = 0;
-  if (!Array.isArray(data) || data.length === 0) {
-    return level;
+export async function ensureDataSource(data?: Array<CascadeDataItem>) {
+  if (Array.isArray(data)) {
+    return data;
   }
 
-  let list: CascadeData | undefined = data;
-  while (Array.isArray(list)) {
-    level++;
-    list = list[0].children;
+  try {
+    /**
+     * 如果没有数据，默认取省市区数据
+     */
+    const defaultData = await import("./defaultData/index");
+
+    /**
+     * 从数据源获取子列表
+     * @param code 
+     * @param type 
+     */
+    const getChildrenFromSrouce = (
+      code: string,
+      type: "city" | "district"
+    ): Array<CascadeDataItem> => {
+      const dataSource = defaultData[type];
+      if (Array.isArray(dataSource[code])) {
+        const children =  dataSource[code].map(item => {
+          const result: CascadeDataItem = {
+            name: item.name,
+            value: item.code
+          };
+          if (type === "city") {
+            result.children = getChildrenFromSrouce(item.code, "district");
+          }
+          return result;
+        });
+        return children;
+      } else {
+        return [];
+      }
+    };
+
+    return defaultData.province.map(item=>{
+      const result: CascadeDataItem = {
+        name: item.name,
+        value: item.code,
+        children: getChildrenFromSrouce(item.code, "city")
+      };
+      return result;
+    })
+  
+  } catch (error) {
+    return [];
   }
-
-  return level;
-}
-
-/**
- * 根据当前选择项获取数据列表
- * @param data
- * @param selected
- */
-export function getListBySelected(data: CascadeData, selected: Array<number>) {
-  function getPickerListByKey(
-    key: keyof CascadeDataItem,
-    array: CascadeData
-  ): Array<React.ReactElement | string> {
-    return array.map(item => {
-      return item[key];
-    });
-  }
-
-  let list: Array<React.ReactElement | string>[] = [];
-
-  // 获取元素列表
-  let tempList: CascadeData = data;
-
-  // 最后一个元素没有列表，不获取
-  for (let index = 0; index < selected.length; index++) {
-    list.push(getPickerListByKey("content", tempList));
-    tempList = tempList[selected[index]]?.children ?? [];
-  }
-
-  return list;
 }

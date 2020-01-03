@@ -1,10 +1,29 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { RowCenter, Row, RowStart } from "@clxx/layout";
+import { RowCenter, Row } from "@clxx/layout";
 import { style } from "./CascadeStyle";
+import { CascadeProps, CascadeDataItem } from "./types";
+import { useEffect, useState, useRef } from "react";
+import { ensureDataSource } from "./util";
 import { ScrollContent } from "@clxx/picker/build/ScrollContent";
 
-export function Cascade() {
+export function Cascade(props: CascadeProps) {
+  const [value, setValue] = useState<number[]>(props.defaultValue || []);
+  const dataSource = useRef<Array<CascadeDataItem>>([]);
+
+  useEffect(() => {
+    (async () => {
+      dataSource.current = await ensureDataSource(props.data);
+    })();
+  });
+
+  const showList = ()=>{
+    
+    value.forEach((item, index)=>{
+
+    })
+  }
+
   return (
     <div css={style.container} className="clxx-Cascade">
       <RowCenter css={style.head}>
@@ -15,29 +34,54 @@ export function Cascade() {
           </svg>
         </span>
       </RowCenter>
-      <RowCenter css={style.select}>
-        <div css={[style.selectItem]}>上海市</div>
-        <span css={style.selectItemSeperator}>／</span>
-        <div css={[style.selectItem]}>浦东新区</div>
-        <span css={style.selectItemSeperator}>／</span>
-        <div css={[style.selectItem, style.selectItemActive]}>
-          花木街道办事处
-        </div>
-      </RowCenter>
 
-      <ScrollContent
-        list={[
-          <div css={style.optionItem}>北蔡</div>,
-          <div css={style.optionItem}>塘桥</div>,
-          <div css={style.optionItem}>花木</div>,
-          <div css={style.optionItem}>芳华</div>,
-          <div css={style.optionItem}>金桥</div>,
-          <div css={style.optionItem}>陆家嘴</div>,
-          <div css={style.optionItem}>周浦</div>,
-          <div css={style.optionItem}>鹤沙航城</div>,
-          <div css={style.optionItem}>川沙</div>
-        ]}
-      />
+      <Row css={style.content}>
+        <ScrollContent
+          list={[
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>
+          ]}
+        />
+        <ScrollContent
+          list={[
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>
+          ]}
+        />
+        <ScrollContent
+          list={[
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>,
+            <p css={style.optionItem}>北蔡</p>
+          ]}
+        />
+      </Row>
     </div>
   );
 }

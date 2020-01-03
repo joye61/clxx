@@ -28,6 +28,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
+    "@better-scroll/core": "^2.0.0-beta.4",
     "@clxx/base": "^0.0.6",
     "@clxx/dialog": "^0.0.6",
     "@clxx/layout": "^0.0.6",
