@@ -42,7 +42,7 @@ export function FixContainer(props: FixContainerProps) {
     top: 0
   };
   if (showMask) {
-    styles.backgroundColor = `rgba(0,0,0,.5)`;
+    styles.backgroundColor = `rgba(0,0,0,.6)`;
   }
   if (centerChild) {
     styles.display = "flex";

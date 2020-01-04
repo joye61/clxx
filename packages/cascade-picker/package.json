@@ -24,16 +24,17 @@
   "author": "joye",
   "license": "MIT",
   "devDependencies": {
+    "@types/lodash": "^4.14.149",
     "@types/react": "^16.9.17",
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@better-scroll/core": "^2.0.0-beta.4",
     "@clxx/base": "^0.0.6",
     "@clxx/dialog": "^0.0.6",
     "@clxx/layout": "^0.0.6",
     "@clxx/picker": "^0.0.6",
     "@emotion/core": "^10.0.27",
+    "lodash": "^4.17.15",
     "react": "^16.12.0"
   }
 }
