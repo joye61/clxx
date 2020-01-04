@@ -1,6 +1,6 @@
 {
   "name": "@clxx/toast",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Toast component",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,7 +29,7 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.6",
+    "@clxx/base": "^0.0.7",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"

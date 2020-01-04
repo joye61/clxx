@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/loadmore-list",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "package template",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
