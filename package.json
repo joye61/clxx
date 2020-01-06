@@ -15,7 +15,7 @@
   "scripts": {
     "new": "node ./scripts/create.js",
     "build": "lerna run build",
-    "release": "lerna run publish",
+    "release": "lerna publish",
     "lerna": "lerna"
   }
 }
