@@ -1,12 +1,12 @@
 # 移动端 H5 功能集合
 
-特色
+服务于移动端H5业务研发中的各种痛点（**自研有难度且耗时，缺乏简单易用的第三方**）功能集合：
 
 - 基于 `React` 和 `React Hooks` 开发
-- 纯基于 [`CSS-IN-JS`](https://github.com/emotion-js/emotion) 技术，零 CSS 依赖
+- 基于 [`CSS-IN-JS`](https://github.com/emotion-js/emotion) 技术，零样式文件依赖
 - 完全的自适应 UI，易于使用
 
-本项目采用纯`TypeScript V3.7.3`开发，自带声明文件，在基于`TypeScript`的项目中引用无需额外的声明！
+> 项目采用`^TypeScript V3.7.3`开发，自带声明文件，在基于`TypeScript`的项目中引用无需额外引用！
 
 ### ❗❗❗ 关于文档和测试 ❗❗❗
 
