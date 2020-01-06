@@ -25,12 +25,13 @@ const packagePath = path.resolve(__dirname, `../packages/${packageName}`);
 const packageJSON = {
   name: `@clxx/${packageName}`,
   version: "0.0.0",
-  description: "package template",
+  description: `${packageName}`,
   main: "./build/index.js",
   types: "./build/index.d.ts",
   scripts: {
-    start: "tsc -w --pretty",
-    build: "node ../../scripts/clear.js && tsc"
+    tsc: "../../node_modules/.bin/tsc",
+    start: "yarn tsc -w --pretty",
+    build: "node ../../scripts/clear.js && yarn tsc"
   },
   repository: {
     type: "git",
@@ -42,10 +43,7 @@ const packageJSON = {
   },
   keywords: ["react", "css-in-js", "typescript"],
   author: "joye",
-  license: "MIT",
-  devDependencies: {
-    typescript: "^3.7.3"
-  }
+  license: "MIT"
 };
 
 // 复制模板文件夹

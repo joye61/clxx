@@ -1,16 +1,17 @@
 {
-	"name": "@clxx/loadmore-list",
-	"version": "0.0.7",
+	"name": "@clxx/scrollview",
+	"version": "0.0.0",
 	"description": "package template",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
 	"scripts": {
-		"start": "tsc -w --pretty",
-		"build": "node ../../scripts/clear.js && tsc"
+    "tsc": "../../node_modules/.bin/tsc",
+		"start": "yarn tsc -w --pretty",
+		"build": "node ../../scripts/clear.js && yarn tsc"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/joye61/clxx/tree/master/packages/loadmore-list"
+		"url": "https://github.com/joye61/clxx/tree/master/packages/scrollview"
 	},
 	"publishConfig": {
 		"access": "public",
@@ -22,8 +23,5 @@
 		"typescript"
 	],
 	"author": "joye",
-	"license": "MIT",
-	"devDependencies": {
-		"typescript": "^3.7.3"
-	}
+	"license": "MIT"
 }

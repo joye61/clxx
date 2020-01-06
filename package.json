@@ -5,7 +5,8 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
-    "lerna": "^3.19.0"
+    "lerna": "^3.19.0",
+    "typescript": "^3.7.4"
   },
   "repository": {
     "type": "git",

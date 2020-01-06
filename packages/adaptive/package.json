@@ -1,12 +1,13 @@
 {
   "name": "@clxx/adaptive",
   "version": "0.0.7",
-  "description": "package template",
+  "description": "package adaptive",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "start": "tsc -w --pretty",
-    "build": "node ../../scripts/clear.js && tsc"
+    "tsc": "../../node_modules/.bin/tsc",
+		"start": "yarn tsc -w --pretty",
+		"build": "node ../../scripts/clear.js && yarn tsc"
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,7 @@
   "author": "joye",
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^16.9.17",
-    "typescript": "^3.7.3"
+    "@types/react": "^16.9.17"
   },
   "dependencies": {
     "@clxx/effect": "^0.0.7",

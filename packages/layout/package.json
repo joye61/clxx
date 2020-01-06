@@ -5,8 +5,9 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
-    "start": "tsc -w --pretty",
-    "build": "node ../../scripts/clear.js && tsc"
+    "tsc": "../../node_modules/.bin/tsc",
+		"start": "yarn tsc -w --pretty",
+		"build": "node ../../scripts/clear.js && yarn tsc"
   },
   "repository": {
     "type": "git",
@@ -25,8 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
-    "typescript": "^3.7.3"
+    "@types/react-dom": "^16.9.4"
   },
   "dependencies": {
     "@clxx/base": "^0.0.7",

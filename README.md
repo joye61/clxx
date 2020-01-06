@@ -67,7 +67,7 @@ import { ImagePicker } from "@clxx/image-picker";
 <p>✅ <a href="./packages/waterfall">瀑布流布局效果</a></p>
 
 <p>⚪ <a href="./packages/image-editor">移动端图片编辑器</a></p>
-<p>⚪ <a href="./packages/loadmore-list">滚动到底部加载更多容器</a></p>
+<p>⚪ <a href="./packages/loadmore-list">滚动容器</a></p>
 <p>⚪ <a href="./packages/lottery">抽奖罗盘</a></p>
 <p>⚪ <a href="./packages/scroll-view">可防穿透的滚动容器</a></p>
 
