@@ -1,13 +1,13 @@
 {
   "name": "@clxx/alert",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Universal dialog box that can replace system alert",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "tsc": "../../node_modules/.bin/tsc",
-		"start": "yarn tsc -w --pretty",
-		"build": "node ../../scripts/clear.js && yarn tsc"
+    "start": "yarn tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && yarn tsc"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,8 @@
     "@types/react-dom": "^16.9.4"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.7",
-    "@clxx/layout": "^0.0.7",
+    "@clxx/base": "^0.0.8",
+    "@clxx/layout": "^0.0.8",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"

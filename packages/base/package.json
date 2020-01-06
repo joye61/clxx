@@ -1,13 +1,13 @@
 {
   "name": "@clxx/base",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "base utility for all cl's packages",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "tsc": "../../node_modules/.bin/tsc",
-		"start": "yarn tsc -w --pretty",
-		"build": "node ../../scripts/clear.js && yarn tsc"
+    "start": "yarn tsc -w --pretty",
+    "build": "node ../../scripts/clear.js && yarn tsc"
   },
   "repository": {
     "type": "git",
