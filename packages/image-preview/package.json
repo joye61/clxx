@@ -1,7 +1,7 @@
 {
-	"name": "@clxx/scrollview",
+	"name": "@clxx/image-preview",
 	"version": "0.0.0",
-	"description": "package template",
+	"description": "image-preview",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
 	"scripts": {
@@ -11,7 +11,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/joye61/clxx/tree/master/packages/scrollview"
+		"url": "https://github.com/joye61/clxx/tree/master/packages/image-preview"
 	},
 	"publishConfig": {
 		"access": "public",
@@ -23,16 +23,5 @@
 		"typescript"
 	],
 	"author": "joye",
-	"license": "MIT",
-	"dependencies": {
-		"@better-scroll/core": "^2.0.0-beta.4",
-		"@better-scroll/scroll-bar": "^2.0.0-beta.4",
-		"@emotion/core": "^10.0.27",
-		"lodash": "^4.17.15",
-		"react": "^16.12.0"
-	},
-	"devDependencies": {
-		"@types/lodash": "^4.14.149",
-		"@types/react": "^16.9.17"
-	}
+	"license": "MIT"
 }
