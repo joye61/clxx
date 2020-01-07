@@ -1,6 +1,6 @@
 {
   "name": "@clxx/cascade-picker",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "common used cascade-picker",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,10 +29,10 @@
     "@types/react": "^16.9.17"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.8",
-    "@clxx/dialog": "^0.0.8",
-    "@clxx/layout": "^0.0.8",
-    "@clxx/picker": "^0.0.8",
+    "@clxx/base": "^0.0.9",
+    "@clxx/dialog": "^0.0.9",
+    "@clxx/layout": "^0.0.9",
+    "@clxx/picker": "^0.0.9",
     "@emotion/core": "^10.0.27",
     "lodash": "^4.17.15",
     "react": "^16.12.0"

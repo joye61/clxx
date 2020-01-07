@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/image-preview",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "image-preview",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",

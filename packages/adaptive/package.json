@@ -1,6 +1,6 @@
 {
   "name": "@clxx/adaptive",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "package adaptive",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -28,7 +28,7 @@
     "@types/react": "^16.9.17"
   },
   "dependencies": {
-    "@clxx/effect": "^0.0.8",
+    "@clxx/effect": "^0.0.9",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0"
   }
