@@ -1,6 +1,6 @@
 {
   "name": "@clxx/effect",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "react effect for cl-utils",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
