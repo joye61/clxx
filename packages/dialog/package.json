@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/dialog",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "Dialog container",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
@@ -29,7 +29,7 @@
 		"@types/react-dom": "^16.9.4"
 	},
 	"dependencies": {
-		"@clxx/layout": "^0.0.9",
+		"@clxx/layout": "^0.0.10",
 		"@emotion/core": "^10.0.22",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0"

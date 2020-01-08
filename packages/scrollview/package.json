@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/scrollview",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "package template",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
