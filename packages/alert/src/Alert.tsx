@@ -11,19 +11,19 @@ export interface AlertProps
     HTMLDivElement
   > {
   content: React.ReactNode;
-  showMask?: boolean;
-  showCancel?: boolean;
-  showConfirm?: boolean;
-  cancelContent?: React.ReactNode;
-  confirmContent?: React.ReactNode;
-  onConfirm?: Callback;
-  onCancel?: Callback;
-  onHide?: Callback;
+  showMask: boolean;
+  showCancel: boolean;
+  showConfirm: boolean;
+  cancelContent: React.ReactNode;
+  confirmContent: React.ReactNode;
+  onConfirm: Callback;
+  onCancel: Callback;
+  onHide: Callback;
 }
 
-export function Alert(props: AlertProps): React.ReactElement {
+export function Alert(props: Partial<AlertProps>): React.ReactElement {
   const {
-    content,
+    content = "",
     showMask = true,
     showCancel = false,
     showConfirm = true,
@@ -70,7 +70,7 @@ export function Alert(props: AlertProps): React.ReactElement {
     showContent = content;
   } else {
     showContent = (
-      <p css={style.content} className="cl-Alert-content">
+      <p css={style.content} className="clxx-Alert-content">
         {content}
       </p>
     );
@@ -84,15 +84,11 @@ export function Alert(props: AlertProps): React.ReactElement {
       return null;
     }
 
-    if (React.isValidElement(cancelContent)) {
-      return cancelContent;
-    }
-
     return (
       <div
         css={[style.btnItem, style.cancel]}
         onClick={cancel}
-        className="cl-Alert-btn-cancel"
+        className="clxx-Alert-btn-cancel"
         onTouchStart={() => undefined}
       >
         {cancelContent}
@@ -108,14 +104,10 @@ export function Alert(props: AlertProps): React.ReactElement {
       return null;
     }
 
-    if (React.isValidElement(confirmContent)) {
-      return confirmContent;
-    }
-
     return (
       <div
         css={[style.btnItem, style.confirm]}
-        className="cl-Alert-btn-confirm"
+        className="clxx-Alert-btn-confirm"
         onClick={confirm}
         onTouchStart={() => undefined}
       >
@@ -130,7 +122,7 @@ export function Alert(props: AlertProps): React.ReactElement {
     }
 
     return (
-      <div css={style.btn} className="cl-Alert-btn">
+      <div css={style.btn} className="clxx-Alert-btn">
         {cancelBtn()}
         {confirmBtn()}
       </div>
@@ -145,7 +137,7 @@ export function Alert(props: AlertProps): React.ReactElement {
       css={maskAnimation}
     >
       <div
-        className="cl-Alert-container"
+        className="clxx-Alert-container"
         css={[style.container, animation]}
         onAnimationEnd={animationEnd}
       >

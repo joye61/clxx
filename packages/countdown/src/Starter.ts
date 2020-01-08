@@ -13,10 +13,10 @@ export interface StarterOption {
   onEnd: () => void;
   // 显示单位格式
   unitMap: {
-    d?: string;
-    h?: string;
-    i?: string;
-    s?: string;
+    d?: React.ReactNode;
+    h?: React.ReactNode;
+    i?: React.ReactNode;
+    s?: React.ReactNode;
   };
   // 是否立即启动raf，可以选择否在随后主动调用startRaf
   startImmediately: boolean;
@@ -28,7 +28,7 @@ export type updateResult = {
   key: FormatKey;
   num: number;
   text: string;
-  unit: string;
+  unit: React.ReactNode;
 };
 export type updateCallback = (current: updateResult[]) => void;
 

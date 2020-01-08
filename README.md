@@ -10,11 +10,11 @@
 
 ### ❗❗❗ 关于文档和测试 ❗❗❗
 
-TODO
+文档和单元测试未完成！目前已经完成部分UI测试，部分示例代码位于`examples`目录下，UI测试基于`create-react-app`，请自行查阅
 
 # 使用
 
-每次新功能完成都会推送到NPM仓库，`packages`目录下的每一个目录名都是一个包后缀，本仓库的所有包都是组织在`@clxx`的组织作用域中，如想使用`ImagePicker`组件，采用如下步骤：
+每次新功能完成都会推送到NPM仓库，`packages`目录下的每一个目录都是一个包后缀，本仓库的所有包都是组织在`@clxx`的作用域中，如想使用`ImagePicker`组件，请采用如下步骤：
 
 ## 1、第一步，安装对应包
 
@@ -70,8 +70,6 @@ import { ImagePicker } from "@clxx/image-picker";
 <p>⚪ <a href="./packages/loadmore-list">滚动容器</a></p>
 <p>⚪ <a href="./packages/lottery">抽奖罗盘</a></p>
 <p>⚪ <a href="./packages/scroll-view">可防穿透的滚动容器</a></p>
-
-<p>🔜 更多在路上...</p>
 
 
 # 以下是部分已完成功能的GIF预览

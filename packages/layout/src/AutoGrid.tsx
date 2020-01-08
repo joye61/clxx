@@ -46,6 +46,10 @@ export function AutoGrid(props: AutoGridProps) {
   const [list, setList] = useState<Array<React.ReactNode[]>>([]);
   const [size, setSize] = useState<SerializedStyles | undefined>(undefined);
 
+  /**
+   * BugFix TODO:
+   * gap只能是数字或者数字+px代表的单位，其他值都会出错，此处是bug，待修复
+   */
   const computeSize = () => {
     const rect = container.current!.getBoundingClientRect();
     const { num, unit } = splitValue(gap);

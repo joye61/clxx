@@ -21,6 +21,8 @@ export interface CountDownProps
   noUnit?: boolean;
   // 分隔符
   separator?: string;
+  // 渲染数字
+  renderItem?: (item: updateResult) => React.ReactNode;
 }
 
 function useFrame(option: Partial<StarterOption>, update: updateCallback) {
@@ -42,7 +44,12 @@ function useFrame(option: Partial<StarterOption>, update: updateCallback) {
 }
 
 export function CountDown(props: Partial<CountDownProps>) {
-  const { noUnit = true, separator = ":", ...extraProps } = props;
+  const {
+    noUnit = true,
+    separator = ":",
+    renderItem,
+    ...extraProps
+  } = props;
 
   // starter 的启动参数
   const starterProps = [
@@ -80,8 +87,15 @@ export function CountDown(props: Partial<CountDownProps>) {
     } else {
       extra = item.unit;
     }
-    return (
-      <React.Fragment key={index}>
+
+    /**
+     * 可以定制渲染数字的UI
+     */
+    let showItem: React.ReactNode;
+    if (typeof renderItem === "function") {
+      showItem = renderItem(item);
+    } else {
+      showItem = (
         <span
           css={{
             fontFamily: "Arial, Verdana, Tahoma"
@@ -90,6 +104,12 @@ export function CountDown(props: Partial<CountDownProps>) {
         >
           {item.text}
         </span>
+      );
+    }
+
+    return (
+      <React.Fragment key={index}>
+        {showItem}
         {extra}
       </React.Fragment>
     );
