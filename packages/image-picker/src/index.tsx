@@ -123,6 +123,7 @@ export function ImagePicker(props: ImagePickerProps) {
               canvas,
               dataURL: canvas.toDataURL()
             });
+          // eslint-disable-next-line no-empty
           } catch (error) {}
         }
 
@@ -201,7 +202,7 @@ export function ImagePicker(props: ImagePickerProps) {
                 <img css={autoStyle} src={item.dataURL} alt={item.file.name} />
                 <ColCenter
                   css={style.remove}
-                  onTouchStart={() => {}}
+                  onTouchStart={() => undefined}
                   onClick={() => {
                     list.splice(index, 1);
                     setList([...list]);
@@ -220,7 +221,7 @@ export function ImagePicker(props: ImagePickerProps) {
       {/* 选取图片按钮 */}
       <ColCenter
         css={[style.pick, pickStyle]}
-        onTouchStart={() => {}}
+        onTouchStart={() => undefined}
         onClick={pickClick}
         className="clxx-ImagePicker-btn"
       >

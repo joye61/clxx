@@ -31,7 +31,7 @@ export function Controls(props: ControlsProps) {
       <div
         css={style.btn}
         className="cancel"
-        onTouchStart={() => {}}
+        onTouchStart={() => undefined}
         onClick={() => {
           onCancel?.();
         }}
@@ -40,7 +40,7 @@ export function Controls(props: ControlsProps) {
       </div>
       <div
         css={style.btn}
-        onTouchStart={() => {}}
+        onTouchStart={() => undefined}
         className="confirm"
         onClick={() => {
           onConfirm?.();

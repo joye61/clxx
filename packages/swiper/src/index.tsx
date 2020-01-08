@@ -30,7 +30,6 @@ export function ReactSwiper(props: ReactSwiperProps) {
     showNavigation = false,
     showScrollBar = false,
     swiperOption = {},
-    className,
     ...attributes
   } = props;
 
@@ -41,7 +40,7 @@ export function ReactSwiper(props: ReactSwiperProps) {
   const scrollbar = useRef<HTMLDivElement>(null);
 
   useEffectOnce(() => {
-    if (!!children) {
+    if (children) {
       if (showPagination) {
         if (typeof swiperOption.pagination === "object") {
           swiperOption.pagination.el = pagination.current!;
@@ -89,7 +88,7 @@ export function ReactSwiper(props: ReactSwiperProps) {
     }
   };
 
-  return !!children ? (
+  return children ? (
     <div css={[reactSwiperStyle, { width, height }]} {...attributes}>
       <div
         css={{ width: "100%", height: "100%" }}

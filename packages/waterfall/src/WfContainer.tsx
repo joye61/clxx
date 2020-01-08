@@ -24,13 +24,18 @@ export interface WfContainerOption
 }
 
 export function WfContainer(props: WfContainerOption) {
-  const { gap = 10, cols = 2, onReady = () => {}, ...attributes } = props;
+  const {
+    gap = 10,
+    cols = 2,
+    onReady = () => undefined,
+    ...attributes
+  } = props;
 
   const container = useRef<HTMLDivElement>(null);
 
   const showCols = () => {
     const list: React.ReactNode[] = [];
-    const {num, unit} = splitValue(gap);
+    const { num, unit } = splitValue(gap);
     for (let i = 0; i < cols; i++) {
       list.push(
         <div
@@ -41,11 +46,11 @@ export function WfContainer(props: WfContainerOption) {
             width: `${100 / cols}%`,
             marginTop: gap,
             marginBottom: gap,
-            paddingLeft: num/2 + unit,
-            paddingRight: num/2 + unit,
+            paddingLeft: num / 2 + unit,
+            paddingRight: num / 2 + unit,
             overflow: "hidden",
             "&:first-of-type": {
-              paddingLeft: gap,
+              paddingLeft: gap
             },
             "&:last-child": {
               paddingRight: gap

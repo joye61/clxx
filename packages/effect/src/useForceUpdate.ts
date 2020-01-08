@@ -1,7 +1,3 @@
-/**
- * 参考：https://github.com/streamich/react-use
- */
-
 import { useCallback, useState } from "react";
 
 export const useForceUpdate = () => {

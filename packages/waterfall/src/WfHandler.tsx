@@ -8,7 +8,7 @@ type PushItem<T = React.ReactNode> = T | Promise<T>;
 export class WfHandler {
   private columns?: Array<HTMLElement>;
   queue: Array<() => Promise<void>> = [];
-  isTraversing: boolean = false;
+  isTraversing = false;
 
   container?: HTMLElement;
 

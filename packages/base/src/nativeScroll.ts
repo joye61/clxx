@@ -5,13 +5,14 @@ export let passiveSupported = false;
 try {
   window.addEventListener(
     "test",
-    () => {},
+    () => undefined,
     Object.defineProperty({}, "passive", {
       get: function() {
         passiveSupported = true;
       }
     })
   );
+  // eslint-disable-next-line no-empty
 } catch (err) {}
 
 /**

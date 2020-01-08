@@ -2,20 +2,27 @@
   "name": "root",
   "private": true,
   "description": "Various common components based on mobile H5",
+  "scripts": {
+    "new": "node ./scripts/create.js",
+    "build": "yarn lint && lerna run build",
+    "release": "lerna publish",
+    "lerna": "lerna",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
     "chalk": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-react": "^7.17.0",
     "fs-extra": "^8.1.0",
     "lerna": "^3.19.0",
+    "prettier": "^1.19.1",
     "typescript": "^3.7.4"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/joye61/clxx"
-  },
-  "scripts": {
-    "new": "node ./scripts/create.js",
-    "build": "lerna run build",
-    "release": "lerna publish",
-    "lerna": "lerna"
   }
 }

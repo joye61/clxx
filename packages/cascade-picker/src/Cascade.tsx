@@ -27,7 +27,11 @@ export function Cascade(props: CascadeProps) {
   const initData = ensureDataSource(data);
   const dataSource = useRef<Array<CascadeDataItem>>(initData);
 
-  const getNewList = (newValue: number[], oldValue: number[]) => {
+  const getNewList = (
+    newValue: number[],
+    oldValue: number[],
+    oldList: Array<React.ReactElement[]>
+  ) => {
     // 获取开始不同的位置
     let diffIndex = -1;
     for (let i = 0; i < newValue.length; i++) {
@@ -47,7 +51,7 @@ export function Cascade(props: CascadeProps) {
     const result: Array<React.ReactElement[]> = [];
     for (let i = 0; i < newList.length; i++) {
       if (i <= diffIndex) {
-        result.push(list[i]);
+        result.push(oldList[i]);
       } else {
         const changedList = newList[i].map((item, index) => {
           return (
@@ -63,13 +67,11 @@ export function Cascade(props: CascadeProps) {
     return result;
   };
 
-  
   const initValue = ensureValue(defaultValue, initData);
-  const initList = getNewList(initValue, []);
+  const initList = getNewList(initValue, [], []);
 
   const [value, setValue] = useState<number[]>(initValue);
   const [list, setList] = useState<Array<React.ReactElement[]>>(initList);
-  
 
   /**
    * 根据数据源初始化picker
@@ -79,7 +81,7 @@ export function Cascade(props: CascadeProps) {
       dataSource.current = await ensureDataSource(data);
       const newValue = ensureValue(value, dataSource.current);
       setValue(newValue);
-      setList(getNewList(newValue, value));
+      setList(getNewList(newValue, value, list));
     })();
   }, [data]);
 
@@ -93,7 +95,7 @@ export function Cascade(props: CascadeProps) {
           onChange={(subIndex: number) => {
             const newValue = getNewValue(value, index, subIndex);
             setValue(newValue);
-            setList(getNewList(newValue, value));
+            setList(getNewList(newValue, value, list));
           }}
         />
       );

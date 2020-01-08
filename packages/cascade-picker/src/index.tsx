@@ -9,6 +9,30 @@ import omit from "lodash/omit";
 import { style } from "./indexStyle";
 
 /**
+ * 级联选择器的函数形式调用
+ * @param option
+ */
+export function showCascadePicker(option: CascadeProps = {}) {
+  const { onCancel, onConfirm, ...props } = option;
+  const dialog = new Dialog(
+    (
+      <Cascade
+        onCancel={() => {
+          dialog.close();
+          onCancel?.();
+        }}
+        onConfirm={(result: CascadeResult) => {
+          dialog.close();
+          onConfirm?.(result);
+        }}
+        {...props}
+      />
+    ),
+    "pullup"
+  );
+}
+
+/**
  * 级联选择器组件
  * @param props
  */
@@ -73,26 +97,4 @@ export function CascadePicker(
   );
 }
 
-/**
- * 级联选择器的函数形式调用
- * @param option
- */
-export function showCascadePicker(option: CascadeProps = {}) {
-  const { onCancel, onConfirm, ...props } = option;
-  const dialog = new Dialog(
-    (
-      <Cascade
-        onCancel={() => {
-          dialog.close();
-          onCancel?.();
-        }}
-        onConfirm={(result: CascadeResult) => {
-          dialog.close();
-          onConfirm?.(result);
-        }}
-        {...props}
-      />
-    ),
-    "pullup"
-  );
-}
+

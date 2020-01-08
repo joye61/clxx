@@ -1,4 +1,4 @@
-import { keyframes, ObjectInterpolation } from "@emotion/core";
+import { keyframes, Interpolation } from "@emotion/core";
 import { vw } from "@clxx/base";
 
 export const showAnimation = keyframes`
@@ -32,7 +32,7 @@ const maskHide = keyframes`
 `;
 
 type CLStyle = {
-  [key: string]: ObjectInterpolation<any>;
+  [key: string]: Interpolation;
 };
 
 export const style: CLStyle = {

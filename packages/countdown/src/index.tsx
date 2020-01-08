@@ -1,11 +1,18 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { CountDownOption, CountDowner, updateResult, updateCallback } from ".";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
+import {
+  StarterOption,
+  updateCallback,
+  updateResult,
+  Starter
+} from "./Starter";
+import pick from "lodash/pick";
+import omit from "lodash/omit";
 
 export interface CountDownProps
-  extends CountDownOption,
+  extends StarterOption,
     React.DetailedHTMLProps<
       React.HTMLAttributes<HTMLSpanElement>,
       HTMLSpanElement
@@ -16,48 +23,46 @@ export interface CountDownProps
   separator?: string;
 }
 
-function useFrame(option: CountDownOption, update: updateCallback) {
+function useFrame(option: Partial<StarterOption>, update: updateCallback) {
   const updateRef = useRef<updateCallback>(update);
-  useEffect(() => {
-    updateRef.current = update;
-  });
+  updateRef.current = update;
 
   useEffect(() => {
     let update = updateRef.current;
     if (typeof option.onUpdate === "function") {
       update = (result: updateResult[]) => {
-        option.onUpdate(result);
+        option.onUpdate?.(result);
         updateRef.current(result);
       };
     }
-    const countdown = new CountDowner(option);
+    const countdown = new Starter(option);
     countdown.onUpdate(update);
     return () => countdown.destroy();
-  }, [option]);
+  }, []);
 }
 
-export function CountDown(props: CountDownProps) {
-  const {
-    noUnit = true,
-    separator = ":",
-    remainTime,
-    interval,
-    format, // 默认输出时分秒
-    unitMap,
-    onUpdate,
-    onEnd,
-    startImmediately,
-    ...attributes
-  } = props;
+export function CountDown(props: Partial<CountDownProps>) {
+  const { noUnit = true, separator = ":", ...extraProps } = props;
+
+  // starter 的启动参数
+  const starterProps = [
+    "remainTime",
+    "interval",
+    "format",
+    "onUpdate",
+    "onEnd",
+    "unitMap",
+    "startImmediately"
+  ];
+
+  // 提取starter的启动参数
+  const starterOption: Partial<StarterOption> = pick(extraProps, starterProps);
+  // 组件默认的启动参数
+  const attributes = omit(extraProps, starterProps);
 
   // 初始化一个永远不会执行的定时器，主要用于获取初始值
-  const initCountDown = new CountDowner({
-    remainTime,
-    interval,
-    format,
-    unitMap,
-    onUpdate,
-    onEnd,
+  const initCountDown = new Starter({
+    ...starterOption,
     startImmediately: false
   });
 
@@ -66,7 +71,7 @@ export function CountDown(props: CountDownProps) {
   );
 
   // 更新结果参数
-  useFrame(props, result => setResult([...result]));
+  useFrame(starterOption, result => setResult([...result]));
 
   const output = result.map((item, index) => {
     let extra: React.ReactNode = null;

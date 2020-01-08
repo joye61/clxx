@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { dpContext } from "./context";
 import { getFinalValue } from "./util";
 import { ScrollContent } from "@clxx/picker/build/ScrollContent";

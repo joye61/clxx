@@ -31,7 +31,7 @@ export function Clickable(props: ClickableProps) {
     activeStyle = {
       opacity: 0.5
     },
-    onClick = () => {},
+    onClick = () => undefined,
     ...attributes
   } = props;
 

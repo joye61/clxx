@@ -21,7 +21,7 @@ export interface AlertProps
   onHide?: Callback;
 }
 
-export function Alert(props: AlertProps) {
+export function Alert(props: AlertProps): React.ReactElement {
   const {
     content,
     showMask = true,
@@ -29,9 +29,9 @@ export function Alert(props: AlertProps) {
     showConfirm = true,
     cancelContent = "取消",
     confirmContent = "确定",
-    onConfirm = () => {},
-    onCancel = () => {},
-    onHide = () => {},
+    onConfirm = () => undefined,
+    onCancel = () => undefined,
+    onHide = () => undefined,
     ...htmlProps
   } = props;
 
@@ -65,7 +65,7 @@ export function Alert(props: AlertProps) {
   };
 
   // 显示弹框内容
-  let showContent: any;
+  let showContent: React.ReactElement;
   if (React.isValidElement(content)) {
     showContent = content;
   } else {
@@ -93,7 +93,7 @@ export function Alert(props: AlertProps) {
         css={[style.btnItem, style.cancel]}
         onClick={cancel}
         className="cl-Alert-btn-cancel"
-        onTouchStart={() => {}}
+        onTouchStart={() => undefined}
       >
         {cancelContent}
       </div>
@@ -117,7 +117,7 @@ export function Alert(props: AlertProps) {
         css={[style.btnItem, style.confirm]}
         className="cl-Alert-btn-confirm"
         onClick={confirm}
-        onTouchStart={() => {}}
+        onTouchStart={() => undefined}
       >
         {confirmContent}
       </div>

@@ -1,4 +1,4 @@
-import dayjs, { ConfigType, Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 /**
  * 给数字添加前缀0，当数字<10时

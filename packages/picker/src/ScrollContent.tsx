@@ -44,7 +44,7 @@ export function ScrollContent(props: ScrollContentProps) {
    */
   useEffect(() => {
     (swiper as any).current = new Swiper(container.current!, {
-      initialSlide: props.selected || 0,
+      initialSlide: selected || 0,
       touchEventsTarget: "container",
       direction: "vertical",
       slidesPerView: "auto",
@@ -74,7 +74,7 @@ export function ScrollContent(props: ScrollContentProps) {
         }
         lastSlideIndex = swiper.current!.realIndex;
       },
-      props.debounceDuration || 100,
+      debounceDuration || 100,
       {
         leading: false,
         trailing: true
@@ -96,9 +96,9 @@ export function ScrollContent(props: ScrollContentProps) {
    */
   useEffect(() => {
     if (swiper.current instanceof Swiper) {
-      swiper.current.slideTo(props.selected!);
+      swiper.current.slideTo(selected!);
     }
-  }, [props.selected]);
+  }, [selected]);
 
   /**
    * 列表更新时重新计算尺寸值
@@ -107,13 +107,13 @@ export function ScrollContent(props: ScrollContentProps) {
     if (swiper.current instanceof Swiper) {
       swiper.current!.update();
     }
-  }, [props.list]);
+  }, [list]);
 
   /**
    * 生成列表
    */
   const showList = () => {
-    return props.list?.map((item, index) => {
+    return list?.map((item, index) => {
       let child = item;
       if (!React.isValidElement(item)) {
         child = <p className="swiper-slide-text">{item}</p>;

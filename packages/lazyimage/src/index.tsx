@@ -59,8 +59,8 @@ export function LazyImage(props: LazyImageProps) {
     rounded = false,
     mode = "fill",
     placeholder = null,
-    onLoad = () => {},
-    onError = () => {},
+    onLoad = () => undefined,
+    onError = () => undefined,
     ...attributes
   } = props;
 

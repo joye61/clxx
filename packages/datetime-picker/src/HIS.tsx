@@ -12,7 +12,7 @@ export type HISMode = "h" | "i" | "s";
 function getList(end: number, mode: HISMode) {
   const tempList: React.ReactElement[] = [];
   for (let num = 0; num <= end; num++) {
-    let unit: string = "";
+    let unit = "";
     switch (mode) {
       case "h":
         unit = "时";
@@ -50,7 +50,7 @@ function getSelected(end: number, mode: HISMode, value: Dayjs) {
 export function HIS(props: { mode: HISMode }) {
   const mode = props.mode;
 
-  let end: number = 0;
+  let end = 0;
   if (mode === "h") {
     end = 23;
   } else if (mode === "i") {

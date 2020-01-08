@@ -14,6 +14,7 @@ export type CSSValue = number | string;
 /**
  * 匹配所有的CSS数值类型的值
  */
+// eslint-disable-next-line no-useless-escape
 export const CSSNumericValueReg = /^((?:\-)?(?:\d+\.?|\.\d+|\d+\.\d+))([a-zA-Z%]*)$/;
 
 /**

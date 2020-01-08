@@ -6,6 +6,30 @@ import { Dayjs } from "dayjs";
 import pick from "lodash/pick";
 import omit from "lodash/omit";
 
+/**
+ * 函数方式调用
+ * @param option 选择器选项
+ */
+export function showDateTimePicker(option: WrapperProps = {}) {
+  const { onCancel, onConfirm, ...wrapperProps } = option;
+  const dialog = new Dialog(
+    (
+      <Wrapper
+        {...wrapperProps}
+        onCancel={() => {
+          onCancel?.();
+          dialog.close();
+        }}
+        onConfirm={(value: Dayjs) => {
+          onConfirm?.(value);
+          dialog.close();
+        }}
+      />
+    ),
+    "pullup"
+  );
+}
+
 export function DateTimePicker(props: DateTimePickerProps) {
   const wrapper = [
     "date",
@@ -31,26 +55,4 @@ export function DateTimePicker(props: DateTimePickerProps) {
   );
 }
 
-/**
- * 函数方式调用
- * @param option 选择器选项
- */
-export function showDateTimePicker(option: WrapperProps = {}) {
-  const { onCancel, onConfirm, ...wrapperProps } = option;
-  const dialog = new Dialog(
-    (
-      <Wrapper
-        {...wrapperProps}
-        onCancel={() => {
-          onCancel?.();
-          dialog.close();
-        }}
-        onConfirm={(value: Dayjs) => {
-          onConfirm?.(value);
-          dialog.close();
-        }}
-      />
-    ),
-    "pullup"
-  );
-}
+

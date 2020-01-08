@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Global, css, ObjectInterpolation } from "@emotion/core";
+import { jsx, Global, css, Interpolation } from "@emotion/core";
 import { useState, useLayoutEffect, useRef } from "react";
 import { useWindowResize } from "@clxx/effect";
 
@@ -9,20 +9,20 @@ export interface SelfAdaptionProps {
   // 移动和非移动的临界尺寸
   criticalWidth?: number;
   // 用户自定义的全局样式
-  styles?: ObjectInterpolation<any>;
+  styles?: Interpolation;
 }
 
 /**
  * 适用于移动端的全局自适应组件，推荐使用
  * @param props AdaptiveOption
  */
-export function SelfAdaption(props: SelfAdaptionProps) {
+export function SelfAdaption(props: SelfAdaptionProps): React.ReactElement {
   const { designWidth = 375, criticalWidth = 576, styles } = props;
 
   /**
    * 获取HTML根元素的计算尺寸
    */
-  const computeFontSize = () => {
+  const computeFontSize = (): number => {
     const windowWidth = window.innerWidth;
     const usedSize = windowWidth > criticalWidth ? criticalWidth : windowWidth;
 
@@ -38,7 +38,7 @@ export function SelfAdaption(props: SelfAdaptionProps) {
    * scaleRef 设置的目的是为了移除useLayoutEffect的依赖，保证只会被执行一次
    */
   const scaleRef = useRef<() => void>(() => {
-    let computeSize = parseFloat(
+    const computeSize = parseFloat(
       window.getComputedStyle(document.documentElement).fontSize
     );
 

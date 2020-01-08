@@ -21,7 +21,7 @@ export function Toast(props: ToastProps) {
     position = "middle",
     duration = 3000,
     rounded = true,
-    onEnd = () => {},
+    onEnd = () => undefined,
     ...attributes
   } = props;
 

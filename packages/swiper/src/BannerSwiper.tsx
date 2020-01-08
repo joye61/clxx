@@ -15,7 +15,7 @@ export function BannerSwiper(props: ReactSwiperProps) {
     showPagination = false;
   }
 
-  return !!children ? (
+  return children ? (
     <ReactSwiper
       showPagination={showPagination}
       swiperOption={swiperOption}
