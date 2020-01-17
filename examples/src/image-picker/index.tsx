@@ -6,15 +6,15 @@ export default function() {
     <div>
       <div>
         <p>1、显示3列，最多选取4张</p>
-        <ImagePicker maxPick={4} col={3}/>
+        <ImagePicker maxPick={4} column={3}/>
       </div>
       <div>
         <p>2、显示4列，最多选取9张，允许多选</p>
-        <ImagePicker col={4} multiple/>
+        <ImagePicker column={4} multiple/>
       </div>
       <div>
         <p>3、显示4列，最多选取9张，允许多选，不显示图片缩略图</p>
-        <ImagePicker col={4} multiple showPickedThumb={false}/>
+        <ImagePicker column={4} multiple showPickedThumb={false}/>
       </div>
     </div>
   );

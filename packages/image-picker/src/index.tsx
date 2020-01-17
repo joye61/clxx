@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, SerializedStyles, ObjectInterpolation } from "@emotion/core";
 import loadImage from "./loadImage";
-import { AutoGrid, AutoGridProps } from "@clxx/layout/build/AutoGrid";
+import { Grid, GridProps } from "@clxx/layout/build/Grid";
 import { ColCenter } from "@clxx/layout/build/Col";
 import { style } from "./style";
 import { useRef, ChangeEvent, useState, useEffect } from "react";
@@ -13,7 +13,7 @@ export interface PickedList {
   dataURL: string;
 }
 
-export interface ImagePickerProps extends AutoGridProps, LoadImageOption {
+export interface ImagePickerProps extends GridProps, LoadImageOption {
   /**
    * 最大选取图片数
    */
@@ -42,11 +42,11 @@ export interface ImagePickerProps extends AutoGridProps, LoadImageOption {
 
 export function ImagePicker(props: ImagePickerProps) {
   let {
-    col = 4,
+    column = 4,
     gap = 10,
     maxPick = 9,
     multiple = false,
-    autoHeight = false,
+    square = true,
     pickHint = "选取照片",
     pickingHint = "正在选取",
     showPickedThumb = true,
@@ -55,7 +55,7 @@ export function ImagePicker(props: ImagePickerProps) {
   } = props;
 
   // 不显示缩略图的时候选取数量不受限制
-  if(!showPickedThumb) {
+  if (!showPickedThumb) {
     maxPick = Number.MAX_SAFE_INTEGER;
   }
 
@@ -123,12 +123,12 @@ export function ImagePicker(props: ImagePickerProps) {
               canvas,
               dataURL: canvas.toDataURL()
             });
-          // eslint-disable-next-line no-empty
+            // eslint-disable-next-line no-empty
           } catch (error) {}
         }
 
         let finalList: Array<PickedList> = [];
-        if(showPickedThumb) {
+        if (showPickedThumb) {
           finalList = [...list, ...pickedList];
           finalList.splice(maxPick);
         } else {
@@ -178,10 +178,10 @@ export function ImagePicker(props: ImagePickerProps) {
   }
 
   return (
-    <AutoGrid
-      col={col}
+    <Grid
+      column={column}
       gap={gap}
-      autoHeight={autoHeight}
+      square={square}
       className="clxx-ImagePicker"
     >
       {/* 已经选取的图片列表 */}
@@ -238,6 +238,6 @@ export function ImagePicker(props: ImagePickerProps) {
           onChange={onInputChange}
         />
       </ColCenter>
-    </AutoGrid>
+    </Grid>
   );
 }

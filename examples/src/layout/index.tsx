@@ -37,7 +37,7 @@ export default function() {
         <p className="LayoutGridTitle">
           2列，空白0.05rem，方形单元格，空白环绕
         </p>
-        <Grid gap="0.05rem" square className="LGWithBorder">
+        <Grid gap="10" square className="LGWithBorder">
           <div className="LGCell">这是一个表格单元</div>
           <div className="LGCell">这是一个表格单元</div>
           <div className="LGCell">这是一个表格单元</div>

@@ -2,34 +2,35 @@
 import { jsx, ObjectInterpolation } from "@emotion/core";
 import { useRef, useState, useLayoutEffect } from "react";
 import { useWindowResize } from "@clxx/effect";
+import { normalizeUnit } from "@clxx/base/build/cssUtil";
 
 export interface GridProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * 表格中间的空白多大
    */
-  gap: number | string;
+  gap?: number | string;
   /**
    * 是否用空白环绕整个网格周围
    */
-  gapSurround: boolean;
+  gapSurround?: boolean;
   /**
    * 表格的列数
    */
-  column: number;
+  column?: number;
   /**
    * 表格是否方形
    */
-  square: boolean;
+  square?: boolean;
 }
 
 type GridType = Array<Array<React.ReactNode>>;
 
-export function Grid(props: Partial<GridProps>) {
+export function Grid(props: GridProps) {
   const [cellWidth, setCellWidth] = useState<number | undefined>(undefined);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -42,8 +43,16 @@ export function Grid(props: Partial<GridProps>) {
     className,
     ...attributes
   } = props;
+
+  // 为容器添加类
   if (className) {
     className = `clxx-Grid ${className}`;
+  }
+
+  // 标准化单位
+  const normalizedGap = normalizeUnit(gap);
+  if (normalizedGap !== undefined) {
+    gap = normalizedGap;
   }
 
   const getGrid = (): GridType => {
@@ -78,6 +87,16 @@ export function Grid(props: Partial<GridProps>) {
      */
     const odList = getList(children);
     for (let item of odList) {
+      /**
+       * 以下元素会被react当成是空白元素，没有任何内容渲染
+       */
+      if (item === false || item === null || item === undefined) {
+        continue;
+      }
+
+      /**
+       * 非空白元素才加入到表格中
+       */
       const lastElement = result[result.length - 1];
       if (lastElement === undefined || lastElement.length === column) {
         result.push([item]);
@@ -92,20 +111,8 @@ export function Grid(props: Partial<GridProps>) {
     const lastElement = result[result.length - 1];
     const lastLength = lastElement.length;
 
-    // 如果最后一行的所有元素判定为false，移除最后一行
-    let needFill = false;
-    for (let litem of lastElement) {
-      if (litem) {
-        needFill = true;
-        break;
-      }
-    }
-    if (!needFill) {
-      result.pop();
-    }
-
     // 如果最后一样需要填充，则填充空白
-    if (lastLength < column && needFill) {
+    if (lastLength < column) {
       for (let i = 1; i <= column - lastLength; i++) {
         lastElement.push(null);
       }
