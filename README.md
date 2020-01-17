@@ -36,7 +36,7 @@ import { ImagePicker } from "@clxx/image-picker";
 
 // 图片选择器是自带UI的，参考下面的GIF预览
 <ImagePicker
-  col={4}
+  column={4}
   // showPickedThumb={false}
   multiple
   onChange={(list: any) => {
