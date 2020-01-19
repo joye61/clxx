@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/image-preview",
-	"version": "0.0.12",
+	"version": "0.0.13",
 	"description": "image-preview",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
@@ -25,7 +25,7 @@
 	"author": "joye",
 	"license": "MIT",
 	"dependencies": {
-		"@clxx/layout": "^0.0.12",
+		"@clxx/layout": "^0.0.13",
 		"@emotion/core": "^10.0.27",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0"

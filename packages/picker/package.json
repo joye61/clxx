@@ -1,6 +1,6 @@
 {
 	"name": "@clxx/picker",
-	"version": "0.0.12",
+	"version": "0.0.13",
 	"description": "Basic picker component based on swiperjs",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
@@ -31,9 +31,9 @@
 		"@types/swiper": "^5.2.0"
 	},
 	"dependencies": {
-		"@clxx/base": "^0.0.12",
-		"@clxx/dialog": "^0.0.12",
-		"@clxx/layout": "^0.0.12",
+		"@clxx/base": "^0.0.13",
+		"@clxx/dialog": "^0.0.13",
+		"@clxx/layout": "^0.0.13",
 		"@emotion/core": "^10.0.22",
 		"lodash": "^4.17.15",
 		"react": "^16.12.0",

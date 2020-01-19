@@ -1,6 +1,6 @@
 {
   "name": "@clxx/alert",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Universal dialog box that can replace system alert",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -29,8 +29,8 @@
     "@types/react-dom": "^16.9.4"
   },
   "dependencies": {
-    "@clxx/base": "^0.0.12",
-    "@clxx/layout": "^0.0.12",
+    "@clxx/base": "^0.0.13",
+    "@clxx/layout": "^0.0.13",
     "@emotion/core": "^10.0.22",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
