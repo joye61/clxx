@@ -196,10 +196,13 @@ export function ImagePicker(props: ImagePickerProps) {
             return (
               <div
                 key={index}
-                css={style.item}
+                css={[style.item, {
+                  backgroundImage: `url(${item.dataURL})`,
+                  backgroundSize: "cover"
+                }]}
                 className="clxx-ImagePicker-item"
               >
-                <img css={autoStyle} src={item.dataURL} alt={item.file.name} />
+                {/* <img css={autoStyle} src={item.dataURL} alt={item.file.name} /> */}
                 <ColCenter
                   css={style.remove}
                   onTouchStart={() => undefined}
