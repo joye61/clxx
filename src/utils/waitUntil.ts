@@ -4,7 +4,7 @@ export interface WaitUntilOption {
    */
   checkInterval?: number;
   /**
-   * 最大检测次数，默认200此，也就是10秒
+   * 最大检测次数，默认200次，也就是10秒
    */
   checkMaxTimes?: number;
 }

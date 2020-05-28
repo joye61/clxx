@@ -1,28 +1,37 @@
 {
-  "name": "root",
-  "private": true,
-  "description": "Various common components based on mobile H5",
+  "name": "clxx",
+  "version": "1.0.0",
+  "description": "H5 utilities based on react, emotion, typescript",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
   "scripts": {
-    "new": "node ./scripts/create.js",
-    "build": "yarn lint && lerna run build",
-    "release": "lerna publish",
-    "lerna": "lerna",
-    "lint": "eslint . --ext .ts,.tsx"
-  },
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
-    "chalk": "^3.0.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-react": "^7.17.0",
-    "fs-extra": "^8.1.0",
-    "lerna": "^3.19.0",
-    "prettier": "^1.19.1",
-    "typescript": "^3.7.4"
+    "start": "tsc -w --pretty",
+    "build": "node ./scripts/clear.js && tsc -w"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/joye61/clxx"
+    "url": "git+https://github.com/joye61/clxx.git"
+  },
+  "keywords": [
+    "react",
+    "emotion",
+    "typescript"
+  ],
+  "author": "joye",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joye61/clxx/issues"
+  },
+  "homepage": "https://github.com/joye61/clxx#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.153",
+    "@types/raf": "^3.4.0",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "lodash": "^4.17.15",
+    "raf": "^3.4.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "typescript": "^3.9.3"
   }
 }
