@@ -15,8 +15,18 @@ export function ensureEnvironmentValue() {
     window.__CLXX_CRITICAL_WIDTH = 576;
   }
   // 当前H5页面的设计宽度
-  if (window.__CLXX_DESIGN_WIDTH) {
+  if (!window.__CLXX_DESIGN_WIDTH) {
     window.__CLXX_DESIGN_WIDTH = 375;
+  }
+}
+
+
+// 获取环境变量值
+export function getEnv(){
+  ensureEnvironmentValue();
+  return {
+    criticalWidth: window.__CLXX_CRITICAL_WIDTH,
+    designWidth: window.__CLXX_DESIGN_WIDTH
   }
 }
 

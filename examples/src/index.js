@@ -1,17 +1,87 @@
-import React from 'react';
+import './index.scss';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { history } from './env';
+import { Container } from '@';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const pageConfig = [
+  { path: 'indicator', title: 'Indicator指示器', enable: true },
+  { path: 'alert', title: '可取代window.alert的弹框功能', enable: false },
+  { path: 'countdown', title: 'Countdown倒计时', enable: true },
+  { path: 'dialog', title: 'Dialog对话框', enable: true },
+  { path: 'layout', title: '常用布局组件', enable: false },
+  { path: 'toast', title: 'showToast轻提示', enable: true },
+  { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
+];
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+function Home() {
+  return (
+    <ul className="Home">
+      {pageConfig.map((item) => {
+        return (
+          <li
+            className={item.enable ? 'item' : 'item-disable'}
+            key={item.path}
+            onClick={() => {
+              if (item.enable) {
+                history.push(`/${item.path}`);
+              }
+            }}
+          >
+            {item.title}
+            <svg viewBox="0 0 1024 1024">
+              <path d="M347.687 144.188l-52.761 52.238 313.928 316.082-316.568 313.42 52.314 52.673 369.322-365.663z" />
+            </svg>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function App() {
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    const loadPage = async (path) => {
+      const module = path.replace(/^\/*|\/*$/g, '');
+      if (!module) {
+        return <Home />;
+      } else {
+        const result = await import(`./${module}/index`);
+        return (
+          <>
+            <div className="backHome">
+              <button
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                回到首页
+              </button>
+            </div>
+            <div className="demo">
+              <result.default />
+            </div>
+          </>
+        );
+      }
+    };
+
+    // 每次记录变更时渲染新页面
+    history.listen((location) => {
+      loadPage(location.pathname).then((page) => {
+        setPage(page);
+      });
+    });
+
+    // 初始化时渲染的页面
+    loadPage(history.location.pathname).then((page) => {
+      setPage(page);
+    });
+  }, []);
+
+  return <Container>{page}</Container>;
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));

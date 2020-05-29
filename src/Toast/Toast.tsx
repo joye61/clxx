@@ -1,32 +1,32 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
-import React, { useState, useEffect } from "react";
-import { style, hideAnimation } from "./style";
+import { jsx, SerializedStyles } from '@emotion/core';
+import React, { useState, useEffect } from 'react';
+import { style, hideAnimation } from './style';
 
 export interface ToastProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  onEnd?: () => void;
-  content: React.ReactNode;
-  position?: "top" | "middle" | "bottom";
+  onHide?: () => void;
+  content?: React.ReactNode;
+  position?: 'top' | 'middle' | 'bottom';
   duration?: number;
   rounded?: boolean;
 }
 
 export function Toast(props: ToastProps) {
   const {
-    content = "",
-    position = "middle",
+    content = '',
+    position = 'middle',
     duration = 3000,
     rounded = true,
-    onEnd = () => undefined,
+    onHide = () => undefined,
     ...attributes
   } = props;
 
   const [animation, setAnimation] = useState<SerializedStyles>(
-    style.containerShow
+    style.containerShow,
   );
 
   useEffect(() => {
@@ -43,16 +43,12 @@ export function Toast(props: ToastProps) {
   if (React.isValidElement(content)) {
     showContent = content;
   } else {
-    showContent = (
-      <p className="cl-Toast-content" css={style.content(rounded)}>
-        {content}
-      </p>
-    );
+    showContent = <p css={style.content(rounded)}>{content}</p>;
   }
 
   const animationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     if (event.animationName === hideAnimation.name) {
-      typeof onEnd === "function" && onEnd();
+      onHide?.();
     }
   };
 
