@@ -57,7 +57,7 @@ export default function () {
           show2
         )}
       </p>
-      <p>格式：s，总时长：259200秒</p>
+      <p>格式：dhis，总时长：259200秒</p>
       <p style={{ color: 'red' }}>{show3}</p>
     </div>
   );

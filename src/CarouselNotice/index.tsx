@@ -2,7 +2,7 @@
 import { jsx, Interpolation, css } from '@emotion/core';
 import * as CSS from 'csstype';
 import { useState, useEffect } from 'react';
-import { style, Bubble } from './style';
+import { getStyle, Bubble } from './style';
 import { useInterval } from 'react-use';
 
 export interface CarouselNoticeOption
@@ -41,6 +41,7 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
 
   const [current, setCurrent] = useState<number>(0);
   const [animation, setAnimation] = useState<boolean>(false);
+  const style = getStyle();
 
   /**
    * 一旦列表发生更新时，触发的逻辑

@@ -23,6 +23,10 @@
     "url": "https://github.com/joye61/clxx/issues"
   },
   "homepage": "https://github.com/joye61/clxx#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@types/lodash": "^4.14.153",

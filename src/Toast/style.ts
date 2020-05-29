@@ -1,8 +1,6 @@
-import { css, keyframes } from '@emotion/core';
-import { vw } from '../utils/cssUtil';
-import { getEnv } from '../utils/global';
-
-const env = getEnv();
+import { css, keyframes } from "@emotion/core";
+import { vw } from "../utils/cssUtil";
+import { getEnv } from "../utils/global";
 
 export const showAnimation = keyframes`
   from {
@@ -26,50 +24,62 @@ export const hideAnimation = keyframes`
   }
 `;
 
-export const style = {
-  container: css({
-    position: 'fixed',
-    maxWidth: '80%',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    zIndex: 9999,
-    [`@media (min-width: ${env.criticalWidth}px)`]: {
-      maxWidth: `${env.criticalWidth * 0.8}px`,
-    },
-  }),
-  containerShow: css({ animation: `${showAnimation} 200ms` }),
-  containerHide: css({ animation: `${hideAnimation} 200ms` }),
-  top: css({
-    top: vw(30),
-    [`@media (min-width: ${env.criticalWidth}px)`]: {
-      top: vw(30, true),
-    },
-  }),
-  middle: css({ top: '50%' }),
-  bottom: css({
-    bottom: vw(30),
-    [`@media (min-width: ${env.criticalWidth}px)`]: {
-      bottom: vw(30, true),
-    },
-  }),
-  content: (rounded: boolean) => {
-    return css({
-      backgroundColor: 'rgba(50, 50, 50, 0.75)',
-      color: '#fff',
-      margin: 0,
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      fontSize: vw(14),
-      lineHeight: vw(36),
-      padding: `0 ${vw(15)}`,
-      borderRadius: rounded ? vw(18) : 0,
+export const getStyle = () => {
+  // 环境变量通过每次的实时计算得出
+  const env = getEnv();
+
+  return {
+    container: css({
+      position: "fixed",
+      left: "50%",
+      transform: "translateX(-50%)",
+      zIndex: 9999,
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(14, true),
-        lineHeight: vw(36, true),
-        padding: `0 ${vw(15, true)}`,
-        borderRadius: rounded ? vw(18, true) : 0,
+        maxWidth: `${env.criticalWidth * 0.8}px`,
       },
-    });
-  },
+    }),
+    containerShow: css({ animation: `${showAnimation} 200ms` }),
+    containerHide: css({ animation: `${hideAnimation} 200ms` }),
+    top(offset: number) {
+      return css({
+        top: vw(offset),
+        [`@media (min-width: ${env.criticalWidth}px)`]: {
+          top: vw(offset, true),
+        },
+      });
+    },
+    middle: css({ top: "50%" }),
+    bottom(offset: number) {
+      return css({
+        bottom: vw(offset),
+        [`@media (min-width: ${env.criticalWidth}px)`]: {
+          bottom: vw(offset, true),
+        },
+      });
+    },
+    content: (rounded: boolean) => {
+      return css({
+        position: "relative",
+        backgroundColor: "rgba(50, 50, 50, 0.75)",
+        color: "#fff",
+        margin: 0,
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        overflow: "hidden",
+        fontSize: vw(14),
+        lineHeight: vw(36),
+        padding: `0 ${vw(15)}`,
+        borderRadius: rounded ? vw(18) : 0,
+        [`@media (min-width: ${env.criticalWidth}px)`]: {
+          fontSize: vw(14, true),
+          lineHeight: vw(36, true),
+          padding: `0 ${vw(15, true)}`,
+          borderRadius: rounded ? vw(18, true) : 0,
+        },
+      });
+    },
+    contentMiddle: css({
+      transform: `translateY(-50%)`
+    })
+  };
 };
