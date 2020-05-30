@@ -84,7 +84,7 @@ export function ago(date: dayjs.ConfigType): AgoValue {
     };
   }
 
-  // 多少庙前
+  // 多少秒前
   const showNum = now.unix() - input.unix();
   let format;
   if (showNum > 10) {
