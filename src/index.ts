@@ -30,3 +30,4 @@ export { FixContainer } from "./Layout/FixContainer";
 export { CarouselNotice } from "./CarouselNotice";
 export { showToast } from "./Toast";
 export { Loading } from "./Loading";
+export { showAlert } from "./Alert";

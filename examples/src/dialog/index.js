@@ -27,26 +27,6 @@ export default function () {
         <button
           onClick={() => {
             new Dialog({
-              renderContent(dialog) {
-                return (
-                  <RowCenter className={style.contentBox}>
-                    <button onClick={() => dialog.close()}>关闭</button>
-                  </RowCenter>
-                );
-              },
-              onClose(){
-                console.log('renderContent dialog closed');
-              }
-            });
-          }}
-        >
-          renderContent普通弹框
-        </button>
-      </p>
-      <p>
-        <button
-          onClick={() => {
-            new Dialog({
               id: 'hello',
               className: 'world',
               type: 'pullUp',

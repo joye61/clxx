@@ -9,7 +9,6 @@ import { is } from '../utils/is';
 export interface DialogOption {
   type?: DialogType;
   content?: React.ReactNode;
-  renderContent?: (instance: Dialog) => React.ReactNode;
   maskOption?: FixContainerProps;
   onClose?: () => void;
   animationDuration?: number | string;
@@ -73,7 +72,7 @@ export class Dialog {
         }}
         maskOption={this.option.maskOption}
       >
-        {this.option.renderContent?.(this) ?? this.option.content}
+        {this.option.content}
       </Wrapper>
     );
   }
