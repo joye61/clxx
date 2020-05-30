@@ -1,0 +1,93 @@
+import { css, keyframes } from "@emotion/core";
+import { getEnv } from "../utils/global";
+import { vw } from "../utils/cssUtil";
+
+export const LoadingShow = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+export const LoadingHide = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+export const getStyle = () => {
+  const env = getEnv();
+
+  return {
+    boxCommon(radius: number = 10){
+      return css({
+        borderRadius: vw(radius),
+        backgroundColor: `rgba(0, 0, 0, .8)`,
+        [`@media (min-width: ${env.criticalWidth}px)`]: {
+          borderRadius: vw(radius, true),
+        },
+      })
+    },
+    box: css({
+      width: vw(90),
+      height: vw(90),
+      "> div:first-of-type": {
+        width: vw(36),
+        height: vw(36),
+      },
+      [`@media (min-width: ${env.criticalWidth}px)`]: {
+        height: vw(90, true),
+        width: vw(90, true),
+        "> div:first-of-type": {
+          width: vw(36, true),
+          height: vw(36, true),
+        },
+      },
+    }),
+
+    boxWithExtra: css({
+      padding: vw(15),
+      "> div:first-of-type": {
+        width: vw(24),
+        height: vw(24),
+      },
+      [`@media (min-width: ${env.criticalWidth}px)`]: {
+        padding: vw(15, true),
+        "> div:first-of-type": {
+          width: vw(24, true),
+          height: vw(24, true),
+        },
+      },
+    }),
+
+    // 显示动画
+    boxShow(duration: number) {
+      return css({
+        animation: `${LoadingShow} ${duration}ms`,
+      });
+    },
+
+    // 隐藏动画
+    boxHide(duration: number) {
+      return css({
+        animation: `${LoadingHide} ${duration}ms`,
+      });
+    },
+
+    // 默认的额外信息样式
+    defaultExtra: css({
+      color: "#fafafa",
+      fontSize: vw(16),
+      marginLeft: vw(10),
+      whiteSpace: "nowrap",
+      [`@media (min-width: ${env.criticalWidth}px)`]: {
+        fontSize: vw(16, true),
+        marginLeft: vw(10, true),
+      },
+    }),
+  };
+};

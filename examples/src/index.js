@@ -12,6 +12,7 @@ const pageConfig = [
   { path: 'layout', title: '常用布局组件', enable: false },
   { path: 'toast', title: 'showToast轻提示', enable: true },
   { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
+  { path: 'loading', title: 'Loading加载', enable: true },
 ];
 
 function Home() {

@@ -103,7 +103,7 @@ const dialogHide = keyframes`
 `;
 
 export const style = {
-  duration(duration: string | number = 300) {
+  duration(duration: string | number = 200) {
     return css({
       animationDuration: normalizeUnit(duration, 'ms'),
       animationTimingFunction: 'ease',

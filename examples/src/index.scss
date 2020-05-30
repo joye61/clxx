@@ -12,9 +12,7 @@
     font-size: 0.18rem;
     padding: 0.1rem 0.15rem;
     position: relative;
-    &:nth-child(2n-1) {
-      background-color: #f5f5f5;
-    }
+    border-bottom: 1px solid #f5f5f5;
     svg {
       width: 0.24rem;
       position: absolute;
@@ -24,10 +22,10 @@
     }
   }
   .item-disable {
-    color: #ccc;
+    color: #ddd;
     svg {
       path {
-        fill: #ccc;
+        fill: #ddd;
       }
     }
   }
@@ -38,10 +36,10 @@
       }
     }
     &:active {
-      color: blue;
+      color: #007bff;
       opacity: 0.5;
       svg path {
-        fill: blue;
+        fill: #007bff;
       }
     }
   }

@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { jsx, css, InterpolationWithTheme } from '@emotion/core';
-import React from 'react';
-import * as CSS from 'csstype';
-import { normalizeUnit } from '../utils/cssUtil';
-import { getBarChangeKeyFrames } from './style';
+import { jsx, css, InterpolationWithTheme } from "@emotion/core";
+import React from "react";
+import * as CSS from "csstype";
+import { normalizeUnit } from "../utils/cssUtil";
+import { getBarChangeKeyFrames } from "./style";
 
 export interface IndicatorProps
   extends React.DetailedHTMLProps<
@@ -36,7 +36,7 @@ export function Indicator(props: Partial<IndicatorProps>) {
     rounded = true,
     barWidth = 7,
     barHeight = 28,
-    barColor = '#fff',
+    barColor = "#fff",
     barCount = 12,
     duration = 500,
     ...attributes
@@ -57,9 +57,9 @@ export function Indicator(props: Partial<IndicatorProps>) {
         height={barHeight}
         transform={`rotate(${(360 / barCount) * i}, 50, 50)`}
         css={{
-          animationDelay: `${(duration * i) / barCount}ms`,
+          animationDelay: `${-(duration * (barCount - i)) / barCount}ms`,
         }}
-      />,
+      />
     );
   }
 
@@ -71,15 +71,15 @@ export function Indicator(props: Partial<IndicatorProps>) {
     style.width = unitSize;
     style.height = unitSize;
   }
-  style['svg'] = {
-    width: '100%',
-    height: '100%',
+  style["svg"] = {
+    width: "100%",
+    height: "100%",
     rect: {
-      fill: 'transparent',
+      fill: "transparent",
       animationName: getBarChangeKeyFrames(barColor),
       animationDuration: `${duration}ms`,
-      animationTimingFunction: 'linear',
-      animationIterationCount: 'infinite'
+      animationTimingFunction: "linear",
+      animationIterationCount: "infinite",
     },
   };
 

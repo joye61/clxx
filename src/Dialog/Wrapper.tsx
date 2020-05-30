@@ -1,15 +1,15 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, InterpolationWithTheme } from '@emotion/core';
-import { FixContainer, FixContainerProps } from '../Layout/FixContainer';
-import { style, containerHide } from './style';
+import { jsx, SerializedStyles, InterpolationWithTheme } from "@emotion/core";
+import { FixContainer, FixContainerProps } from "../Layout/FixContainer";
+import { style, containerHide } from "./style";
 
 export type DialogType =
-  | 'dialog'
-  | 'pullUp'
-  | 'pullDown'
-  | 'pullLeft'
-  | 'pullRight';
-export type AnimationStatus = 'show' | 'hide';
+  | "dialog"
+  | "pullUp"
+  | "pullDown"
+  | "pullLeft"
+  | "pullRight";
+export type AnimationStatus = "show" | "hide";
 
 export interface WrapperProps {
   // 对话框类型
@@ -28,31 +28,31 @@ export interface WrapperProps {
 
 export function Wrapper(props: WrapperProps) {
   const {
-    type = 'dialog',
-    animationStatus = 'show',
-    animationDuration = 300,
+    type = "dialog",
+    animationStatus = "show",
+    animationDuration = 200,
     children,
     onHide,
     maskOption,
   } = props;
   let containerAnimation: SerializedStyles;
   let boxAnimation: SerializedStyles;
-  if (animationStatus === 'show') {
+  if (animationStatus === "show") {
     containerAnimation = style.containerShow;
     switch (type) {
-      case 'dialog':
+      case "dialog":
         boxAnimation = style.dialogShow;
         break;
-      case 'pullUp':
+      case "pullUp":
         boxAnimation = style.pullUpShow;
         break;
-      case 'pullDown':
+      case "pullDown":
         boxAnimation = style.pullDownShow;
         break;
-      case 'pullLeft':
+      case "pullLeft":
         boxAnimation = style.pullLeftShow;
         break;
-      case 'pullRight':
+      case "pullRight":
         boxAnimation = style.pullRightShow;
         break;
       default:
@@ -62,19 +62,19 @@ export function Wrapper(props: WrapperProps) {
   } else {
     containerAnimation = style.containerHide;
     switch (type) {
-      case 'dialog':
+      case "dialog":
         boxAnimation = style.dialogHide;
         break;
-      case 'pullUp':
+      case "pullUp":
         boxAnimation = style.pullUpHide;
         break;
-      case 'pullDown':
+      case "pullDown":
         boxAnimation = style.pullDownHide;
         break;
-      case 'pullLeft':
+      case "pullLeft":
         boxAnimation = style.pullLeftHide;
         break;
-      case 'pullRight':
+      case "pullRight":
         boxAnimation = style.pullRightHide;
         break;
       default:
@@ -96,16 +96,16 @@ export function Wrapper(props: WrapperProps) {
   // 选取特定的
   const boxCss: InterpolationWithTheme<any> = [];
   switch (type) {
-    case 'pullUp':
+    case "pullUp":
       boxCss.push(style.pullUp);
       break;
-    case 'pullDown':
+    case "pullDown":
       boxCss.push(style.pullDown);
       break;
-    case 'pullLeft':
+    case "pullLeft":
       boxCss.push(style.pullLeft);
       break;
-    case 'pullRight':
+    case "pullRight":
       boxCss.push(style.pullRight);
       break;
     default:
@@ -115,15 +115,20 @@ export function Wrapper(props: WrapperProps) {
   const duration = style.duration(animationDuration);
   boxCss.push(boxAnimation, duration);
 
-  // 容器属性
-  const fcOption: FixContainerProps = maskOption ?? {};
-  if (type === 'dialog') {
+  // 默认容器属性
+  let fcOption: FixContainerProps = {};
+  if (type === "dialog") {
     fcOption.centerChild = true;
+  } else {
+    fcOption.showMask = false;
   }
+
+  // 覆盖默认属性
+  fcOption = maskOption ? { ...fcOption, ...maskOption } : fcOption;
 
   return (
     <FixContainer
-      centerChild={type === 'dialog'}
+      centerChild={type === "dialog"}
       css={[containerAnimation, duration]}
       onAnimationEnd={animationEnd}
       {...fcOption}
