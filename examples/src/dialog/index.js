@@ -1,6 +1,6 @@
-import React from 'react';
-import { Dialog, RowCenter } from '@';
-import style from './index.module.scss';
+import React from "react";
+import { Dialog, RowCenter } from "@";
+import style from "./index.module.scss";
 
 export default function () {
   return (
@@ -13,10 +13,10 @@ export default function () {
                 <RowCenter className={style.contentBox}>
                   <button onClick={() => dialog.close()}>关闭</button>
                 </RowCenter>
-              ),
+              )
             );
-            dialog.onClose(()=>{
-              console.log('dialog closed');
+            dialog.onClose(() => {
+              console.log("dialog closed");
             });
           }}
         >
@@ -26,17 +26,15 @@ export default function () {
       <p>
         <button
           onClick={() => {
-            new Dialog({
-              id: 'hello',
-              className: 'world',
-              type: 'pullUp',
-              renderContent(dialog) {
-                return (
-                  <RowCenter className={style.contentBox}>
-                    <button onClick={() => dialog.close()}>关闭</button>
-                  </RowCenter>
-                );
-              },
+            const dialog = new Dialog({
+              id: "hello",
+              className: "world",
+              type: "pullUp",
+              content: (
+                <RowCenter className={style.contentBox}>
+                  <button onClick={() => dialog.close()}>关闭</button>
+                </RowCenter>
+              ),
             });
           }}
         >
@@ -46,15 +44,13 @@ export default function () {
       <p>
         <button
           onClick={() => {
-            new Dialog({
-              type: 'pullDown',
-              renderContent(dialog) {
-                return (
-                  <RowCenter className={style.contentBox}>
-                    <button onClick={() => dialog.close()}>关闭</button>
-                  </RowCenter>
-                );
-              },
+            const dialog = new Dialog({
+              type: "pullDown",
+              content: (
+                <RowCenter className={style.contentBox}>
+                  <button onClick={() => dialog.close()}>关闭</button>
+                </RowCenter>
+              ),
             });
           }}
         >
@@ -64,15 +60,13 @@ export default function () {
       <p>
         <button
           onClick={() => {
-            new Dialog({
-              type: 'pullRight',
-              renderContent(dialog) {
-                return (
-                  <RowCenter className={style.contentBox}>
-                    <button onClick={() => dialog.close()}>关闭</button>
-                  </RowCenter>
-                );
-              },
+            const dialog = new Dialog({
+              type: "pullRight",
+              content: (
+                <RowCenter className={style.contentBox}>
+                  <button onClick={() => dialog.close()}>关闭</button>
+                </RowCenter>
+              ),
             });
           }}
         >
@@ -82,15 +76,13 @@ export default function () {
       <p>
         <button
           onClick={() => {
-            new Dialog({
-              type: 'pullLeft',
-              renderContent(dialog) {
-                return (
-                  <RowCenter className={style.contentBox}>
-                    <button onClick={() => dialog.close()}>关闭</button>
-                  </RowCenter>
-                );
-              },
+            const dialog = new Dialog({
+              type: "pullLeft",
+              content: (
+                <RowCenter className={style.contentBox}>
+                  <button onClick={() => dialog.close()}>关闭</button>
+                </RowCenter>
+              ),
             });
           }}
         >
