@@ -24,6 +24,8 @@ export interface WrapperProps {
   animationDuration?: number | string;
   // FixContainer 容器选项
   maskOption?: FixContainerProps;
+  // 容器的样式
+  boxStyle?: SerializedStyles;
 }
 
 export function Wrapper(props: WrapperProps) {
@@ -34,6 +36,7 @@ export function Wrapper(props: WrapperProps) {
     children,
     onHide,
     maskOption,
+    boxStyle,
   } = props;
   let containerAnimation: SerializedStyles;
   let boxAnimation: SerializedStyles;
@@ -133,7 +136,7 @@ export function Wrapper(props: WrapperProps) {
       onAnimationEnd={animationEnd}
       {...fcOption}
     >
-      <div css={boxCss}>{children}</div>
+      <div css={[boxCss, boxStyle]}>{children}</div>
     </FixContainer>
   );
 }

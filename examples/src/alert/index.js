@@ -44,6 +44,23 @@ export default function () {
           带标题弹框
         </button>
       </p>
+      <p>
+        <button
+          onClick={() => {
+            showAlert({
+							content: "定制按钮的颜色",
+              confirmStyle: {
+                color:'red',
+                '&:active': {
+                  color: 'darkred'
+                }
+              }
+						});
+          }}
+        >
+          定制按钮的颜色
+        </button>
+      </p>
     </div>
   );
 }

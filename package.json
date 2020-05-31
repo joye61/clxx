@@ -1,12 +1,12 @@
 {
   "name": "clxx",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "H5 utilities based on react, emotion, typescript",
   "main": "./build/index.js",
   "module": "./build/index.js",
   "scripts": {
     "start": "tsc -w --pretty",
-    "build": "node ./scripts/clear.js && tsc -w"
+    "build": "node ./scripts/clear.js && tsc"
   },
   "repository": {
     "type": "git",

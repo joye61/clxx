@@ -1,19 +1,16 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Wrapper, DialogType, AnimationStatus } from './Wrapper';
-import { FixContainerProps } from '../Layout/FixContainer';
-import { is } from '../utils/is';
+import { jsx } from "@emotion/core";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Wrapper, AnimationStatus, WrapperProps } from "./Wrapper";
+import { is } from "../utils/is";
+import omit from "lodash/omit";
 
-export interface DialogOption {
-  type?: DialogType;
+export interface DialogOption extends WrapperProps {
+  // 弹框的内容
   content?: React.ReactNode;
-  maskOption?: FixContainerProps;
+  // 弹框被彻底关闭(关闭动画完成)时触发
   onClose?: () => void;
-  animationDuration?: number | string;
-  id?: string;
-  className?: string;
 }
 
 /**
@@ -22,9 +19,9 @@ export interface DialogOption {
 export class Dialog {
   // 对话框的容器
   container: HTMLDivElement;
-  //
+  // 对话框配置
   option: DialogOption = {
-    type: 'dialog',
+    type: "dialog",
   };
 
   constructor(option?: React.ReactNode | DialogOption) {
@@ -36,18 +33,10 @@ export class Dialog {
     }
 
     // 首先渲染弹框
-    this.container = document.createElement('div');
+    this.container = document.createElement("div");
     document.body.appendChild(this.container);
 
-    // 设置id和class
-    if (this.option.id) {
-      this.container.id = this.option.id;
-    }
-    if (this.option.className) {
-      this.container.className = this.option.className;
-    }
-
-    ReactDOM.render(this.createWrapper('show'), this.container);
+    ReactDOM.render(this.createWrapper("show"), this.container);
   }
 
   // 关闭回调的便捷方法
@@ -60,21 +49,14 @@ export class Dialog {
    * @param animationStatus
    */
   createWrapper(animationStatus: AnimationStatus) {
-    return (
-      <Wrapper
-        type={this.option.type}
-        animationStatus={animationStatus}
-        animationDuration={this.option.animationDuration}
-        onHide={() => {
-          ReactDOM.unmountComponentAtNode(this.container);
-          this.container.remove();
-          this.option.onClose?.();
-        }}
-        maskOption={this.option.maskOption}
-      >
-        {this.option.content}
-      </Wrapper>
-    );
+    const props = omit(this.option, ["content", "onClose"]);
+    props.animationStatus = animationStatus;
+    props.onHide = () => {
+      ReactDOM.unmountComponentAtNode(this.container);
+      this.container.remove();
+      this.option.onClose?.();
+    };
+    return <Wrapper {...props}>{this.option.content}</Wrapper>;
   }
 
   /**
@@ -82,6 +64,6 @@ export class Dialog {
    */
   close() {
     // 主动调用一个组件的方式是向它传递属性
-    ReactDOM.render(this.createWrapper('hide'), this.container);
+    ReactDOM.render(this.createWrapper("hide"), this.container);
   }
 }

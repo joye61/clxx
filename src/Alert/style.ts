@@ -9,12 +9,13 @@ export const getStyle = () => {
     container: css({
       backgroundColor: "#fff",
       width: vw(env.designWidth * 0.8),
-      borderRadius: vw(10),
+      borderRadius: vw(8),
       overflow: "hidden",
       color: "#333",
+      boxShadow: `0 0 4px 0 #00000050;`,
       [`@media (min-width: ${env.criticalWidth}px)`]: {
         width: vw(env.designWidth * 0.8, true),
-        borderRadius: vw(10, true),
+        borderRadius: vw(8, true),
       },
     }),
     title: css({
@@ -65,9 +66,9 @@ export const getStyle = () => {
     }),
 
     defaultBtn: css({
-      fontSize: vw(18),
+      fontSize: vw(16),
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(18, true),
+        fontSize: vw(16, true),
       },
       height: "100%",
     }),
@@ -88,6 +89,7 @@ export const getStyle = () => {
     }),
 
     btnCancel: css({
+      zIndex: 1,
       "&::after": {
         position: "absolute",
         top: 0,

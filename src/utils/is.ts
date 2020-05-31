@@ -1,82 +1,23 @@
-import {
-  isArray,
-  isArrayLikeObject,
-  isElement,
-  isEmpty,
-  isPlainObject,
-  isFunction,
-  isEqual,
-  isBoolean,
-  isArrayBuffer,
-  isArguments,
-  isArrayLike,
-  isBuffer,
-  isDate,
-  isEqualWith,
-  isError,
-  isFinite,
-  isInteger,
-  isMap,
-  isNaN,
-  isNative,
-  isNil,
-  isNull,
-  isNumber,
-  isObject,
-  isObjectLike,
-  isRegExp,
-  isSafeInteger,
-  isSet,
-  isString,
-  isSymbol,
-  isTypedArray,
-  isUndefined,
-  isWeakMap,
-  isWeakSet,
-} from 'lodash';
+import isArray from "lodash/isArray";
+import isElement from "lodash/isElement";
+import isPlainObject from "lodash/isPlainObject";
+import isEqual from "lodash/isEqual";
+import isEmpty from "lodash/isEmpty";
 
 // 来自lodash的判断
 const lodashIs = {
   isArray,
-  isArrayLikeObject,
   isElement,
-  isEmpty,
   isPlainObject,
-  isFunction,
   isEqual,
-  isBoolean,
-  isArrayBuffer,
-  isArguments,
-  isArrayLike,
-  isBuffer,
-  isDate,
-  isEqualWith,
-  isError,
-  isFinite,
-  isInteger,
-  isMap,
-  isNaN,
-  isNative,
-  isNil,
-  isNull,
-  isNumber,
-  isObject,
-  isObjectLike,
-  isRegExp,
-  isSafeInteger,
-  isSet,
-  isString,
-  isSymbol,
-  isTypedArray,
-  isUndefined,
-  isWeakMap,
-  isWeakSet,
+  isEmpty,
 };
 
 /**
  * 一些简单的判断逻辑
  */
-const extraIs = {
+export const is = {
+  ...lodashIs,
   isAndroid(): boolean {
     return /Android/i.test(window.navigator.userAgent);
   },
@@ -97,12 +38,4 @@ const extraIs = {
   isTouchable() {
     return window.ontouchstart !== undefined;
   },
-};
-
-/**
- * 简单条件判断
- */
-export const is = {
-  ...lodashIs,
-  ...extraIs,
 };

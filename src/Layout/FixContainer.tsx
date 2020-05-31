@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, ObjectInterpolation } from '@emotion/core';
+import { jsx, ObjectInterpolation, SerializedStyles } from '@emotion/core';
 import * as CSS from 'csstype';
 import { getEnv } from '../utils/global';
 
@@ -32,6 +32,10 @@ export interface FixContainerProps
    * 容器深度
    */
   zIndex?: number;
+  /**
+   * 容器样式，提供额外选项
+   */
+  containerStyle?: SerializedStyles;
 }
 
 /**
@@ -47,6 +51,7 @@ export function FixContainer(props: FixContainerProps) {
     maxWidth = `${env.criticalWidth}px`,
     zIndex = 9999,
     children,
+    containerStyle,
     ...attributes
   } = props;
 
@@ -72,7 +77,7 @@ export function FixContainer(props: FixContainerProps) {
     styles.alignItems = 'center';
   }
   return (
-    <div css={styles} {...attributes}>
+    <div css={[styles, containerStyle]} {...attributes}>
       {children}
     </div>
   );

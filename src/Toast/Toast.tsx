@@ -22,6 +22,10 @@ export interface ToastProps
   duration?: number;
   // 默认toast是否圆角
   rounded?: boolean;
+  // 容器样式
+  containerStyle?: SerializedStyles;
+  // 内容样式
+  contentStyle?: SerializedStyles;
 }
 
 export function Toast(props: ToastProps) {
@@ -33,6 +37,8 @@ export function Toast(props: ToastProps) {
     offsetTop = 30,
     offsetBottom = 30,
     onHide = () => undefined,
+    containerStyle,
+    contentStyle,
     ...attributes
   } = props;
 
@@ -56,9 +62,11 @@ export function Toast(props: ToastProps) {
   let showContent: any;
   const middleStyle = position === "middle" ? style.contentMiddle : undefined;
   if (React.isValidElement(content)) {
-    showContent = <div css={middleStyle}>{content}</div>;
+    showContent = <div css={[middleStyle, contentStyle]}>{content}</div>;
   } else {
-    showContent = <p css={[style.content(rounded), middleStyle]}>{content}</p>;
+    showContent = (
+      <p css={[style.content(rounded), middleStyle, contentStyle]}>{content}</p>
+    );
   }
 
   // toast消失动画结束触发
@@ -79,7 +87,7 @@ export function Toast(props: ToastProps) {
 
   return (
     <div
-      css={[style.container, positionStyle, animation]}
+      css={[style.container, positionStyle, animation, containerStyle]}
       onAnimationEnd={animationEnd}
       {...attributes}
     >

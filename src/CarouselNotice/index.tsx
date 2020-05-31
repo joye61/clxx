@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Interpolation, css } from '@emotion/core';
+import { jsx, Interpolation, css, SerializedStyles } from '@emotion/core';
 import * as CSS from 'csstype';
 import { useState, useEffect } from 'react';
 import { getStyle, Bubble } from './style';
@@ -22,6 +22,12 @@ export interface CarouselNoticeOption
   duration: number;
   // 每一轮冒泡切换的时间间(单位毫秒)，默认3000ms
   interval: number;
+  // 容器样式
+  containerStyle?: SerializedStyles;
+  // 内部容器样式
+  wrapperStyle?: SerializedStyles;
+  // 条目样式
+  itemStyle?: SerializedStyles;
 }
 
 /**
@@ -36,6 +42,9 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     interval = 3000,
     duration = 200,
     list = [],
+    containerStyle,
+    wrapperStyle,
+    itemStyle,
     ...attrs
   } = props;
 
@@ -80,7 +89,7 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
 
     if (list.length === 1) {
       return (
-        <div css={itemCss} key={0}>
+        <div css={[itemCss, itemStyle]} key={0}>
           {list[0]}
         </div>
       );
@@ -89,23 +98,23 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     const showList: Array<React.ReactNode> = [];
     if (current === list.length - 1) {
       showList.push(
-        <div css={itemCss} key={current}>
+        <div css={[itemCss, itemStyle]} key={current}>
           {list[list.length - 1]}
         </div>,
       );
       showList.push(
-        <div css={itemCss} key={0}>
+        <div css={[itemCss, itemStyle]} key={0}>
           {list[0]}
         </div>,
       );
     } else {
       showList.push(
-        <div css={itemCss} key={current}>
+        <div css={[itemCss, itemStyle]} key={current}>
           {list[current]}
         </div>,
       );
       showList.push(
-        <div css={itemCss} key={current + 1}>
+        <div css={[itemCss, itemStyle]} key={current + 1}>
           {list[current + 1]}
         </div>,
       );
@@ -142,10 +151,10 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
   return (
     Array.isArray(list) &&
     list.length > 0 && (
-      <div {...attrs} css={[style.box, { width, height }]}>
+      <div {...attrs} css={[style.box, { width, height }, containerStyle]}>
         <div
           onAnimationEnd={animationEnd}
-          css={[style.wrapper, getAnimation()]}
+          css={[style.wrapper, getAnimation(), wrapperStyle]}
         >
           {showContent()}
         </div>

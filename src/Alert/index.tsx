@@ -1,18 +1,14 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core";
+import { jsx, SerializedStyles } from "@emotion/core";
 import React from "react";
-import { Dialog } from "../Dialog";
+import { Dialog, DialogOption } from "../Dialog";
 import { FlexBox, RowCenter } from "../Layout/Flex";
 import { getStyle } from "./style";
 import { is } from "../utils/is";
 
-export interface AlertOption
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+export interface AlertOption {
   // 弹框标题
-  title?: React.ReactNode & any;
+  title?: React.ReactNode;
   // 是否显示弹框标题
   showTitle?: boolean;
   // 内容
@@ -27,6 +23,20 @@ export interface AlertOption
   confirm?: React.ReactNode;
   // 确定按钮被点击时触发
   onConfirm?: () => void;
+
+  // 定制容器样式
+  containerStyle?: SerializedStyles;
+  // 定制默认标题样式
+  titleStyle?: SerializedStyles;
+  // 定制默认内容样式
+  contentStyle?: SerializedStyles;
+  // 定制取消按钮样式
+  cancelStyle?: SerializedStyles;
+  // 定制确定按钮样式
+  confirmStyle?: SerializedStyles;
+
+  // Dialog弹框的配置
+  dialogOption?: DialogOption;
 }
 
 export function showAlert(option: React.ReactNode | AlertOption) {
@@ -54,40 +64,50 @@ export function showAlert(option: React.ReactNode | AlertOption) {
   };
 
   const cancel = () => {
-		dialog.close();
-		config.onCancel?.();
+    dialog.close();
+    config.onCancel?.();
   };
   const confirm = () => {
-		dialog.close();
-		config.onConfirm?.();
+    dialog.close();
+    config.onConfirm?.();
   };
 
+  // 显示标题
   const showTitle = () => {
     if (config.showTitle) {
       return React.isValidElement(config.title) ? (
         config.title
       ) : (
-        <h3 css={style.title}>{config.title}</h3>
+        <h3 css={[style.title, config.titleStyle]}>{config.title}</h3>
       );
     }
     return undefined;
   };
 
+  // 显示内容
   const showContent = () => {
     if (React.isValidElement(config.content)) {
       return config.content;
     } else {
-      return <div css={style.content}>{config.content}</div>;
+      return (
+        <div css={[style.content, config.contentStyle]}>{config.content}</div>
+      );
     }
   };
 
+  // 显示按钮
   const showBtn = (type: "cancel" | "confirm") => {
     if (React.isValidElement(config[type])) {
       return config[type];
     } else {
       return (
         <RowCenter
-          css={[style.defaultBtn, (style as any)[`defaultBtn${type}`]]}
+          css={[
+            style.defaultBtn,
+            (style as any)[`defaultBtn${type}`],
+            // 传入可定制的样式
+            (config as any)[`${type}Style`],
+          ]}
         >
           {config[type]}
         </RowCenter>
@@ -95,9 +115,9 @@ export function showAlert(option: React.ReactNode | AlertOption) {
     }
   };
 
-  const dialog = new Dialog({
+  let dialogOption: DialogOption = {
     content: (
-      <div css={style.container}>
+      <div css={[style.container, config.containerStyle]}>
         {showTitle()}
         <div>{showContent()}</div>
         <FlexBox alignItems="stretch" css={style.btn}>
@@ -111,5 +131,14 @@ export function showAlert(option: React.ReactNode | AlertOption) {
         </FlexBox>
       </div>
     ),
-  });
+  };
+
+  // 如果参数有对话框配置，传入配置
+  if(is.isPlainObject(config.dialogOption)) {
+    delete config.dialogOption?.content;
+    dialogOption = {...dialogOption, ...config.dialogOption}
+  }
+
+  // 生成对话框
+  const dialog = new Dialog(dialogOption);
 }

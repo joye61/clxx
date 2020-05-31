@@ -23,15 +23,13 @@ export const getStyle = () => {
   const env = getEnv();
 
   return {
-    boxCommon(radius: number = 10){
-      return css({
-        borderRadius: vw(radius),
-        backgroundColor: `rgba(0, 0, 0, .8)`,
-        [`@media (min-width: ${env.criticalWidth}px)`]: {
-          borderRadius: vw(radius, true),
-        },
-      })
-    },
+    boxCommon: css({
+      borderRadius: vw(8),
+      backgroundColor: `rgba(0, 0, 0, .8)`,
+      [`@media (min-width: ${env.criticalWidth}px)`]: {
+        borderRadius: vw(8, true),
+      },
+    }),
     box: css({
       width: vw(90),
       height: vw(90),

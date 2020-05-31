@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css, InterpolationWithTheme } from "@emotion/core";
+import { jsx, css, InterpolationWithTheme, SerializedStyles } from "@emotion/core";
 import React from "react";
 import * as CSS from "csstype";
 import { normalizeUnit } from "../utils/cssUtil";
@@ -24,6 +24,8 @@ export interface IndicatorProps
   barCount: number;
   // 每转一圈的持续时间，单位毫秒，默认：500ms
   duration: number;
+  // 容器样式
+  containerStyle?: SerializedStyles;
 }
 
 /**
@@ -39,6 +41,7 @@ export function Indicator(props: Partial<IndicatorProps>) {
     barColor = "#fff",
     barCount = 12,
     duration = 500,
+    containerStyle,
     ...attributes
   } = props;
 
@@ -71,7 +74,7 @@ export function Indicator(props: Partial<IndicatorProps>) {
     style.width = unitSize;
     style.height = unitSize;
   }
-  style["svg"] = {
+  const svgStyle = css({
     width: "100%",
     height: "100%",
     rect: {
@@ -81,11 +84,11 @@ export function Indicator(props: Partial<IndicatorProps>) {
       animationTimingFunction: "linear",
       animationIterationCount: "infinite",
     },
-  };
+  });
 
   return (
-    <div css={css(style)} {...attributes}>
-      <svg viewBox="0 0 100 100">{barList}</svg>
+    <div css={[css(style), containerStyle]} {...attributes}>
+      <svg viewBox="0 0 100 100" css={svgStyle}>{barList}</svg>
     </div>
   );
 }

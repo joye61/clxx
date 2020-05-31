@@ -7,20 +7,20 @@ import { FixContainer, FixContainerProps } from "../Layout/FixContainer";
 import { RowCenter } from "../Layout/Flex";
 
 export interface LoadingWrapperProps {
-	// loading的状态
-	state?: "show" | "hide";
-	// 是否有额外信息
-	extra?: React.ReactNode;
-	// fixcontainer组件的属性
-	maskProps?: FixContainerProps;
-	// indicator组件的属性
-	indicatorProps?: IndicatorProps;
-	// 隐藏动画结束时触发
-	onHide?: ()=>void;
-	// 显示或隐藏动画持续时长
-	showHideDuration?: number;
-	// 框的圆角尺寸
-	radius?: number;
+  // loading的状态
+  state?: "show" | "hide";
+  // 是否有额外信息
+  extra?: React.ReactNode;
+  // fixcontainer组件的属性
+  maskProps?: FixContainerProps;
+  // indicator组件的属性
+  indicatorProps?: IndicatorProps;
+  // 隐藏动画结束时触发
+  onHide?: () => void;
+  // 显示或隐藏动画持续时长
+  showHideDuration?: number;
+  // 容器样式
+  containerStyle?: SerializedStyles;
 }
 
 export function Wrapper(props: LoadingWrapperProps) {
@@ -34,10 +34,10 @@ export function Wrapper(props: LoadingWrapperProps) {
       barWidth: 5,
       barHeight: 25,
       barCount: 14,
-		},
-		onHide,
-		showHideDuration = 200,
-		radius = 10,
+    },
+    onHide,
+    showHideDuration = 200,
+    containerStyle,
   } = props;
 
   // 设置动画逻辑
@@ -48,12 +48,12 @@ export function Wrapper(props: LoadingWrapperProps) {
     animation = style.boxHide(showHideDuration);
   }
 
-	// 动画结束时触发的函数逻辑
+  // 动画结束时触发的函数逻辑
   const animationEnd = (event: React.AnimationEvent) => {
-		if(event.animationName === LoadingHide.name) {
-			onHide?.();
-		}
-	};
+    if (event.animationName === LoadingHide.name) {
+      onHide?.();
+    }
+  };
 
   let box: React.ReactNode;
   if (extra) {
@@ -65,7 +65,12 @@ export function Wrapper(props: LoadingWrapperProps) {
     }
     box = (
       <RowCenter
-        css={[style.boxCommon(radius), style.boxWithExtra, animation]}
+        css={[
+          style.boxCommon,
+          style.boxWithExtra,
+          animation,
+          containerStyle,
+        ]}
         onAnimationEnd={animationEnd}
       >
         <Indicator {...indicatorProps} />
@@ -75,7 +80,7 @@ export function Wrapper(props: LoadingWrapperProps) {
   } else {
     box = (
       <RowCenter
-        css={[style.boxCommon(radius), style.box, animation]}
+        css={[style.boxCommon, style.box, animation, containerStyle]}
         onAnimationEnd={animationEnd}
       >
         <Indicator {...indicatorProps} />

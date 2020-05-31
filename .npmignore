@@ -1,0 +1,9 @@
+/script/
+/examples/
+node_modules/
+/assets/
+tsconfig.json
+package-lock.json
+/.npmignore
+/.gitignore
+/src/
