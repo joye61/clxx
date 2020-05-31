@@ -15,10 +15,10 @@ export class Loading {
   // 当前是否正在显示0：否，1：是
   state: 0 | 1 = 0;
 
-	// 当前loading的容器
+  // 当前loading的容器
   container?: HTMLDivElement;
 
-	// 配置对象
+  // 配置对象
   config: LoadingOption = {
     minDuration: 0,
   };
@@ -30,8 +30,7 @@ export class Loading {
   startShowTime = 0;
 
   constructor(option: React.ReactNode | LoadingOption) {
-
-		// 解析配置文件
+    // 解析配置文件
     const optionIsObject = is.isPlainObject(option);
     if (React.isValidElement(option) || !optionIsObject) {
       this.config.extra = option;
@@ -68,13 +67,13 @@ export class Loading {
    */
   async close() {
     if (this.container && this.state === 1) {
-			const current = Date.now();
-			// 当前关闭触发时已经持续的时间
-			const continuedTime = current - this.startShowTime;
+      const current = Date.now();
+      // 当前关闭触发时已经持续的时间
+      const continuedTime = current - this.startShowTime;
 
-			// 如果关闭时还未达到设置的最小持续时间，则继续等待
+      // 如果关闭时还未达到设置的最小持续时间，则继续等待
       if (continuedTime < this.config.minDuration!) {
-				const left = this.config.minDuration! - continuedTime;
+        const left = this.config.minDuration! - continuedTime;
         await new Promise((resolve) => {
           window.setTimeout(() => {
             resolve();
@@ -82,7 +81,7 @@ export class Loading {
         });
       }
 
-			// 时间已经达到了，开始关闭
+      // 时间已经达到了，开始关闭
       this.wrapperProps.state = "hide";
       this.wrapperProps.onHide = () => {
         ReactDOM.unmountComponentAtNode(this.container!);
