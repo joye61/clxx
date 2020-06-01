@@ -13,6 +13,7 @@ const pageConfig = [
   { path: 'toast', title: 'showToast轻提示', enable: true },
   { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
   { path: 'loading', title: 'Loading加载', enable: true },
+  { path: 'scrollview', title: 'ScrollView滚动容器', enable: true },
 ];
 
 function Home() {

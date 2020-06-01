@@ -42,10 +42,10 @@ export const getStyle = () => {
     }),
     btn: css({
       position: "relative",
-			height: vw(50),
+			height: vw(48),
 			userSelect: 'none',
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        height: vw(50, true),
+        height: vw(48, true),
       },
       "> div": {
         position: "relative",

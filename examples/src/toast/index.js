@@ -17,8 +17,8 @@ export default function () {
       <button
         onClick={() => {
           showToast(
-            <div style={{ border: '1px solid red' }}>
-              一个简单的<span style={{ color: 'red' }}>Toast</span>轻提示
+            <div style={{ border: '1px solid red', background: 'green'  }}>
+              一个简单的<span style={{ color: 'red'}}>Toast</span>轻提示
             </div>,
           );
         }}

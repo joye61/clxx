@@ -31,18 +31,18 @@ export const getStyle = () => {
       },
     }),
     box: css({
-      width: vw(90),
-      height: vw(90),
+      width: vw(80),
+      height: vw(80),
       "> div:first-of-type": {
-        width: vw(36),
-        height: vw(36),
+        width: vw(30),
+        height: vw(30),
       },
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        height: vw(90, true),
-        width: vw(90, true),
+        height: vw(80, true),
+        width: vw(80, true),
         "> div:first-of-type": {
-          width: vw(36, true),
-          height: vw(36, true),
+          width: vw(30, true),
+          height: vw(30, true),
         },
       },
     }),
@@ -78,12 +78,12 @@ export const getStyle = () => {
 
     // 默认的额外信息样式
     defaultExtra: css({
-      color: "#fafafa",
-      fontSize: vw(16),
+      color: "#f5f5f5",
+      fontSize: vw(14),
       marginLeft: vw(10),
       whiteSpace: "nowrap",
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(16, true),
+        fontSize: vw(14, true),
         marginLeft: vw(10, true),
       },
     }),
