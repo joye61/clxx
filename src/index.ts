@@ -32,3 +32,4 @@ export { showToast } from './Toast';
 export { Loading } from './Loading';
 export { showAlert } from './Alert';
 export { ScrollView } from './ScrollView';
+export { Ago } from './Ago';
