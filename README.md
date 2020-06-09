@@ -2,16 +2,16 @@
 
 **自研有难度且耗时，缺乏简单易用的第三方**：
 
-- 基于 `React` 和 `React Hooks` 开发
-- 基于 [`CSS-IN-JS`](https://github.com/emotion-js/emotion) 技术，零样式文件依赖
-- 完全的自适应 UI，易于使用
+- 基于 `React` 和 `React Hooks` 
+- 基于 [`CSS-IN-JS`](https://github.com/emotion-js/emotion) ，零样式文件依赖
+- 自适应 UI，易于使用
 
 > 项目采用`^TypeScript V3.9.3`开发
 
 
 # examples
 
-`examples`目录是一个完全采用`create-react-app`创建的项目，大部分功能都在此项目中实现了demo，请自行clone下来测试
+`examples`完全采用`CRA`创建，大部分功能都在此实现了demo，请自行clone测试
 
 # 安装
 
