@@ -1,61 +1,42 @@
-export interface WaitUntilOption {
-  /**
-   * 检测时间间隔，默认50毫秒一次
-   */
-  checkInterval?: number;
-  /**
-   * 最大检测次数，默认200次，也就是10秒
-   */
-  checkMaxTimes?: number;
-}
-
+import raf from 'raf';
 
 /**
- * 等待条件成立，条件为函数类型，返回boolean
- * @param condition 
- * @param option 
+ * 检测某一个条件是否成立，任一条件满足即返回
+ * 1、检测结果为真，或JS判断为真
+ * 2、超时时间到了
+ *
+ * @param condition 检测条件
+ * @param maxTime 最大等待时间，超过时间，无论如何都返回
+ *
+ * @returns 返回检测的结果
  */
-export async function waitUntil(
-  condition: () => boolean,
-  option?: WaitUntilOption
-) {
+export async function waitUntil(condition: () => boolean, maxTime: number) {
+  // 记录检测开始时间
+  const checkStart = Date.now();
 
-  /**
-   * 默认配置
-   */
-  let config: WaitUntilOption = {
-    checkInterval: 50,
-    checkMaxTimes: 200
-  };
-
-  /**
-   * 如果存在配置参数，则覆盖默认配置
-   */
-  if (typeof option === "object") {
-    config = { ...config, ...option };
+  // 如果检测条件不为函数，直接返回结果
+  if (typeof condition !== 'function') {
+    return !!condition;
   }
 
-  return new Promise(resolve => {
-    let checkTimes = 0;
-    let lastResult = false;
-    const inter = window.setInterval(() => {
-      // 达到最大次数限制
-      if (checkTimes >= config.checkMaxTimes!) {
-        window.clearInterval(inter);
-        resolve(lastResult);
+  // 设置默认检测时间的最大值
+  if (!maxTime || typeof maxTime !== 'number') {
+    maxTime = Infinity;
+  }
+
+  return new Promise((resolve) => {
+    const check = () => {
+      const now = Date.now();
+      // 获取检测结果
+      const result = condition();
+      // 检测结果为真或超时，都返回
+      if (now - checkStart >= maxTime || result) {
+        resolve(result);
         return;
       }
-
-      // 检测成功
-      lastResult = condition();
-      if (lastResult) {
-        window.clearInterval(inter);
-        resolve(true);
-        return;
-      }
-
-      // 检测失败，次数+1，继续检测
-      checkTimes++;
-    }, config.checkInterval);
+      raf(check);
+    };
+    // 开始检测
+    raf(check);
   });
 }

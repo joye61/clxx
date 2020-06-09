@@ -7,6 +7,7 @@ export { waitUntil } from './utils/waitUntil';
 export * as cssUtil from './utils/cssUtil';
 export { ago } from './utils/ago';
 export { createCalendarTable } from './utils/createCalendarTable';
+export { tick } from './utils/tick';
 
 export { Container } from './Container';
 export { Indicator } from './Indicator';
