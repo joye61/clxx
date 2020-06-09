@@ -1,6 +1,6 @@
 {
   "name": "clxx",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "H5 utilities based on react, emotion, typescript",
   "main": "./build/index.js",
   "module": "./build/index.js",
