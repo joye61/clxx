@@ -2,21 +2,7 @@ import './index.scss';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { history } from './env';
-import { Container, waitUntil, tick } from '@';
-
-// const test = {a:1};
-// (async ()=>{
-//   setTimeout(()=>{
-//     test.a = 2;
-//   }, 3000);
-//   const result = await waitUntil(()=>test.a === 2, 3000);
-//   console.log(result, 1);
-// })();
-console.log(tick);
-const stop = tick(function(){
-  console.log(Date.now());
-}, 500);
-setTimeout(stop, 3000);
+import { Container } from '@';
 
 const pageConfig = [
   { path: 'indicator', title: 'Indicator指示器', enable: true },

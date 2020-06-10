@@ -10,7 +10,7 @@ import raf from 'raf';
  *
  * @returns 返回检测的结果
  */
-export async function waitUntil(condition: () => boolean, maxTime: number) {
+export async function waitUntil(condition: () => boolean, maxTime?: number) {
   // 记录检测开始时间
   const checkStart = Date.now();
 
@@ -30,7 +30,7 @@ export async function waitUntil(condition: () => boolean, maxTime: number) {
       // 获取检测结果
       const result = condition();
       // 检测结果为真或超时，都返回
-      if (now - checkStart >= maxTime || result) {
+      if (now - checkStart >= maxTime! || result) {
         resolve(result);
         return;
       }
