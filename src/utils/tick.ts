@@ -9,7 +9,7 @@ export interface TickReturn {
  * @param callback
  * @param interval
  */
-export function tick(callback: () => {}, interval?: number): TickReturn {
+export function tick(callback: () => void, interval?: number): TickReturn {
   // 执行状态，是否正在执行
   let isRunning: boolean;
 
