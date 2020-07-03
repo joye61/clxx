@@ -8,6 +8,7 @@ export * as cssUtil from './utils/cssUtil';
 export { ago } from './utils/ago';
 export { createCalendarTable } from './utils/createCalendarTable';
 export { tick } from './utils/tick';
+export { jsonp } from './utils/jsonp';
 
 export { Container } from './Container';
 export { Indicator } from './Indicator';
@@ -15,11 +16,13 @@ export { Dialog } from './Dialog';
 export {
   FlexBox,
   FlexItem,
+  Row,
   RowAround,
   RowBetween,
   RowCenter,
   RowEnd,
   RowStart,
+  Col,
   ColAround,
   ColBetween,
   ColCenter,
@@ -32,5 +35,6 @@ export { CarouselNotice } from './CarouselNotice';
 export { showToast } from './Toast';
 export { Loading } from './Loading';
 export { showAlert } from './Alert';
-export {ScrollView } from './ScrollView';
+export { ScrollView } from './ScrollView';
 export { Ago } from './Ago';
+export { Touchable } from './Touchable';

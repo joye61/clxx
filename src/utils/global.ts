@@ -1,33 +1,35 @@
 /**
- * 环境变量
+ * 全局环境变量
  */
-declare const window: Window & {
-  __CLXX_CRITICAL_WIDTH: number;
-  __CLXX_DESIGN_WIDTH: number;
+export type GVARS = {
+  // 移动和非移动的临界宽度
+  criticalWidth: number;
+  // 设计宽度
+  designWidth: number;
 };
 
 /**
- * 确保全局的环境变量被正确设置
+ * 环境变量
  */
-export function ensureEnvironmentValue() {
-  // 当前H5页面的临界宽度
-  if (!window.__CLXX_CRITICAL_WIDTH) {
-    window.__CLXX_CRITICAL_WIDTH = 576;
-  }
-  // 当前H5页面的设计宽度
-  if (!window.__CLXX_DESIGN_WIDTH) {
-    window.__CLXX_DESIGN_WIDTH = 375;
-  }
-}
+declare const window: Window & {
+  __CLXX_VARS: GVARS;
+};
 
+window.__CLXX_VARS = {
+  criticalWidth: 576,
+  designWidth: 375,
+};
 
 // 获取环境变量值
-export function getEnv(){
-  ensureEnvironmentValue();
-  return {
-    criticalWidth: window.__CLXX_CRITICAL_WIDTH,
-    designWidth: window.__CLXX_DESIGN_WIDTH
-  }
+export function getEnv() {
+  return window.__CLXX_VARS;
 }
 
-ensureEnvironmentValue();
+/**
+ * 初始化环境变量
+ * @param option
+ */
+export function setEnv(option?: Partial<GVARS>) {
+  if (!option) return;
+  window.__CLXX_VARS = { ...window.__CLXX_VARS, ...option };
+}

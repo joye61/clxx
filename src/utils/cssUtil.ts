@@ -26,8 +26,8 @@ export const CSSNumericValueReg = /^((?:\-)?(?:\d+\.?|\.\d+|\d+\.\d+))([a-zA-Z%]
  * @param num 设计稿尺寸
  * @param overLimit 是否超过临界尺寸
  */
-const env = getEnv();
 export function vw(num: number, overLimit = false) {
+  const env = getEnv();
   if (overLimit) {
     return (env.criticalWidth * num) / env.designWidth + 'px';
   } else {

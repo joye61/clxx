@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { history } from './env';
 import { Container } from '@';
+import { Touchable } from '@';
 
 const pageConfig = [
   { path: 'indicator', title: 'Indicator指示器', enable: true },
@@ -15,6 +16,7 @@ const pageConfig = [
   { path: 'loading', title: 'Loading加载', enable: true },
   { path: 'nativescrollview', title: 'NativeScrollView滚动容器', enable: true },
   { path: 'ago', title: 'Ago多久以前', enable: true },
+  { path: 'touchable', title: 'Touchable可触摸组件', enable: true },
 ];
 
 function Home() {
@@ -84,7 +86,11 @@ function App() {
     });
   }, []);
 
-  return <Container>{page}</Container>;
+  return (
+    <Container>
+      {page}
+    </Container>
+  );
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));

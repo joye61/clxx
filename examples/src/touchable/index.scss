@@ -1,0 +1,27 @@
+.Touchable {
+  padding: 0.1rem;
+  user-select: none;
+  .btntest {
+    margin-top: 0.5rem;
+    background-color: gray;
+    padding: 0.1rem;
+    &.active {
+      background-color: blue;
+    }
+    > div {
+      padding: 0.1rem;
+      margin: 0.1rem;
+      background-color: #f0f0f0;
+      color: red;
+      &.active {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .as {
+    margin-top: 0.2rem;
+    background-color: gray;
+    padding: 0.1rem;
+  }
+}
