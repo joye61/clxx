@@ -24,8 +24,11 @@ export function tick(callback: () => void, interval?: number): TickReturn {
       }
       raf(frame);
       const now = Date.now();
+
+      // 每次间隔频率逻辑上保持一致，即使帧频不一致
       if (now - lastTick >= interval) {
-        lastTick = now;
+        // 本次tick的时间为上次的时间加上频率间隔
+        lastTick = lastTick + interval;
         callback();
       }
     };

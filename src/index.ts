@@ -38,3 +38,5 @@ export { showAlert } from './Alert';
 export { ScrollView } from './ScrollView';
 export { Ago } from './Ago';
 export { Touchable } from './Touchable';
+export { Content as PrivacyContent } from './Privacy/Content';
+export { replaceRange, replaceWithoutHeadTail } from './Privacy/string';
