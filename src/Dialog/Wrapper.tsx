@@ -24,6 +24,8 @@ export interface WrapperProps {
   animationDuration?: number | string;
   // FixContainer 容器选项
   maskOption?: FixContainerProps;
+  // 容器被点击时触发
+  onMaskClick?: () => void;
   // 容器的样式
   boxStyle?: SerializedStyles;
 }
@@ -37,6 +39,7 @@ export function Wrapper(props: WrapperProps) {
     onHide,
     maskOption,
     boxStyle,
+    onMaskClick,
   } = props;
   let containerAnimation: SerializedStyles;
   let boxAnimation: SerializedStyles;
@@ -134,6 +137,13 @@ export function Wrapper(props: WrapperProps) {
       centerChild={type === "dialog"}
       css={[containerAnimation, duration]}
       onAnimationEnd={animationEnd}
+      onClick={(event) => {
+        event.stopPropagation();
+        // 当点击对象是背景对象本身时触发
+        if(event.target === event.currentTarget) {
+          onMaskClick?.();
+        }
+      }}
       {...fcOption}
     >
       <div css={[boxCss, boxStyle]}>{children}</div>

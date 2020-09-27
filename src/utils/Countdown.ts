@@ -14,7 +14,7 @@ export interface CountdownOption {
 
 export class Countdown {
   /**
-   * 当前Updateer的状态
+   * 当前Updater的状态
    * 0：停止状态
    * 1：运行状态
    */

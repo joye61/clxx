@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from "@emotion/core";
 
-import type { LayoutProps, FlexBoxProperty, FlexItemProperty } from './types';
+import type { LayoutProps, FlexBoxProperty, FlexItemProperty } from "./types";
 
 type FlexBoxProps = LayoutProps & Partial<FlexBoxProperty>;
 type FlexItemProps = LayoutProps & Partial<FlexItemProperty>;
@@ -14,7 +14,7 @@ export function FlexBox(props: FlexBoxProps) {
   const {
     children,
     // 默认任意方向的纵轴都居中显示
-    alignItems = 'center',
+    alignItems = "center",
     flexDirection,
     justifyContent,
     flexWrap,
@@ -25,7 +25,7 @@ export function FlexBox(props: FlexBoxProps) {
   return (
     <div
       css={{
-        display: 'flex',
+        display: "flex",
         flexDirection,
         alignItems,
         justifyContent,
@@ -73,40 +73,44 @@ export function FlexItem(props: FlexItemProps) {
 }
 
 export function Row(props: FlexBoxProps) {
-  const { flexDirection = 'row', ...others } = props;
+  const { flexDirection = "row", ...others } = props;
   return <FlexBox flexDirection={flexDirection} {...others} />;
 }
 
 export function Col(props: FlexBoxProps) {
-  const { flexDirection = 'column', ...others } = props;
+  const { flexDirection = "column", ...others } = props;
   return <FlexBox flexDirection={flexDirection} {...others} />;
 }
 
 export function RowAround(props: FlexBoxProps) {
-  const { justifyContent = 'space-around', ...others } = props;
+  const { justifyContent = "space-around", ...others } = props;
   return <FlexBox justifyContent={justifyContent} {...others} />;
 }
 export function RowBetween(props: FlexBoxProps) {
-  const { justifyContent = 'space-between', ...others } = props;
+  const { justifyContent = "space-between", ...others } = props;
+  return <FlexBox justifyContent={justifyContent} {...others} />;
+}
+export function RowEvenly(props: FlexBoxProps) {
+  const { justifyContent = "space-evenly", ...others } = props;
   return <FlexBox justifyContent={justifyContent} {...others} />;
 }
 export function RowCenter(props: FlexBoxProps) {
-  const { justifyContent = 'center', ...others } = props;
+  const { justifyContent = "center", ...others } = props;
   return <FlexBox justifyContent={justifyContent} {...others} />;
 }
 export function RowStart(props: FlexBoxProps) {
-  const { justifyContent = 'flex-start', ...others } = props;
+  const { justifyContent = "flex-start", ...others } = props;
   return <FlexBox justifyContent={justifyContent} {...others} />;
 }
 export function RowEnd(props: FlexBoxProps) {
-  const { justifyContent = 'flex-end', ...others } = props;
+  const { justifyContent = "flex-end", ...others } = props;
   return <FlexBox justifyContent={justifyContent} {...others} />;
 }
 
 export function ColAround(props: FlexBoxProps) {
   const {
-    flexDirection = 'column',
-    justifyContent = 'space-around',
+    flexDirection = "column",
+    justifyContent = "space-around",
     ...others
   } = props;
   return (
@@ -119,8 +123,22 @@ export function ColAround(props: FlexBoxProps) {
 }
 export function ColBetween(props: FlexBoxProps) {
   const {
-    flexDirection = 'column',
-    justifyContent = 'space-between',
+    flexDirection = "column",
+    justifyContent = "space-between",
+    ...others
+  } = props;
+  return (
+    <FlexBox
+      flexDirection={flexDirection}
+      justifyContent={justifyContent}
+      {...others}
+    />
+  );
+}
+export function ColEvenly(props: FlexBoxProps) {
+  const {
+    flexDirection = "column",
+    justifyContent = "space-evenly",
     ...others
   } = props;
   return (
@@ -133,8 +151,8 @@ export function ColBetween(props: FlexBoxProps) {
 }
 export function ColCenter(props: FlexBoxProps) {
   const {
-    flexDirection = 'column',
-    justifyContent = 'center',
+    flexDirection = "column",
+    justifyContent = "center",
     ...others
   } = props;
   return (
@@ -147,8 +165,8 @@ export function ColCenter(props: FlexBoxProps) {
 }
 export function ColStart(props: FlexBoxProps) {
   const {
-    flexDirection = 'column',
-    justifyContent = 'flex-start',
+    flexDirection = "column",
+    justifyContent = "flex-start",
     ...others
   } = props;
   return (
@@ -161,8 +179,8 @@ export function ColStart(props: FlexBoxProps) {
 }
 export function ColEnd(props: FlexBoxProps) {
   const {
-    flexDirection = 'column',
-    justifyContent = 'flex-end',
+    flexDirection = "column",
+    justifyContent = "flex-end",
     ...others
   } = props;
   return (

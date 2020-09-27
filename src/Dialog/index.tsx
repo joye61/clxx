@@ -11,6 +11,8 @@ export interface DialogOption extends WrapperProps {
   content?: React.ReactNode;
   // 弹框被彻底关闭(关闭动画完成)时触发
   onClose?: () => void;
+  // 是否开启空白处点击隐藏，默认开启
+  canHideOnBlankClick?: boolean;
 }
 
 /**
@@ -22,6 +24,7 @@ export class Dialog {
   // 对话框配置
   option: DialogOption = {
     type: "dialog",
+    canHideOnBlankClick: true,
   };
 
   constructor(option?: React.ReactNode | DialogOption) {
@@ -56,6 +59,12 @@ export class Dialog {
       this.container.remove();
       this.option.onClose?.();
     };
+    // 显示状态主动添加关闭监听
+    if (this.option.canHideOnBlankClick && animationStatus === "show") {
+      props.onMaskClick = () => {
+        this.close();
+      };
+    }
     return <Wrapper {...props}>{this.option.content}</Wrapper>;
   }
 

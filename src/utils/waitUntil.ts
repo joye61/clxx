@@ -19,7 +19,7 @@ export async function waitUntil(condition: () => boolean, maxTime?: number) {
     return !!condition;
   }
 
-  // 设置默认检测时间的最大值
+  // 设置默认检测时间的最大值，如果没有设置，则一直检测
   if (!maxTime || typeof maxTime !== 'number') {
     maxTime = Infinity;
   }
