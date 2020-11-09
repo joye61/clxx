@@ -1,10 +1,10 @@
-import React from 'react';
-import { useRef, useState, useEffect, CSSProperties } from 'react';
+import React from "react";
+import { useRef, useState, useEffect, CSSProperties } from "react";
 
 /**
  * 可触摸元素的属性，兼容PC
  */
-export interface TouchableProps
+export interface ClickableProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -21,17 +21,24 @@ export interface TouchableProps
   disable: boolean;
 }
 
-export function Touchable(props: Partial<TouchableProps>) {
-  const {
+export function Clickable(props: Partial<ClickableProps>) {
+  let {
     children,
     bubble = true,
     className,
-    activeClass = 'active',
+    activeClass,
     style,
     activeStyle,
     disable = false,
     ...attrs
   } = props;
+
+  // 如果激活样式和激活类都不存在，则设置激活默认样式
+  if (!activeClass && !activeStyle) {
+    activeStyle = {
+      opacity: 0.6,
+    };
+  }
 
   const [boxClass, setBoxClass] = useState<undefined | string>(className);
   const [boxStyle, setBoxStyle] = useState<CSSProperties | undefined>(style);
@@ -49,17 +56,22 @@ export function Touchable(props: Partial<TouchableProps>) {
       if (!bubble) {
         event.stopPropagation();
       }
-      // 更新状态
-      setBoxClass(
-        typeof boxClass === 'string'
-          ? `${boxClass} ${activeClass}`
-          : activeClass,
-      );
-      if (typeof activeStyle === 'object') {
+
+      // 如果激活类存在
+      if (typeof activeClass === "string") {
+        setBoxClass(
+          typeof boxClass === "string"
+            ? `${boxClass} ${activeClass}`
+            : activeClass
+        );
+      }
+
+      // 如果激活样式存在
+      if (typeof activeStyle === "object") {
         setBoxStyle(
-          typeof boxStyle === 'object'
+          typeof boxStyle === "object"
             ? { ...boxStyle, ...activeStyle }
-            : activeStyle,
+            : activeStyle
         );
       }
     }
@@ -86,9 +98,9 @@ export function Touchable(props: Partial<TouchableProps>) {
           setBoxStyle(style);
         }
       };
-      document.documentElement.addEventListener('mouseup', handleMouseUp);
+      document.documentElement.addEventListener("mouseup", handleMouseUp);
       return () => {
-        document.documentElement.removeEventListener('mouseup', handleMouseUp);
+        document.documentElement.removeEventListener("mouseup", handleMouseUp);
       };
     }
   }, [className, style]);

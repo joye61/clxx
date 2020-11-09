@@ -13,9 +13,9 @@ const pageConfig = [
   { path: 'toast', title: 'showToast轻提示', enable: true },
   { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
   { path: 'loading', title: 'Loading加载', enable: true },
-  { path: 'nativescrollview', title: 'NativeScrollView滚动容器', enable: true },
+  { path: 'scrollview', title: 'ScrollView滚动容器', enable: true },
   { path: 'ago', title: 'Ago多久以前', enable: true },
-  { path: 'touchable', title: 'Touchable可触摸组件', enable: true },
+  { path: 'clickable', title: 'Clickable可触摸组件', enable: true },
   { path: 'privacy', title: 'Privacy去标识化', enable: true },
 ];
 

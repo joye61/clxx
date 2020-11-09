@@ -1,39 +1,39 @@
 import './index.scss';
 import React from 'react';
-import { Touchable } from '@';
+import { Clickable } from '@';
 
 export default function () {
   return (
     <div className="Touchable">
-      <Touchable className="btntest">
+      <Clickable className="btntest">
         可点击元素
-        <Touchable>内嵌可点击元素</Touchable>
-        <Touchable bubble={false}>内嵌可点击元素 bubble=false</Touchable>
-        <Touchable activeStyle={{ backgroundColor: 'green', color: 'cyan' }}>
+        <Clickable>内嵌可点击元素</Clickable>
+        <Clickable bubble={false}>内嵌可点击元素 bubble=false</Clickable>
+        <Clickable activeStyle={{ backgroundColor: 'green', color: 'cyan' }}>
           内嵌 activeStyle
-        </Touchable>
-        <Touchable
+        </Clickable>
+        <Clickable
           bubble={false}
           activeStyle={{ backgroundColor: 'green', color: 'cyan' }}
         >
           内嵌 activeStyle bubble=false
-        </Touchable>
-      </Touchable>
+        </Clickable>
+      </Clickable>
 
-      <Touchable
+      <Clickable
         className="as"
         activeStyle={{ backgroundColor: 'green', color: 'cyan' }}
       >
         activeStyle
-      </Touchable>
+      </Clickable>
 
-      <Touchable
+      <Clickable
         disable
         className="as"
         activeStyle={{ backgroundColor: 'green', color: 'cyan' }}
       >
         activeStyle(禁用) disable=true
-      </Touchable>
+      </Clickable>
     </div>
   );
 }
