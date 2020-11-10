@@ -1,11 +1,10 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, InterpolationWithTheme } from '@emotion/core';
-import * as CSS from 'csstype';
-import { useRef, useState } from 'react';
-import limitCall from 'lodash/throttle';
-import { Indicator } from '../Indicator';
-import { RowCenter } from '../Layout/Flex';
-import { getStyle } from './style';
+import { jsx, SerializedStyles, InterpolationWithTheme } from "@emotion/core";
+import * as CSS from "csstype";
+import { useRef } from "react";
+import { Indicator } from "../Indicator";
+import { RowCenter } from "../Layout/Flex";
+import { getStyle } from "./style";
 
 // 经过特别计算的滚动事件参数
 export interface ScrollEvent {
@@ -13,7 +12,7 @@ export interface ScrollEvent {
   contentHeight: number;
   scrollTop: number;
   maxScroll: number;
-  direction: 'upward' | 'downward';
+  direction: "upward" | "downward";
   rawEvent?: React.UIEvent;
 }
 
@@ -23,15 +22,17 @@ export interface ScrollViewProps
       React.HTMLAttributes<HTMLDivElement>,
       HTMLDivElement
     >,
-    'onScroll'
+    "onScroll"
   > {
   // 滚动的内容
   children?: React.ReactNode;
-  // onScroll节流的频率
-  throttle?: number;
   // 容器的高度，默认100%
   height?: CSS.HeightProperty<any>;
-  // 触底事件发生的阈值，默认为两个屏幕高度
+  // 触顶事件的阈值，默认为50像素
+  reachTopThreshold?: number;
+  // 触顶事件
+  onReachTop?: (event: ScrollEvent) => void;
+  // 触底事件发生的阈值，默认为50像素
   reachBottomThreshold?: number;
   // 触底事件
   onReachBottom?: (event: ScrollEvent) => void;
@@ -54,10 +55,11 @@ export function ScrollView(props: ScrollViewProps) {
   const {
     children,
     height,
-    throttle = 300,
-    reachBottomThreshold = window.innerHeight * 2,
+    reachTopThreshold = 50,
+    onReachTop,
+    reachBottomThreshold = 50,
     onReachBottom,
-    showLoading = false,
+    showLoading = true,
     loadingContent,
     onScroll,
     containerStyle,
@@ -73,7 +75,7 @@ export function ScrollView(props: ScrollViewProps) {
   }
 
   // 是否显示loading
-  const [loadingShow, setLoadingShow] = useState<boolean>(false);
+  // const [loadingShow, setLoadingShow] = useState<boolean>(false);
 
   // 滚动容器
   const container = useRef<HTMLDivElement>(null);
@@ -81,55 +83,58 @@ export function ScrollView(props: ScrollViewProps) {
   // 当前滚动到顶部的距离
   const top = useRef<number>(0);
 
-  const scrollCallback = limitCall((rawEvent) => {
+  const scrollCallback = (rawEvent: React.UIEvent<HTMLDivElement>) => {
+    // 滚动容器的子元素内容
+    const children = container.current!.children;
     // 滚动内容总高度
-    const contentHeight = container.current!.scrollHeight;
+    const contentHeight = children.item(0)?.scrollHeight;
+    // loading高度
+    const loadingHeight = children.item(1)?.scrollHeight ?? 0;
     // 容器高度
     const containerHeight = container.current!.getBoundingClientRect().height;
     // 最大滚动距离
-    const maxScroll = contentHeight - containerHeight;
+    const maxScroll = contentHeight! - containerHeight;
     // 已经滚动的距离
     const scrollTop = container.current!.scrollTop;
 
     // 生成滚动事件参数
     const event: ScrollEvent = {
       containerHeight,
-      contentHeight,
+      contentHeight: contentHeight!,
       maxScroll,
       scrollTop,
-      direction: scrollTop > top.current ? 'downward' : 'upward',
+      direction: scrollTop > top.current ? "downward" : "upward",
       rawEvent,
     };
 
     // 调用输入的滚动事件
     onScroll?.(event);
 
+    // 判断是否触发触顶事件
+    if (event.direction === "upward" && scrollTop < reachTopThreshold) {
+      onReachTop?.(event);
+    }
+
     // 判断是否触发触底事件
     if (
-      // 页面在向下滚动
-      scrollTop > top.current &&
-      // 页面滚动超过阈值
-      scrollTop > maxScroll - reachBottomThreshold &&
-      // 当前loading不是显示状态
-      loadingShow === false
+      event.direction === "downward" &&
+      scrollTop > maxScroll - reachBottomThreshold - loadingHeight
     ) {
-      (async () => {
-        setLoadingShow(true);
-        await onReachBottom?.(event);
-        setLoadingShow(false);
-      })();
+      onReachBottom?.(event);
     }
+
+    // 更新scrollTop上次的值
     top.current = scrollTop;
-  }, throttle);
+  };
 
   // loading内容
   let showLoadingContent: React.ReactNode = null;
-  if (showLoading && loadingShow) {
+  if (showLoading) {
     if (!loadingContent) {
       showLoadingContent = (
         <RowCenter css={[style.loading, loadingStyle]}>
-          <Indicator barColor="#333" barCount={14} />
-          <p>数据加载中</p>
+          <Indicator barColor="#666" barCount={14} />
+          <p>数据加载中...</p>
         </RowCenter>
       );
     } else {

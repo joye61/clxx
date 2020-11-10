@@ -12,15 +12,15 @@ export const getStyle = () => {
       WebkitOverflowScrolling: 'touch',
     }),
     loading: css({
-      padding: `${vw(10)} 0`,
+      padding: `${vw(15)} 0`,
       '> div': {
-        width: vw(16),
-        height: vw(16),
+        width: vw(15),
+        height: vw(15),
       },
       '> p': {
-        margin: `0 0 0 ${vw(5)}`,
-        fontSize: vw(13),
-        color: '#666',
+        margin: `0 0 0 ${vw(8)}`,
+        fontSize: vw(12),
+        color: '#999',
       },
       [`@media (min-width: ${env.criticalWidth}px)`]: {
         padding: `${vw(10, true)} 0`,
