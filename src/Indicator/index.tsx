@@ -11,7 +11,7 @@ export interface IndicatorProps
     HTMLDivElement
   > {
   // 容器的尺寸
-  size: CSS.WidthProperty<any>;
+  size: CSS.Property.Width;
   // bar是否圆角，默认：true
   rounded: boolean;
   // bar宽度，默认：7

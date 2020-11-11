@@ -27,7 +27,7 @@ export interface ScrollViewProps
   // 滚动的内容
   children?: React.ReactNode;
   // 容器的高度，默认100%
-  height?: CSS.HeightProperty<any>;
+  height?: CSS.Property.Height;
   // 触顶事件的阈值，默认为50像素
   reachTopThreshold?: number;
   // 触顶事件

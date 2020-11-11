@@ -8,30 +8,31 @@ export interface LayoutProps
   children?: React.ReactNode;
 }
 
+
 export interface PositionProperty {
-  position: CSS.PositionProperty;
-  top: CSS.TopProperty<any>;
-  left: CSS.LeftProperty<any>;
-  right: CSS.RightProperty<any>;
-  bottom: CSS.BottomProperty<any>;
-  width: CSS.WidthProperty<any>;
-  height: CSS.HeightProperty<any>;
+  position: CSS.Property.Position;
+  top: CSS.Property.Top;
+  left: CSS.Property.Left;
+  right: CSS.Property.Right;
+  bottom: CSS.Property.Bottom;
+  width: CSS.Property.Width;
+  height: CSS.Property.Height;
 }
 
 export interface FlexBoxProperty {
-  alignItems: CSS.AlignItemsProperty;
-  justifyContent: CSS.JustifyContentProperty;
-  flexDirection: CSS.FlexDirectionProperty;
-  flexWrap: CSS.FlexWrapProperty;
-  alignContent: CSS.AlignContentProperty;
-  flexFlow: CSS.FlexFlowProperty;
+  alignItems: CSS.Property.AlignItems;
+  justifyContent: CSS.Property.JustifyContent;
+  flexDirection: CSS.Property.FlexDirection;
+  flexWrap: CSS.Property.FlexWrap;
+  alignContent: CSS.Property.AlignContent;
+  flexFlow: CSS.Property.FlexFlow;
 }
 
 export interface FlexItemProperty {
-  flex: CSS.FlexProperty<any>;
-  flexGrow: CSS.FlexBasisProperty<any>;
-  flexShrink: CSS.FlexProperty<any>;
-  flexBasis: CSS.FlexBasisProperty<any>;
-  order: number;
-  alignSelf: CSS.AlignSelfProperty;
+  flex: CSS.Property.Flex;
+  flexGrow: CSS.Property.FlexGrow;
+  flexShrink: CSS.Property.FlexShrink;
+  flexBasis: CSS.Property.FlexBasis;
+  order: CSS.Property.Order;
+  alignSelf: CSS.Property.AlignSelf;
 }

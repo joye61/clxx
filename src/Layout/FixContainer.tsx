@@ -27,7 +27,7 @@ export interface FixContainerProps
   /**
    * 容器最大的寬度，默认为576px
    */
-  maxWidth?: CSS.WidthProperty<any>;
+  maxWidth?: CSS.Property.MaxWidth;
   /**
    * 容器深度
    */

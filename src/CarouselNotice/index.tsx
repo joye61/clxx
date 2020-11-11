@@ -13,9 +13,9 @@ export interface CarouselNoticeOption
   // 需要滚动的列表
   list: Array<React.ReactNode>;
   // 滚动容器的宽度
-  width: CSS.WidthProperty<any>;
+  width: CSS.Property.Width;
   // 滚动容器的高度
-  height: CSS.HeightProperty<any>;
+  height: CSS.Property.Height;
   // 滚动的内容水平对齐，默认center
   justify: 'start' | 'center' | 'end';
   // 每一次冒泡持续时间(单位毫秒)，默认200ms
