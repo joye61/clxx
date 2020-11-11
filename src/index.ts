@@ -1,4 +1,4 @@
-import "./utils/global";
+export { getEnv, setEnv } from "./utils/global";
 
 export { Countdown } from "./utils/Countdown";
 export { defaultScroll } from "./utils/defaultScroll";
