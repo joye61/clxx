@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Interpolation, css, SerializedStyles } from '@emotion/core';
+import { jsx, Interpolation, css, CSSObject } from '@emotion/react';
 import * as CSS from 'csstype';
 import { useState, useEffect } from 'react';
 import { getStyle, Bubble } from './style';
@@ -23,11 +23,11 @@ export interface CarouselNoticeOption
   // 每一轮冒泡切换的时间间(单位毫秒)，默认3000ms
   interval: number;
   // 容器样式
-  containerStyle?: SerializedStyles;
+  containerStyle?: CSSObject;
   // 内部容器样式
-  wrapperStyle?: SerializedStyles;
+  wrapperStyle?: CSSObject;
   // 条目样式
-  itemStyle?: SerializedStyles;
+  itemStyle?: CSSObject;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { css, keyframes } from '@emotion/core';
+import { css, keyframes } from '@emotion/react';
 import { normalizeUnit } from '../utils/cssUtil';
 
 const containerShow = keyframes`

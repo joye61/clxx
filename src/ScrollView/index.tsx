@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, InterpolationWithTheme } from "@emotion/core";
+import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import * as CSS from "csstype";
 import { useRef } from "react";
 import { Indicator } from "../Indicator";
@@ -69,7 +69,7 @@ export function ScrollView(props: ScrollViewProps) {
   } = props;
 
   // 容器高度
-  const heightStyle: InterpolationWithTheme<any> = {};
+  const heightStyle: Interpolation<Theme> = {};
   if (height) {
     heightStyle.height = height;
   }

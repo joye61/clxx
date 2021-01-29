@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core";
+import { jsx } from "@emotion/react";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Wrapper, LoadingWrapperProps } from "./Wrapper";
@@ -76,7 +76,7 @@ export class Loading {
         const left = this.config.minDuration! - continuedTime;
         await new Promise((resolve) => {
           window.setTimeout(() => {
-            resolve();
+            resolve(null);
           }, left);
         });
       }

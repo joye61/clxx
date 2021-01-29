@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, ObjectInterpolation, Global, css } from '@emotion/core';
+import { jsx, Global, css, CSSObject } from '@emotion/react';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useWindowResize } from '../effect/useWindowResize';
 import { getEnv } from '../utils/global';
@@ -10,7 +10,7 @@ export interface ContainerProps {
   // 移动和非移动的临界尺寸
   criticalWidth?: number;
   // 用户自定义的全局样式
-  globalStyles?: ObjectInterpolation<any>;
+  globalStyles?: CSSObject;
   // 容器包裹的子元素
   children?: React.ReactNode;
 }

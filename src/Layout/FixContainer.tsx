@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, ObjectInterpolation, SerializedStyles } from '@emotion/core';
+import { CSSObject, jsx } from '@emotion/react';
 import * as CSS from 'csstype';
 import { getEnv } from '../utils/global';
 
@@ -35,7 +35,7 @@ export interface FixContainerProps
   /**
    * 容器样式，提供额外选项
    */
-  containerStyle?: SerializedStyles;
+  containerStyle?: CSSObject;
 }
 
 /**
@@ -58,7 +58,7 @@ export function FixContainer(props: FixContainerProps) {
   /**
    * 容器默认样式
    */
-  const styles: ObjectInterpolation<any> = {
+  const styles: CSSObject = {
     position: 'fixed',
     left: '50%',
     zIndex,
@@ -66,7 +66,7 @@ export function FixContainer(props: FixContainerProps) {
     maxWidth,
     transform: `translateX(-50%)`,
     height: '100vh',
-    top: 0,
+    top: 0
   };
   if (showMask) {
     styles.backgroundColor = maskColor;

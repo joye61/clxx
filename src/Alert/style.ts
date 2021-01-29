@@ -1,4 +1,4 @@
-import { css } from "@emotion/core";
+import { css } from "@emotion/react";
 import { getEnv } from "../utils/global";
 import { vw } from "../utils/cssUtil";
 

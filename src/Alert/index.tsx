@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
+import { jsx, CSSObject } from "@emotion/react";
 import React from "react";
 import { Dialog, DialogOption } from "../Dialog";
 import { FlexBox, RowCenter } from "../Layout/Flex";
@@ -25,15 +25,15 @@ export interface AlertOption {
   onConfirm?: () => void;
 
   // 定制容器样式
-  containerStyle?: SerializedStyles;
+  containerStyle?: CSSObject;
   // 定制默认标题样式
-  titleStyle?: SerializedStyles;
+  titleStyle?: CSSObject;
   // 定制默认内容样式
-  contentStyle?: SerializedStyles;
+  contentStyle?: CSSObject;
   // 定制取消按钮样式
-  cancelStyle?: SerializedStyles;
+  cancelStyle?: CSSObject;
   // 定制确定按钮样式
-  confirmStyle?: SerializedStyles;
+  confirmStyle?: CSSObject;
 
   // Dialog弹框的配置
   dialogOption?: DialogOption;

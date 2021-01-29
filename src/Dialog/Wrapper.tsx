@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, InterpolationWithTheme } from "@emotion/core";
+import { jsx, SerializedStyles, CSSObject } from "@emotion/react";
 import { FixContainer, FixContainerProps } from "../Layout/FixContainer";
 import { style, containerHide } from "./style";
 
@@ -27,7 +27,7 @@ export interface WrapperProps {
   // 容器被点击时触发
   onMaskClick?: () => void;
   // 容器的样式
-  boxStyle?: SerializedStyles;
+  boxStyle?: CSSObject;
 }
 
 export function Wrapper(props: WrapperProps) {
@@ -100,7 +100,7 @@ export function Wrapper(props: WrapperProps) {
   };
 
   // 选取特定的
-  const boxCss: InterpolationWithTheme<any> = [];
+  const boxCss: Array<SerializedStyles> = [];
   switch (type) {
     case "pullUp":
       boxCss.push(style.pullUp);
@@ -146,7 +146,7 @@ export function Wrapper(props: WrapperProps) {
       }}
       {...fcOption}
     >
-      <div css={[boxCss, boxStyle]}>{children}</div>
+      <div css={[...boxCss, boxStyle]}>{children}</div>
     </FixContainer>
   );
 }

@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/core';
+import { keyframes } from '@emotion/react';
 
 /**
  * 获取转圈每一条bar的过渡动画

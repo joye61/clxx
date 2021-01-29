@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
+import { CSSObject, jsx, SerializedStyles } from "@emotion/react";
 import React, { useState, useEffect } from "react";
 import { getStyle, hideAnimation } from "./style";
 
@@ -23,9 +23,9 @@ export interface ToastProps
   // 默认toast是否圆角
   rounded?: boolean;
   // 容器样式
-  containerStyle?: SerializedStyles;
+  containerStyle?: CSSObject;
   // 内容样式
-  contentStyle?: SerializedStyles;
+  contentStyle?: CSSObject;
 }
 
 export function Toast(props: ToastProps) {

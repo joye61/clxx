@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/core";
+import { jsx, SerializedStyles } from "@emotion/react";
 import React from "react";
 import { getStyle, LoadingHide } from "./style";
 import { Indicator, IndicatorProps } from "../Indicator";
