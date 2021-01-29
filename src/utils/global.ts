@@ -21,7 +21,7 @@ window.__CLXX_VARS = {
 };
 
 // 获取环境变量值
-export function getEnv() {
+export function clxxGetEnv() {
   return window.__CLXX_VARS;
 }
 
@@ -29,7 +29,7 @@ export function getEnv() {
  * 初始化环境变量
  * @param option
  */
-export function setEnv(option?: Partial<GVARS>) {
+export function clxxSetEnv(option?: Partial<GVARS>) {
   if (!option) return;
   window.__CLXX_VARS = { ...window.__CLXX_VARS, ...option };
 }

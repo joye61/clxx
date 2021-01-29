@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { CSSObject, jsx } from '@emotion/react';
 import * as CSS from 'csstype';
-import { getEnv } from '../utils/global';
+import { clxxGetEnv } from '../utils/global';
 
 export interface FixContainerProps
   extends React.DetailedHTMLProps<
@@ -43,7 +43,7 @@ export interface FixContainerProps
  * @param props
  */
 export function FixContainer(props: FixContainerProps) {
-  const env = getEnv();
+  const env = clxxGetEnv();
   const {
     showMask = true,
     maskColor = `rgba(0, 0, 0, .4)`,

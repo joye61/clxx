@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { getEnv } from "../utils/global";
+import { clxxGetEnv } from "../utils/global";
 import { vw } from "../utils/cssUtil";
 
 export const LoadingShow = keyframes`
@@ -20,7 +20,7 @@ export const LoadingHide = keyframes`
 `;
 
 export const getStyle = () => {
-  const env = getEnv();
+  const env = clxxGetEnv();
 
   return {
     boxCommon: css({

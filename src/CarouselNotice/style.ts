@@ -1,6 +1,6 @@
 import { css, keyframes } from "@emotion/react";
 import { vw } from "../utils/cssUtil";
-import { getEnv } from "../utils/global";
+import { clxxGetEnv } from "../utils/global";
 
 export const Bubble = keyframes`
   from {
@@ -12,7 +12,7 @@ export const Bubble = keyframes`
 `;
 
 export const getStyle = () => {
-  const env = getEnv();
+  const env = clxxGetEnv();
   return {
     box: css({
       position: "relative",
