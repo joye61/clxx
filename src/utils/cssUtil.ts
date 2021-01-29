@@ -1,4 +1,4 @@
-import { getEnv } from './global';
+import { clxxGetEnv } from './global';
 
 /**
  * CSS值的对象表示
@@ -21,17 +21,17 @@ export const CSSNumericValueReg = /^((?:\-)?(?:\d+\.?|\.\d+|\d+\.\d+))([a-zA-Z%]
 
 /**
  * 根据数值获取自适应单位，以vw作为自适应
- * 约定cl组件库的所有组件假定设计尺寸375px，临界尺寸576px
+ * 约定cl组件库的自有组件假定设计尺寸375px
  *
  * @param num 设计稿尺寸
  * @param overLimit 是否超过临界尺寸
  */
 export function vw(num: number, overLimit = false) {
-  const env = getEnv();
+  const env = clxxGetEnv();
   if (overLimit) {
-    return (env.criticalWidth * num) / env.designWidth + 'px';
+    return (env.criticalWidth * num) / 375 + 'px';
   } else {
-    return (num * 100) / env.designWidth + 'vw';
+    return (num * 100) / 375 + 'vw';
   }
 }
 

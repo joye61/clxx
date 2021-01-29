@@ -1,6 +1,6 @@
 import { css, keyframes } from "@emotion/react";
 import { vw } from "../utils/cssUtil";
-import { getEnv } from "../utils/global";
+import { clxxGetEnv } from "../utils/global";
 
 export const showAnimation = keyframes`
   from {
@@ -26,7 +26,7 @@ export const hideAnimation = keyframes`
 
 export const getStyle = () => {
   // 环境变量通过每次的实时计算得出
-  const env = getEnv();
+  const env = clxxGetEnv();
 
   return {
     container: css({

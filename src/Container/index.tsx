@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global, css, CSSObject } from '@emotion/react';
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useEnvChange } from '../effect/useEnvChange';
 import { useWindowResize } from '../effect/useWindowResize';
 import { clxxGetEnv } from '../utils/global';
 
@@ -28,6 +29,8 @@ export function Container(props: ContainerProps) {
     globalStyles,
     children,
   } = props;
+
+  useEnvChange();
 
   /**
    * 获取HTML根元素的计算尺寸

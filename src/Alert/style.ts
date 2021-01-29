@@ -8,13 +8,13 @@ export const getStyle = () => {
   return {
     container: css({
       backgroundColor: "#fff",
-      width: vw(env.designWidth * 0.8),
+      width: vw(375 * 0.8),
       borderRadius: vw(8),
       overflow: "hidden",
       color: "#333",
       boxShadow: `0 0 4px 0 #00000050;`,
       [`@media (min-width: ${env.criticalWidth}px)`]: {
-        width: vw(env.designWidth * 0.8, true),
+        width: vw(375 * 0.8, true),
         borderRadius: vw(8, true),
       },
     }),

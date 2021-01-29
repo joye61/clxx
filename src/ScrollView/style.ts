@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
-import { getEnv } from '../utils/global';
+import { clxxGetEnv } from '../utils/global';
 import { vw } from '../utils/cssUtil';
 
 export const getStyle = () => {
-  const env = getEnv();
+  const env = clxxGetEnv();
 
   return {
     container: css({

@@ -2,6 +2,7 @@
 import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import * as CSS from "csstype";
 import { useRef } from "react";
+import { useEnvChange } from "../effect/useEnvChange";
 import { Indicator } from "../Indicator";
 import { RowCenter } from "../Layout/Flex";
 import { getStyle } from "./style";
@@ -51,6 +52,7 @@ export interface ScrollViewProps
 }
 
 export function ScrollView(props: ScrollViewProps) {
+  useEnvChange();
   const style = getStyle();
   const {
     children,

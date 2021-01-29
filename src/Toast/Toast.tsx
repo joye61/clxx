@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { CSSObject, jsx, SerializedStyles } from "@emotion/react";
 import React, { useState, useEffect } from "react";
+import { useEnvChange } from "../effect/useEnvChange";
 import { getStyle, hideAnimation } from "./style";
 
 export interface ToastProps
@@ -42,6 +43,7 @@ export function Toast(props: ToastProps) {
     ...attributes
   } = props;
 
+  useEnvChange();
   // 获取所有的样式
   const style = getStyle();
 

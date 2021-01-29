@@ -4,6 +4,7 @@ import * as CSS from 'csstype';
 import { useState, useEffect } from 'react';
 import { getStyle, Bubble } from './style';
 import { useInterval } from 'react-use';
+import { useEnvChange } from '../effect/useEnvChange';
 
 export interface CarouselNoticeOption
   extends React.DetailedHTMLProps<
@@ -47,6 +48,8 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     itemStyle,
     ...attrs
   } = props;
+
+  useEnvChange();
 
   const [current, setCurrent] = useState<number>(0);
   const [animation, setAnimation] = useState<boolean>(false);
