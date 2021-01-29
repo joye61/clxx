@@ -42,7 +42,7 @@ showAlert('Pop up box test');
 ```
 
 
-# 功能列表
+# Implemented functions
 
 <p>✅ <a href="./examples/src/alert">Display a pop-up box right in the middle of the screen</a></p>
 <p>✅ <a href="./examples/src/carouse-notice">Rotation Announcement</a></p>
