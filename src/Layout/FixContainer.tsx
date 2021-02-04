@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { CSSObject, jsx } from '@emotion/react';
+import { Interpolation, jsx, Theme } from '@emotion/react';
 import * as CSS from 'csstype';
 import { ClxxScreenEnv } from '../utils/cssUtil';
 
@@ -35,7 +35,7 @@ export interface FixContainerProps
   /**
    * 容器样式，提供额外选项
    */
-  containerStyle?: CSSObject;
+  containerStyle?: Interpolation<Theme>;
 }
 
 /**
@@ -57,7 +57,7 @@ export function FixContainer(props: FixContainerProps) {
   /**
    * 容器默认样式
    */
-  const styles: CSSObject = {
+  const styles: Interpolation<Theme> = {
     position: 'fixed',
     left: '50%',
     zIndex,

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, CSSObject } from "@emotion/react";
+import { jsx, SerializedStyles, Theme, Interpolation } from "@emotion/react";
 import { FixContainer, FixContainerProps } from "../Layout/FixContainer";
 import { style, containerHide } from "./style";
 
@@ -27,7 +27,7 @@ export interface WrapperProps {
   // 容器被点击时触发
   onMaskClick?: () => void;
   // 容器的样式
-  boxStyle?: CSSObject;
+  boxStyle?: Interpolation<Theme>;
 }
 
 export function Wrapper(props: WrapperProps) {

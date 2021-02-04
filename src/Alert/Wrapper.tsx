@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, CSSObject } from "@emotion/react";
+import { jsx, Interpolation, Theme } from "@emotion/react";
 import React from "react";
 import { FlexBox, RowCenter } from "../Layout/Flex";
 import { style } from "./style";
@@ -23,15 +23,15 @@ export interface WrapperOption {
   onConfirm?: () => void;
 
   // 定制容器样式
-  containerStyle?: CSSObject;
+  containerStyle?: Interpolation<Theme>;
   // 定制默认标题样式
-  titleStyle?: CSSObject;
+  titleStyle?: Interpolation<Theme>;
   // 定制默认内容样式
-  contentStyle?: CSSObject;
+  contentStyle?: Interpolation<Theme>;
   // 定制取消按钮样式
-  cancelStyle?: CSSObject;
+  cancelStyle?: Interpolation<Theme>;
   // 定制确定按钮样式
-  confirmStyle?: CSSObject;
+  confirmStyle?: Interpolation<Theme>;
 }
 
 export function Wrapper(props: WrapperOption) {

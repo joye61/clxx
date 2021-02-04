@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css, CSSObject } from "@emotion/react";
+import { jsx, css, Interpolation, Theme } from "@emotion/react";
 import React from "react";
 import * as CSS from "csstype";
 import { normalizeUnit } from "../utils/cssUtil";
@@ -25,7 +25,7 @@ export interface IndicatorProps
   // 每转一圈的持续时间，单位毫秒，默认：500ms
   duration: number;
   // 容器样式
-  containerStyle?: CSSObject;
+  containerStyle?: Interpolation<Theme>;
 }
 
 /**
@@ -66,7 +66,7 @@ export function Indicator(props: Partial<IndicatorProps>) {
     );
   }
 
-  const style: CSSObject = {
+  const style: Interpolation<Theme> = {
     fontSize: 0,
   };
   if (typeof size !== undefined) {

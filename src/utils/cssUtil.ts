@@ -1,5 +1,3 @@
-import { CSSObject } from "@emotion/react";
-
 /**
  * CSS值的对象表示
  */

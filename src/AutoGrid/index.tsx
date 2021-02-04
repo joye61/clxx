@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { CSSObject, Interpolation, jsx, Theme } from "@emotion/react";
+import { Interpolation, jsx, Theme } from "@emotion/react";
 import React, { useCallback } from "react";
 import CSS from "csstype";
 import { style } from "./style";
@@ -10,9 +10,9 @@ export interface AutoGridOption
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  children?: Array<React.ReactElement>;
+  children?: React.ReactNode;
   // 容器的样式
-  containerStyle?: CSSObject;
+  containerStyle?: Interpolation<Theme>;
   // 元素之间空白槽的宽度
   gutter?: CSS.Property.Width;
   // 列的数目
@@ -20,7 +20,7 @@ export interface AutoGridOption
   // 是否显示正方形
   isSquare?: boolean;
   // 元素容器的样式
-  itemStyle?: CSSObject;
+  itemStyle?: Interpolation<Theme>;
 }
 
 /**
@@ -76,7 +76,7 @@ export function AutoGrid(props: AutoGridOption) {
     const gridData = getGridData();
     return gridData.map((row, rowIndex) => {
       // 每行的槽样式，最后一行没有
-      let rowStyle: CSSObject | undefined;
+      let rowStyle: Interpolation<Theme> | undefined;
       if (rowIndex !== gridData.length - 1) {
         rowStyle = {
           marginBottom: gutter,
@@ -90,6 +90,10 @@ export function AutoGrid(props: AutoGridOption) {
             // 如果是方形的，加入方形相关的样式
             if (isSquare) {
               finalCss.push(style.itemBoxSquare);
+            }
+            // 如果元素不存在，则不显示
+            if (item === null) {
+              finalCss.push(style.itemNull);
             }
             // 加入用户传递的样式
             if (item !== null) {

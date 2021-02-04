@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React, { useEffect, useState } from "react";
-import { CSSObject, jsx } from "@emotion/react";
+import { Interpolation, jsx, Theme } from "@emotion/react";
 import {
   Countdown,
   CountdownOption,
@@ -19,11 +19,11 @@ export interface CountdownerOption
   // 数字之间的分隔符
   seperator?: React.ReactNode;
   // 分隔符之间的样式
-  seperatorStyle?: CSSObject;
+  seperatorStyle?: Interpolation<Theme>;
   // 包裹容器的样式
-  containerStyle?: CSSObject;
+  containerStyle?: Interpolation<Theme>;
   // 数字的样式
-  numberStyle?: CSSObject;
+  numberStyle?: Interpolation<Theme>;
   // 数字的渲染组件
   renderNumber?: (value: number, key?: string) => React.ReactNode;
   // 渲染分隔符

@@ -17,13 +17,16 @@ export const style = {
       display: "block",
       height: 0,
       paddingBottom: "100%",
-    }
+    },
+  }),
+  itemNull: css({
+    visibility: "hidden",
   }),
   itemInnerStyle: css({
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    top: 0
-  })
+    top: 0,
+  }),
 };
