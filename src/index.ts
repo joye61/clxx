@@ -1,6 +1,7 @@
-export { clxxGetEnv, clxxSetEnv } from "./utils/global";
+// export { clxxGetEnv, clxxSetEnv } from "./utils/global";
 
 export { Countdown } from "./utils/Countdown";
+export { Countdowner } from "./Countdowner";
 export { defaultScroll } from "./utils/defaultScroll";
 export { is } from "./utils/is";
 export { waitUntil } from "./utils/waitUntil";
@@ -40,3 +41,4 @@ export { Ago } from "./Ago";
 export { Clickable } from "./Clickable";
 export { Content as PrivacyContent } from "./Privacy/Content";
 export { replaceRange, replaceWithoutHeadTail } from "./Privacy/string";
+export { AutoGrid } from "./AutoGrid";

@@ -8,6 +8,9 @@ export default function () {
       <CarouselNotice
         list={['第一条滚动']}
         style={{ border: '1px solid blue' }}
+        itemStyle={{
+          color: "blue"
+        }}
       />
 
       <p>轮播条目为纯文本：</p>

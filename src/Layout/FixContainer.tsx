@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { CSSObject, jsx } from '@emotion/react';
 import * as CSS from 'csstype';
-import { clxxGetEnv } from '../utils/global';
+import { ClxxScreenEnv } from '../utils/cssUtil';
 
 export interface FixContainerProps
   extends React.DetailedHTMLProps<
@@ -43,12 +43,11 @@ export interface FixContainerProps
  * @param props
  */
 export function FixContainer(props: FixContainerProps) {
-  const env = clxxGetEnv();
   const {
     showMask = true,
     maskColor = `rgba(0, 0, 0, .4)`,
     centerChild = true,
-    maxWidth = `${env.criticalWidth}px`,
+    maxWidth = `${ClxxScreenEnv.CriticalWidth}px`,
     zIndex = 9999,
     children,
     containerStyle,

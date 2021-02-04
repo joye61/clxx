@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { jsx, Global, css, CSSObject } from '@emotion/react';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { useEnvChange } from '../effect/useEnvChange';
 import { useWindowResize } from '../effect/useWindowResize';
-import { clxxGetEnv } from '../utils/global';
+import { ClxxScreenEnv } from '../utils/cssUtil';
 
 export interface ContainerProps {
   // 设计稿尺寸
@@ -22,15 +21,12 @@ export interface ContainerProps {
  */
 export function Container(props: ContainerProps) {
   // 获取环境变量
-  const env = clxxGetEnv();
   const {
-    designWidth = env.designWidth,
-    criticalWidth = env.criticalWidth,
+    designWidth = ClxxScreenEnv.DesignWidth,
+    criticalWidth = ClxxScreenEnv.CriticalWidth,
     globalStyles,
     children,
   } = props;
-
-  useEnvChange();
 
   /**
    * 获取HTML根元素的计算尺寸

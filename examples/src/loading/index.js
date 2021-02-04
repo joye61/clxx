@@ -1,19 +1,7 @@
 import React from "react";
-import { Loading, clxxSetEnv } from "@";
-import { useEffect } from "react";
-
-setInterval(()=>{
-	clxxSetEnv({
-		criticalWidth: 576,
-		designWidth: window.__CLXX_VARS.designWidth + 10
-	});
-}, 1000);
+import { Loading } from "@";
 
 export default function () {
-
-	useEffect(()=>{
-		console.log(111);
-	}, []);
 
   return (
     <div>

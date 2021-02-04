@@ -1,6 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { vw } from "../utils/cssUtil";
-import { clxxGetEnv } from "../utils/global";
+import { ClxxScreenEnv, vw } from "../utils/cssUtil";
 
 export const Bubble = keyframes`
   from {
@@ -11,31 +10,28 @@ export const Bubble = keyframes`
   }
 `;
 
-export const getStyle = () => {
-  const env = clxxGetEnv();
-  return {
-    box: css({
-      position: "relative",
-      overflow: "hidden",
-      transition: "all 200ms",
-      height: vw(40),
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        height: vw(40, true),
-      },
-    }),
-    wrapper: css({
-      position: "absolute",
-      left: 0,
-      top: 0,
-      width: "100%",
-      height: "200%",
-    }),
-    item: css({
-      width: "100%",
-      height: "50%",
-      display: "flex",
-      alignItems: "center",
-      fontSize: "initial",
-    }),
-  };
+export const style = {
+  box: css({
+    position: "relative",
+    overflow: "hidden",
+    transition: "all 200ms",
+    height: vw(80),
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      height: vw(80, true),
+    },
+  }),
+  wrapper: css({
+    position: "absolute",
+    left: 0,
+    top: 0,
+    width: "100%",
+    height: "200%",
+  }),
+  item: css({
+    width: "100%",
+    height: "50%",
+    display: "flex",
+    alignItems: "center",
+    fontSize: "initial",
+  }),
 };

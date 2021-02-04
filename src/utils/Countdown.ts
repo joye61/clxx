@@ -1,7 +1,7 @@
 import raf from 'raf';
-
+export type CountdownValueIndex = 'd' | 'h' | 'i' | 's';
 export type CountdownValue = {
-  [key in 'd' | 'h' | 'i' | 's']?: number;
+  [key in CountdownValueIndex]?: number;
 };
 export type UpdateCallback = (value: CountdownValue) => void;
 

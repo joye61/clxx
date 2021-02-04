@@ -1,11 +1,10 @@
 /** @jsx jsx */
 import { jsx, SerializedStyles } from "@emotion/react";
 import React from "react";
-import { getStyle, LoadingHide } from "./style";
+import { style, LoadingHide } from "./style";
 import { Indicator, IndicatorProps } from "../Indicator";
 import { FixContainer, FixContainerProps } from "../Layout/FixContainer";
 import { RowCenter } from "../Layout/Flex";
-import { useEnvChange } from "../effect/useEnvChange";
 
 export interface LoadingWrapperProps {
   // loading的状态
@@ -25,10 +24,6 @@ export interface LoadingWrapperProps {
 }
 
 export function Wrapper(props: LoadingWrapperProps) {
-  // 处理状态变化
-  useEnvChange();
-
-  const style = getStyle();
 
   const {
     state = "show",

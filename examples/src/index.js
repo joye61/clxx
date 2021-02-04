@@ -5,7 +5,7 @@ import { history } from './env';
 import { Container } from '@';
 
 const pageConfig = [
-  { path: 'indicator', title: 'Indicator指示器', enable: true },
+  { path: 'indicator', title: 'Indicator菊花转圈指示器', enable: true },
   { path: 'alert', title: 'showAlert弹框功能', enable: true },
   { path: 'countdown', title: 'Countdown倒计时', enable: true },
   { path: 'dialog', title: 'Dialog对话框', enable: true },
@@ -17,6 +17,7 @@ const pageConfig = [
   { path: 'ago', title: 'Ago多久以前', enable: true },
   { path: 'clickable', title: 'Clickable可触摸组件', enable: true },
   { path: 'privacy', title: 'Privacy去标识化', enable: true },
+  { path: 'autogrid', title: 'AutoGrid生成自动对齐的表格', enable: true },
 ];
 
 function Home() {

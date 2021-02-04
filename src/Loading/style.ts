@@ -1,6 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { clxxGetEnv } from "../utils/global";
-import { vw } from "../utils/cssUtil";
+import { ClxxScreenEnv, vw } from "../utils/cssUtil";
 
 export const LoadingShow = keyframes`
   from {
@@ -19,73 +18,69 @@ export const LoadingHide = keyframes`
   }
 `;
 
-export const getStyle = () => {
-  const env = clxxGetEnv();
-
-  return {
-    boxCommon: css({
-      borderRadius: vw(8),
-      backgroundColor: `rgba(0, 0, 0, .8)`,
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        borderRadius: vw(8, true),
-      },
-    }),
-    box: css({
-      width: vw(80),
-      height: vw(80),
-      "> div:first-of-type": {
-        width: vw(30),
-        height: vw(30),
-      },
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        height: vw(80, true),
-        width: vw(80, true),
-        "> div:first-of-type": {
-          width: vw(30, true),
-          height: vw(30, true),
-        },
-      },
-    }),
-
-    boxWithExtra: css({
-      padding: vw(15),
-      "> div:first-of-type": {
-        width: vw(24),
-        height: vw(24),
-      },
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        padding: vw(15, true),
-        "> div:first-of-type": {
-          width: vw(24, true),
-          height: vw(24, true),
-        },
-      },
-    }),
-
-    // 显示动画
-    boxShow(duration: number) {
-      return css({
-        animation: `${LoadingShow} ${duration}ms`,
-      });
+export const style = {
+  boxCommon: css({
+    borderRadius: vw(16),
+    backgroundColor: `rgba(0, 0, 0, .8)`,
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      borderRadius: vw(16, true),
     },
-
-    // 隐藏动画
-    boxHide(duration: number) {
-      return css({
-        animation: `${LoadingHide} ${duration}ms`,
-      });
+  }),
+  box: css({
+    width: vw(160),
+    height: vw(160),
+    "> div:first-of-type": {
+      width: vw(60),
+      height: vw(60),
     },
-
-    // 默认的额外信息样式
-    defaultExtra: css({
-      color: "#f5f5f5",
-      fontSize: vw(14),
-      marginLeft: vw(10),
-      whiteSpace: "nowrap",
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(14, true),
-        marginLeft: vw(10, true),
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      height: vw(160, true),
+      width: vw(160, true),
+      "> div:first-of-type": {
+        width: vw(60, true),
+        height: vw(60, true),
       },
-    }),
-  };
+    },
+  }),
+
+  boxWithExtra: css({
+    padding: vw(30),
+    "> div:first-of-type": {
+      width: vw(48),
+      height: vw(48),
+    },
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      padding: vw(30, true),
+      "> div:first-of-type": {
+        width: vw(48, true),
+        height: vw(48, true),
+      },
+    },
+  }),
+
+  // 显示动画
+  boxShow(duration: number) {
+    return css({
+      animation: `${LoadingShow} ${duration}ms`,
+    });
+  },
+
+  // 隐藏动画
+  boxHide(duration: number) {
+    return css({
+      animation: `${LoadingHide} ${duration}ms`,
+    });
+  },
+
+  // 默认的额外信息样式
+  defaultExtra: css({
+    color: "#f5f5f5",
+    fontSize: vw(24),
+    marginLeft: vw(20),
+    whiteSpace: "nowrap",
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      fontSize: vw(28, true),
+      marginLeft: vw(20, true),
+    },
+  }),
 };

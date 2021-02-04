@@ -1,105 +1,101 @@
 import { css } from "@emotion/react";
-import { clxxGetEnv } from "../utils/global";
-import { vw } from "../utils/cssUtil";
+import { ClxxScreenEnv, vw } from "../utils/cssUtil";
 
-export const getStyle = () => {
-  const env = clxxGetEnv();
-
-  return {
-    container: css({
-      backgroundColor: "#fff",
-      width: vw(375 * 0.8),
-      borderRadius: vw(8),
-      overflow: "hidden",
-      color: "#333",
-      boxShadow: `0 0 4px 0 #00000050;`,
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        width: vw(375 * 0.8, true),
-        borderRadius: vw(8, true),
-      },
-    }),
-    title: css({
-      textAlign: "center",
-      fontSize: vw(18),
-      padding: `${vw(20)} ${vw(20)} 0`,
-      margin: 0,
-      fontWeight: 500,
-      lineHeight: 1,
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(18, true),
-        padding: `${vw(20, true)} ${vw(20, true)} 0`,
-      },
-    }),
-    content: css({
-      padding: vw(20),
-      fontSize: vw(16),
-      lineHeight: 1.6,
-      textAlign: "center",
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        padding: vw(20, true),
-        fontSize: vw(16, true),
-      },
-    }),
-    btn: css({
+export const style = {
+  container: css({
+    backgroundColor: "#fff",
+    width: vw(ClxxScreenEnv.DesignWidth * 0.8),
+    borderRadius: vw(15),
+    overflow: "hidden",
+    color: "#333",
+    boxShadow: `0 0 ${vw(8)} 0 #00000050`,
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      width: vw(ClxxScreenEnv.DesignWidth * 0.8, true),
+      borderRadius: vw(15, true),
+      boxShadow: `0 0 ${vw(8, true)} 0 #00000050`,
+    },
+  }),
+  title: css({
+    textAlign: "center",
+    fontSize: vw(30),
+    padding: `${vw(30)} ${vw(30)} 0`,
+    margin: 0,
+    fontWeight: 600,
+    lineHeight: 1,
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      fontSize: vw(30, true),
+      padding: `${vw(30, true)} ${vw(30, true)} 0`,
+    },
+  }),
+  content: css({
+    padding: vw(40),
+    fontSize: vw(28),
+    lineHeight: 1.6,
+    textAlign: "center",
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      padding: vw(40, true),
+      fontSize: vw(28, true),
+    },
+  }),
+  btn: css({
+    position: "relative",
+    height: vw(88),
+    userSelect: "none",
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      height: vw(88, true),
+    },
+    "> div": {
       position: "relative",
-			height: vw(48),
-			userSelect: 'none',
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        height: vw(48, true),
-      },
-      "> div": {
-        position: "relative",
-        flex: 1,
-        textAlign: "center",
-      },
-      "&::before": {
-        position: "absolute",
-        top: "-1px",
-        left: 0,
-        content: `""`,
-        display: "block",
-        borderTop: "1px solid #e0e0e0",
-        width: "100%",
-        height: "1px",
-        transform: `scaleY(${1 / window.devicePixelRatio})`,
-      },
-    }),
+      flex: 1,
+      textAlign: "center",
+    },
+    "&::before": {
+      position: "absolute",
+      top: "-1px",
+      left: 0,
+      content: `""`,
+      display: "block",
+      borderTop: "1px solid #d0d0d0",
+      width: "100%",
+      height: "1px",
+      transform: `scaleY(${1 / window.devicePixelRatio})`,
+    },
+  }),
 
-    defaultBtn: css({
-      fontSize: vw(16),
-      [`@media (min-width: ${env.criticalWidth}px)`]: {
-        fontSize: vw(16, true),
-      },
+  defaultBtn: css({
+    fontSize: vw(30),
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      fontSize: vw(30, true),
+    },
+    height: "100%",
+  }),
+
+  defaultBtncancel: css({
+    color: "#999",
+    "&:active": {
+      color: "#666",
+      backgroundColor: "#f5f5f5",
+    },
+  }),
+  defaultBtnconfirm: css({
+    color: "#007bff",
+    "&:active": {
+      color: "#006ee4",
+      backgroundColor: "#f5f5f5",
+    },
+  }),
+
+  btnCancel: css({
+    zIndex: 1,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      content: `""`,
       height: "100%",
-    }),
-
-    defaultBtncancel: css({
-      color: "#999",
-      "&:active": {
-        color: "#666",
-        backgroundColor: "#f5f5f5",
-      },
-    }),
-    defaultBtnconfirm: css({
-      color: "#007bff",
-      "&:active": {
-        color: "#006ee4",
-        backgroundColor: "#f5f5f5",
-      },
-    }),
-
-    btnCancel: css({
-      zIndex: 1,
-      "&::after": {
-        position: "absolute",
-        top: 0,
-        content: `""`,
-        height: "100%",
-        width: "1px",
-        right: "-1px",
-        borderRight: "1px solid #e0e0e0",
-        transform: `scaleX(${1 / window.devicePixelRatio})`,
-      },
-    }),
-  };
+      width: "1px",
+      right: "-1px",
+      borderRight: "1px solid #d0d0d0",
+      transform: `scaleX(${1 / window.devicePixelRatio})`,
+    },
+  }),
 };

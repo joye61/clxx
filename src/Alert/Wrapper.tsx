@@ -2,8 +2,7 @@
 import { jsx, CSSObject } from "@emotion/react";
 import React from "react";
 import { FlexBox, RowCenter } from "../Layout/Flex";
-import { getStyle } from "./style";
-import { useEnvChange } from "../effect/useEnvChange";
+import { style } from "./style";
 
 export interface WrapperOption {
   // 弹框标题
@@ -36,11 +35,6 @@ export interface WrapperOption {
 }
 
 export function Wrapper(props: WrapperOption) {
-  // 检测环境变化
-  useEnvChange();
-
-  // 获取样式
-  const style = getStyle();
 
   // 获取配置
   const config: WrapperOption = {

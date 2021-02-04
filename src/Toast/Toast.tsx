@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { CSSObject, jsx, SerializedStyles } from "@emotion/react";
 import React, { useState, useEffect } from "react";
-import { useEnvChange } from "../effect/useEnvChange";
-import { getStyle, hideAnimation } from "./style";
+import { style, hideAnimation } from "./style";
 
 export interface ToastProps
   extends React.DetailedHTMLProps<
@@ -42,10 +41,6 @@ export function Toast(props: ToastProps) {
     contentStyle,
     ...attributes
   } = props;
-
-  useEnvChange();
-  // 获取所有的样式
-  const style = getStyle();
 
   const [animation, setAnimation] = useState<SerializedStyles>(
     style.containerShow

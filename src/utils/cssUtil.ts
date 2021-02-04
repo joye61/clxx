@@ -1,9 +1,9 @@
-import { clxxGetEnv } from './global';
+import { CSSObject } from "@emotion/react";
 
 /**
  * CSS值的对象表示
  */
-interface SplitedValue {
+export interface SplitedValue {
   num: number;
   unit: string;
 }
@@ -19,19 +19,25 @@ export type CSSValue = number | string;
 // eslint-disable-next-line no-useless-escape
 export const CSSNumericValueReg = /^((?:\-)?(?:\d+\.?|\.\d+|\d+\.\d+))([a-zA-Z%]*)$/;
 
+// clxx内部组件的一些约定值，这些值是库所约定的，不可更改
+export enum ClxxScreenEnv {
+  // 组件约定的默认设计稿尺寸
+  DesignWidth = 750,
+  // 移动端宽度的临界值，默认为逻辑像素576px
+  CriticalWidth = 576,
+}
+
 /**
- * 根据数值获取自适应单位，以vw作为自适应
- * 约定cl组件库的自有组件假定设计尺寸375px
+ * 根据数值获取自适应单位，组件内部以vw自适应
  *
  * @param num 设计稿尺寸
  * @param overLimit 是否超过临界尺寸
  */
 export function vw(num: number, overLimit = false) {
-  const env = clxxGetEnv();
   if (overLimit) {
-    return (env.criticalWidth * num) / 375 + 'px';
+    return (ClxxScreenEnv.CriticalWidth * num) / ClxxScreenEnv.DesignWidth + "px";
   } else {
-    return (num * 100) / 375 + 'vw';
+    return (num * 100) / ClxxScreenEnv.DesignWidth + "vw";
   }
 }
 
@@ -40,12 +46,12 @@ export function vw(num: number, overLimit = false) {
  * @param value 长度值
  * @param defaultUnit 默认长度值单位
  */
-export function normalizeUnit(value?: CSSValue, defaultUnit = 'px') {
-  if (typeof value === 'number') {
+export function normalizeUnit(value?: CSSValue, defaultUnit = "px") {
+  if (typeof value === "number") {
     return value + defaultUnit;
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     const result = value.match(CSSNumericValueReg);
     if (Array.isArray(result)) {
       return result[2]
@@ -72,17 +78,17 @@ export function normalizeUnit(value?: CSSValue, defaultUnit = 'px') {
  * @param value
  * @param defaultUnit
  */
-export function splitValue(value: CSSValue, defaultUnit = 'px'): SplitedValue {
-  if (typeof value === 'number') {
+export function splitValue(value: CSSValue, defaultUnit = "px"): SplitedValue {
+  if (typeof value === "number") {
     return { num: value, unit: defaultUnit };
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     const result = value.match(CSSNumericValueReg);
     if (Array.isArray(result)) {
       return { num: parseFloat(result[1]), unit: result[2] || defaultUnit };
     }
   }
 
-  throw new Error('Invalid numeric format');
+  throw new Error("Invalid numeric format");
 }

@@ -1,6 +1,6 @@
   
 .backHome {
-  padding: 0.15rem;
+  padding: 0.3rem;
   border-bottom: 1px solid #ccc;
 }
 .Home {
@@ -9,15 +9,15 @@
   list-style-type: none;
   .item,
   .item-disable {
-    font-size: 0.18rem;
-    padding: 0.1rem 0.15rem;
+    font-size: 0.36rem;
+    padding: 0.2rem 0.3rem;
     position: relative;
     border-bottom: 1px solid #f5f5f5;
     svg {
-      width: 0.24rem;
+      width: 0.48rem;
       position: absolute;
       top: 50%;
-      right: 0.15rem;
+      right: 0.3rem;
       transform: translateY(-50%);
     }
   }
@@ -45,5 +45,5 @@
   }
 }
 .demo {
-  padding: 0.15rem;
+  padding: 0.3rem;
 }
