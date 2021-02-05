@@ -3,7 +3,7 @@ import { Interpolation, jsx, Theme } from "@emotion/react";
 import React, { useCallback } from "react";
 import CSS from "csstype";
 import { style } from "./style";
-import { RowBetween } from "../Layout/Flex";
+import { normalizeUnit } from "../utils/cssUtil";
 
 export interface AutoGridOption
   extends React.DetailedHTMLProps<
@@ -28,7 +28,7 @@ export interface AutoGridOption
  * @param props
  */
 export function AutoGrid(props: AutoGridOption) {
-  const {
+  let {
     children,
     cols = 1,
     gutter = 0,
@@ -37,6 +37,10 @@ export function AutoGrid(props: AutoGridOption) {
     containerStyle,
     ...extra
   } = props;
+
+  // 规范化数字单位
+  cols = +cols;
+  gutter = normalizeUnit(gutter) as string;
 
   // 获取表格数据
   const getGridData = useCallback(() => {
@@ -50,23 +54,16 @@ export function AutoGrid(props: AutoGridOption) {
         list[list.length - 1].push(child);
       }
     });
-
-    // 如果列表不为空，想办法补齐最后一个元素
-    if (list.length > 0) {
-      // 补齐最后一个子数组的长度
-      const lastLength = list[list.length - 1].length;
-      for (let i = 0; i < cols - lastLength; i++) {
-        list[list.length - 1].push(null);
-      }
-    }
-
     return list;
   }, [children]);
 
   // 元素的最终样式
   const finalItemBoxStyle: Interpolation<Theme> = [
     style.itemBoxStyle,
-    { marginRight: gutter },
+    {
+      marginRight: gutter,
+      width: `calc((100% - ${cols - 1} * ${gutter}) / ${cols})`,
+    },
   ];
 
   /**
@@ -76,29 +73,24 @@ export function AutoGrid(props: AutoGridOption) {
     const gridData = getGridData();
     return gridData.map((row, rowIndex) => {
       // 每行的槽样式，最后一行没有
-      let rowStyle: Interpolation<Theme> | undefined;
+      let finalRowStyle: Interpolation<Theme> = [style.rowStyle];
       if (rowIndex !== gridData.length - 1) {
-        rowStyle = {
+        // 最后一行不需要marginBottom
+        finalRowStyle.push({
           marginBottom: gutter,
-        };
+        });
       }
 
       return (
-        <RowBetween key={rowIndex} css={rowStyle}>
+        <div key={rowIndex} css={finalRowStyle}>
           {row.map((item, colIndex) => {
             let finalCss: Interpolation<Theme> = [...finalItemBoxStyle];
+
             // 如果是方形的，加入方形相关的样式
             if (isSquare) {
               finalCss.push(style.itemBoxSquare);
             }
-            // 如果元素不存在，则不显示
-            if (item === null) {
-              finalCss.push(style.itemNull);
-            }
-            // 加入用户传递的样式
-            if (item !== null) {
-              finalCss.push(itemStyle);
-            }
+            finalCss.push(itemStyle);
 
             if (isSquare) {
               return (
@@ -114,7 +106,7 @@ export function AutoGrid(props: AutoGridOption) {
               );
             }
           })}
-        </RowBetween>
+        </div>
       );
     });
   };

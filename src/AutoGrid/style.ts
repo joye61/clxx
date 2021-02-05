@@ -2,11 +2,8 @@ import { css } from "@emotion/react";
 
 export const style = {
   itemBoxStyle: css({
-    flexGrow: 1,
-    flexShrink: 0,
-    flexBasis: 0,
+    float: "left",
     position: "relative",
-    overflow: "hidden",
     "&:last-child": {
       marginRight: 0,
     },
@@ -29,4 +26,15 @@ export const style = {
     bottom: 0,
     top: 0,
   }),
+
+  // 行样式
+  rowStyle: css({
+    width: "100%",
+    "&:after,&::after": {
+      content: "''",
+      display: "table",
+      height: 0,
+      clear: "both"
+    }
+  })
 };

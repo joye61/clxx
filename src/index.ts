@@ -42,4 +42,4 @@ export { Clickable } from "./Clickable";
 export { Content as PrivacyContent } from "./Privacy/Content";
 export { replaceRange, replaceWithoutHeadTail } from "./Privacy/string";
 export { AutoGrid } from "./AutoGrid";
-export { ImagePicker } from "./ImagePicker";
+export { ImagePicker, SimpleImagePicker } from "./ImagePicker";

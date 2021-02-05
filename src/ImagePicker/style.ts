@@ -1,31 +1,49 @@
 import { css } from "@emotion/react";
+import { ClxxScreenEnv, vw } from "../utils/cssUtil";
 
 export const style = {
   btn: css({
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
     position: "relative",
-    input: css({
+    "> input": css({
+      position: "absolute",
+      height: 0,
       display: "none",
     }),
   }),
+
+  btnGridItem: css({
+    width: "100%",
+    height: "100%",
+  }),
+  btnSingle: css({
+    width: vw(150),
+    height: vw(150),
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      width: vw(150, true),
+      height: vw(150, true),
+    },
+  }),
+
+  defaultBtnCenter: css({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }),
   defaultBtn: css({
-    backgroundColor: "#e0e0e0",
-    border: `1px dashed #bbb`,
+    backgroundColor: "#f5f5f5",
+    boxShadow: `0 0 ${vw(2.5)} 0 #00000099`,
+    [`@media (min-width: ${ClxxScreenEnv.CriticalWidth}px)`]: {
+      boxShadow: `0 0 ${vw(2.5, true)} 0 #00000099`,
+    },
     svg: {
       width: "45%",
       path: {
         fill: "#888",
       },
-    }
+    },
   }),
   defaultBtnDisable: css({
     backgroundColor: "#f5f5f5",
-    border: `1px dashed #e5e5e5`,
     svg: {
       width: "50%",
       path: {
