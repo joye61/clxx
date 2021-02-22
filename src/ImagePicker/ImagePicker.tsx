@@ -33,6 +33,7 @@ export function ImagePicker(props: ImagePickerGridOption) {
     isSquare = true,
     renderPickButton,
     onHookEachRound,
+    loadImageOption,
     ...autoGridProps
   } = props;
 
@@ -44,6 +45,7 @@ export function ImagePicker(props: ImagePickerGridOption) {
     onHookEachRound,
     onFilesChange,
     type: "grid",
+    loadImageOption,
   });
 
   // 获取按钮内容

@@ -70,6 +70,19 @@ export default function () {
           console.log(res);
         }}
       />
+      <p>限制最大宽度（单选，结果需要自己处理）</p>
+      <SimpleImagePicker
+        // multiple
+        renderPickButton={() => {
+          return <button>选取图片</button>;
+        }}
+        onFilesChange={(res) => {
+          console.log(res);
+        }}
+        loadImageOption={{
+          maxWidth: 10
+        }}
+      />
     </div>
   );
 }

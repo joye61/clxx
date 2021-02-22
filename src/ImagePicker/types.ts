@@ -30,9 +30,38 @@ export interface ImagePickerOption {
   renderPickButton?: RenderPickButton;
   // 每一轮各个阶段的钩子
   onHookEachRound?: () => EachPickStartEndResult;
+  // loadImage库的选项
+  loadImageOption?: LoadImageOption;
 }
 
 export interface UseButtonOption extends ImagePickerOption {
   // single：简单选择器 | grid：位于网格中的选择器
   type: "single" | "grid";
+}
+
+// https://github.com/blueimp/JavaScript-Load-Image#options
+export interface LoadImageOption {
+  maxWidth: number;
+  maxHeight: number;
+  minWidth: number;
+  minHeight: number;
+  sourceWidth: number;
+  sourceHeight: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  contain: boolean;
+  cover: boolean;
+  aspectRatio: number;
+  pixelRatio: number;
+  downsamplingRatio: number;
+  imageSmoothingEnabled: boolean;
+  imageSmoothingQuality: string;
+  crop: boolean;
+  orientation: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | true;
+  meta: boolean;
+  canvas: boolean;
+  crossOrigin: boolean;
+  noRevoke: boolean;
 }

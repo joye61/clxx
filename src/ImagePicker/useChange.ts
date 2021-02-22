@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import loadImage from "./loadImage";
 import { toBlobPolyfill } from "./toBlobPolyfill";
-import { EachPickStartEndResult, ImagePickList } from "./types";
+import {
+  EachPickStartEndResult,
+  ImagePickList,
+  LoadImageOption,
+} from "./types";
 
 export interface UseOnChangeReturn<T> {
   // 返回最新的列表
@@ -17,6 +21,7 @@ export interface UseOnChangeOption {
   onHookEachRound?: () => EachPickStartEndResult;
   onFilesChange?: (list?: Array<ImagePickList>) => void;
   type: "grid" | "single";
+  loadImageOption?: LoadImageOption;
 }
 
 export function useOnChange({
@@ -24,6 +29,7 @@ export function useOnChange({
   onHookEachRound,
   onFilesChange,
   type,
+  loadImageOption,
 }: UseOnChangeOption): UseOnChangeReturn<void> {
   // 获取所有的钩子
   const hooks = onHookEachRound?.();
@@ -64,12 +70,16 @@ export function useOnChange({
     // 读取所有图片到组件存储中
     for (let i = 0; i < len; i++) {
       try {
-        // 获取结果
-        const result: any = await loadImage(event.target.files![i], {
+        let option: Partial<LoadImageOption> = {
           orientation: true,
           canvas: true,
-        });
-        
+        };
+        if (typeof loadImageOption === "object") {
+          option = { ...option, ...loadImageOption };
+        }
+        // 获取结果
+        const result: any = await loadImage(event.target.files![i], option);
+
         // 转换为blob
         const blob = await new Promise<Blob>((resolve) => {
           (result.image as HTMLCanvasElement).toBlob((bin) => {

@@ -13,6 +13,7 @@ export function SimpleImagePicker(props: ImagePickerOption) {
     renderPickButton,
     onFilesChange,
     onHookEachRound,
+    loadImageOption,
   } = props;
 
   // 当前文件上传域的引用
@@ -23,6 +24,7 @@ export function SimpleImagePicker(props: ImagePickerOption) {
     onHookEachRound,
     onFilesChange,
     type: "single",
+    loadImageOption
   });
 
   const content = useButton({
