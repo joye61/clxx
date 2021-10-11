@@ -1,53 +1,30 @@
-import raf from 'raf';
-
-export interface TickReturn {
-  (): void;
-}
+export type StopTick = () => void;
 
 /**
- * 逐帧执行的工具函数，返回一个方法，调用该方法，停止执行
- * @param callback
- * @param interval
+ * 逐帧执行某个回调
+ * @param callback 每一帧都会调用的回调
+ * @returns
  */
-export function tick(callback: () => void, interval?: number): TickReturn {
-  // 执行状态，是否正在执行
-  let isRunning: boolean;
+export function tick(callback: () => void): StopTick {
+  let frameId: number | undefined = undefined;
+  let isRun: boolean = true;
+  // 停止tick
+  let stop = () => {
+    if (typeof frameId === "number") {
+      cancelAnimationFrame(frameId);
+    }
+    isRun = false;
+  };
+  // 每一帧执行的任务
+  const frame = () => {
+    if (!isRun) return;
+    // 在回调执行之前预约下一帧
+    frameId = requestAnimationFrame(frame);
+    // 执行回调
+    callback?.();
+  };
+  // 执行起始帧
+  frame();
 
-  let frame: () => void;
-
-  // 设置了tick的间隔
-  if (typeof interval === 'number') {
-    let lastTick = Date.now();
-    frame = () => {
-      if (!isRunning) {
-        return;
-      }
-      raf(frame);
-      const now = Date.now();
-
-      // 每次间隔频率逻辑上保持一致，即使帧频不一致
-      if (now - lastTick >= interval) {
-        // 本次tick的时间为上次的时间加上频率间隔
-        lastTick = lastTick + interval;
-        callback();
-      }
-    };
-  }
-  // 没有设置tick的间隔
-  else {
-    frame = () => {
-      if (!isRunning) {
-        return;
-      }
-      raf(frame);
-      callback();
-    };
-  }
-
-  // 开始执行
-  isRunning = true;
-  raf(frame);
-
-  // 返回一个可以立即停止的函数
-  return () => (isRunning = false);
+  return stop;
 }

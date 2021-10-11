@@ -102,7 +102,7 @@ function raceFetch<D>(
  * @param option
  * @returns
  */
-export async function get<D>(
+export async function GET<D>(
   url: string,
   data?: Record<string, any>,
   option?: AjaxOption & RequestInit
@@ -132,7 +132,7 @@ export async function get<D>(
  * @param option
  * @returns
  */
-export async function post<D>(
+export async function POST<D>(
   url: string,
   data?: Record<string, any>,
   option?: AjaxOption & RequestInit
@@ -147,7 +147,7 @@ export async function post<D>(
   if (!option || typeof option !== "object") {
     option = {};
   }
-  option.method = "GET";
+  option.method = "POST";
 
   const form = new FormData();
   if (data && typeof data === "object") {

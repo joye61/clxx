@@ -1,4 +1,4 @@
-import dayjs, { Dayjs, ConfigType } from 'dayjs';
+import dayjs, { Dayjs, ConfigType } from "dayjs";
 
 /**
  * 创建一个月历视图的原始数据表
@@ -6,14 +6,14 @@ import dayjs, { Dayjs, ConfigType } from 'dayjs';
  * @param startFromSunday 是否以星期天作为一周的第一天
  * @param sizeGuarantee 是否保证生成表格始终有6行
  */
-export function createCalendarTable(
+export function calendarTable(
   usefulFormat: ConfigType = dayjs(),
   startFromSunday = false,
-  sizeGuarantee = true,
+  sizeGuarantee = true
 ) {
   const value = dayjs(usefulFormat);
-  const startOfMonth = value.startOf('month');
-  const endOfMonth = value.endOf('month');
+  const startOfMonth = value.startOf("month");
+  const endOfMonth = value.endOf("month");
   const monthStartDay = startOfMonth.date();
   const monthEndDay = endOfMonth.date();
 
@@ -36,7 +36,7 @@ export function createCalendarTable(
     const monthEndWeekDay = endOfMonth.day();
     // 1、补足上一个月天数
     for (let i = 0; i < monthStartWeekDay; i++) {
-      addDayToResult(startOfMonth.subtract(monthStartWeekDay - i, 'day'));
+      addDayToResult(startOfMonth.subtract(monthStartWeekDay - i, "day"));
     }
     // 2、补足当月的天数
     for (let i = monthStartDay; i <= monthEndDay; i++) {
@@ -44,7 +44,7 @@ export function createCalendarTable(
     }
     // 3、补足下一个月天速
     for (let i = monthEndWeekDay + 1; i <= 6; i++) {
-      addDayToResult(endOfMonth.add(i - monthEndWeekDay, 'day'));
+      addDayToResult(endOfMonth.add(i - monthEndWeekDay, "day"));
     }
   } else {
     const monthStartWeekDay = startOfMonth.day() || 7;
@@ -52,7 +52,7 @@ export function createCalendarTable(
 
     // 1、补足上一个月天数
     for (let i = 1; i < monthStartWeekDay; i++) {
-      addDayToResult(startOfMonth.subtract(monthStartWeekDay - i, 'day'));
+      addDayToResult(startOfMonth.subtract(monthStartWeekDay - i, "day"));
     }
 
     // 2、补足当月的天数
@@ -62,7 +62,7 @@ export function createCalendarTable(
 
     // 3、补足下一个月天速
     for (let i = monthEndWeekDay + 1; i <= 7; i++) {
-      addDayToResult(endOfMonth.add(i - monthEndWeekDay, 'day'));
+      addDayToResult(endOfMonth.add(i - monthEndWeekDay, "day"));
     }
   }
 
@@ -71,7 +71,7 @@ export function createCalendarTable(
     const remain = (6 - result.length) * 7;
     const lastDayOfTable = result[result.length - 1][6];
     for (let i = 1; i <= remain; i++) {
-      addDayToResult(lastDayOfTable.add(i, 'day'));
+      addDayToResult(lastDayOfTable.add(i, "day"));
     }
   }
 
