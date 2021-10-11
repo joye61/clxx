@@ -5,7 +5,7 @@ export type StopTick = () => void;
  * @param callback 每一帧都会调用的回调
  * @returns
  */
-export function tick(callback: () => void): StopTick {
+export function tick(callback?: () => void): StopTick {
   let frameId: number | undefined = undefined;
   let isRun: boolean = true;
   // 停止tick

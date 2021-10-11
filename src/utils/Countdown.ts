@@ -7,9 +7,13 @@ export type CountdownValue = {
 export type UpdateCallback = (value: CountdownValue) => void;
 
 export interface CountdownOption {
+  // 倒计时剩余时间
   remain?: number | string;
+  // 更新时触发
   onUpdate?: UpdateCallback;
+  // 结束时触发
   onEnd?: () => void;
+  // 格式dhis
   format?: string;
 }
 
@@ -76,6 +80,9 @@ export class Countdown {
       this._onEnd?.();
       return;
     }
+
+    // 初始化立即触发一次更新
+    this._onUpdate?.(this.formatValue());
 
     // 记录倒计时开启时的时间
     const start = Date.now();
