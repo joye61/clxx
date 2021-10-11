@@ -20,6 +20,12 @@ type TickOption = {
  * @returns
  */
 export function tick(callback?: TickCallback, option?: TickOption) {
+  let fn = callback ?? (() => {});
+  let maxDuration = option?.duration ?? 0;
+  let interval = option?.interval ?? 0;
+  let triggerOnEnd = option?.triggerOnEnd ?? true;
+  let onEnd = option?.onEnd ?? (() => {});
+
   // 是否正在运行
   let isTicking = true;
   // requestAnimationFrame的返回值
@@ -28,8 +34,6 @@ export function tick(callback?: TickCallback, option?: TickOption) {
   let start = Date.now();
   // 上次tick的时间
   let lastTick = start;
-  // 是否结束时触发回调
-  const triggerOnEnd = option?.triggerOnEnd ?? true;
 
   const frame = () => {
     const now = Date.now();
@@ -37,19 +41,15 @@ export function tick(callback?: TickCallback, option?: TickOption) {
 
     // 1、检测是否结束
     if (!isTicking) {
-      triggerOnEnd && callback?.(duration);
-      option?.onEnd?.(duration);
+      triggerOnEnd && fn(duration);
+      onEnd(duration);
       return;
     }
 
     // 2、检测是否超过设置的最大的持续时间
-    if (
-      typeof option?.duration === "number" &&
-      option.duration > 0 &&
-      now - start >= option.duration
-    ) {
-      triggerOnEnd && callback?.(duration);
-      option?.onEnd?.(duration);
+    if (maxDuration > 0 && now - start >= maxDuration) {
+      triggerOnEnd && fn(duration);
+      onEnd(duration);
       return;
     }
 
@@ -57,16 +57,16 @@ export function tick(callback?: TickCallback, option?: TickOption) {
     raf = window.requestAnimationFrame(frame);
 
     // 执行逻辑放在调度后面
-    if (typeof option?.interval === "number" && option.interval > 0) {
+    if (interval > 0) {
       // 如果设置了tick的间隔，则没到间隔时间不执行回调
-      if (now - lastTick >= option.interval) {
-        lastTick += option.interval;
-        callback?.(duration);
+      if (now - lastTick >= interval) {
+        lastTick += interval;
+        fn(duration);
       }
     } else {
       // 这里是每一帧都要执行的逻辑
       lastTick = now;
-      callback?.(duration);
+      fn(duration);
     }
   };
 
