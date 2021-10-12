@@ -1,5 +1,5 @@
-import { css, keyframes } from '@emotion/react';
-import { normalizeUnit } from '../utils/cssUtil';
+import { css, keyframes } from "@emotion/react";
+import { Keyframes } from "@emotion/serialize";
 
 const containerShow = keyframes`
 	from {
@@ -81,7 +81,7 @@ const pullRightHide = keyframes`
 		transform: translateX(-100%);
 	}
 `;
-const dialogShow = keyframes`
+const centerShow = keyframes`
 	from  {
 		transform: scale(0.8);
 		opacity: 0;
@@ -91,7 +91,7 @@ const dialogShow = keyframes`
 		opacity: 1;
 	}
 `;
-const dialogHide = keyframes`
+const centerHide = keyframes`
 	from  {
 		transform: scale(1);
 		opacity: 1;
@@ -102,71 +102,75 @@ const dialogHide = keyframes`
 	}
 `;
 
+export type DialogType =
+  | "center"
+  | "pullUp"
+  | "pullDown"
+  | "pullLeft"
+  | "pullRight";
+
+export type AnimationStatus = "show" | "hide";
+
+export function getAnimation(type: DialogType, status: AnimationStatus) {
+  const showAnimation = {
+    center: centerShow,
+    pullUp: pullUpShow,
+    pullDown: pullDownShow,
+    pullLeft: pullLeftShow,
+    pullRight: pullRightShow,
+  };
+  const hideAnimation = {
+    center: centerHide,
+    pullUp: pullUpHide,
+    pullDown: pullDownHide,
+    pullLeft: pullLeftHide,
+    pullRight: pullRightHide,
+  };
+
+  let keyframes: Keyframes;
+  if (status === "show") {
+    keyframes = showAnimation[type];
+  } else {
+    keyframes = hideAnimation[type];
+  }
+
+  return {
+    keyframes,
+    animation: css({
+      animation: `${keyframes} 200ms`,
+    }),
+  };
+}
+
 export const style = {
-  duration(duration: string | number = 200) {
-    return css({
-      animationDuration: normalizeUnit(duration, 'ms'),
-      animationTimingFunction: 'ease',
-    });
-  },
   containerShow: css({
-    animationName: containerShow,
+    animation: `${containerShow} 200ms`,
   }),
   containerHide: css({
-    animationName: containerHide,
-  }),
-  pullUpShow: css({
-    animationName: pullUpShow,
-  }),
-  pullUpHide: css({
-    animationName: pullUpHide,
-  }),
-  pullDownShow: css({
-    animationName: pullDownShow,
-  }),
-  pullDownHide: css({
-    animationName: pullDownHide,
-  }),
-  pullLeftShow: css({
-    animationName: pullLeftShow,
-  }),
-  pullLeftHide: css({
-    animationName: pullLeftHide,
-  }),
-  pullRightShow: css({
-    animationName: pullRightShow,
-  }),
-  pullRightHide: css({
-    animationName: pullRightHide,
-  }),
-  dialogShow: css({
-    animationName: dialogShow,
-  }),
-  dialogHide: css({
-    animationName: dialogHide,
+    animation: `${containerHide} 200ms`,
   }),
   pullUp: css({
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     bottom: 0,
-    width: '100%',
+    width: "100%",
   }),
   pullDown: css({
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
-    width: '100%',
+    width: "100%",
   }),
   pullLeft: css({
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     top: 0,
-    height: '100%',
+    height: "100%",
   }),
   pullRight: css({
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     top: 0,
-    height: '100%',
+    height: "100%",
   }),
 };

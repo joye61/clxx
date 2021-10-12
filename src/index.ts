@@ -34,3 +34,4 @@ export {
 export { Countdowner } from "./Countdowner";
 export { Overlay } from "./Overlay";
 export { showToast, showUniqToast } from "./Toast";
+export { showDialog } from "./Dialog";

@@ -1,7 +1,6 @@
 /**@jsx jsx */
 import { jsx, ArrayInterpolation, Theme } from "@emotion/react";
-import React, { useLayoutEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { getContextValue } from "../context";
 import { ContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";
@@ -30,29 +29,17 @@ export function Overlay(props: OverlayProps) {
     ...extra
   } = props;
 
-  const [mount, setMount] = useState<HTMLElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
-
-  useLayoutEffect(() => {
-    const container = document.createElement("div");
-    document.body.appendChild(container);
-    setMount(container);
-    return () => {
-      ReactDOM.unmountComponentAtNode(container);
-      container.remove();
-    };
-  }, []);
 
   // 页面大小变化时，innerWidth也会更新
   useWindowResize(() => {
     setInnerWidth(window.innerWidth);
   });
 
-  // 挂载对象未生成之前，不显示
-  if (!mount) return mount;
-
   const ctx = getContextValue() as ContextValue;
   const style: ArrayInterpolation<Theme> = [];
+
+  // 如果是全屏，设置全屏样式
   if (fullScreen) {
     // 获取宽度
     let width = innerWidth;
@@ -74,6 +61,8 @@ export function Overlay(props: OverlayProps) {
       backgroundColor: `rgba(0, 0, 0, .6)`,
     });
   }
+
+  // 如果内容居中，设置内容居中有样式
   if (centerContent) {
     style.push({
       display: "flex",
@@ -82,10 +71,9 @@ export function Overlay(props: OverlayProps) {
     });
   }
 
-  return ReactDOM.createPortal(
+  return (
     <div css={style} {...extra}>
       {children}
-    </div>,
-    mount
+    </div>
   );
 }

@@ -69,12 +69,13 @@ export default function () {
       >
         显示Toast
       </button>
-      <p>全局唯一的Toast</p>
+      <p>全局唯一的Toast,永不消失</p>
       <button
         onClick={() => {
           showUniqToast({
             content: "全局唯一的Toast顶部",
             position: "top",
+            duration: 10000000
           });
         }}
       >

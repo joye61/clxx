@@ -10,7 +10,7 @@ export interface ContextValue {
 let context: ContextValue = {
   designWidth: 750,
   maxScreenWidth: 576,
-  minScreenWidth: 375,
+  minScreenWidth: 312,
 };
 
 /**
