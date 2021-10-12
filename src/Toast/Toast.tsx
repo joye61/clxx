@@ -1,13 +1,10 @@
 /** @jsx jsx */
 import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import React, { useState, useEffect } from "react";
-import { style, hideAnimation } from "./style";
+import { style, getAnimation } from "./style";
 
 export interface ToastProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends Omit<React.HTMLProps<HTMLDivElement>, "content"> {
   // toast消失动画时触发的回调
   onHide?: () => void;
   // toast的内容
@@ -21,7 +18,7 @@ export interface ToastProps
   // toast持续时间
   duration?: number;
   // 默认toast是否圆角
-  rounded?: boolean;
+  radius?: number;
   // 容器样式
   containerStyle?: Interpolation<Theme>;
   // 内容样式
@@ -32,8 +29,8 @@ export function Toast(props: ToastProps) {
   const {
     content = "",
     position = "middle",
-    duration = 3000,
-    rounded = true,
+    duration = 2000,
+    radius = 10,
     offsetTop = 30,
     offsetBottom = 30,
     onHide = () => undefined,
@@ -42,19 +39,22 @@ export function Toast(props: ToastProps) {
     ...attributes
   } = props;
 
+  // 初始化显示的动画
+  const getResult = getAnimation(position, "show");
   const [animation, setAnimation] = useState<SerializedStyles>(
-    style.containerShow
+    getResult.animation
   );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setAnimation(style.containerHide);
+      const { animation } = getAnimation(position, "hide");
+      setAnimation(animation);
     }, duration);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, []);
+  }, [position]);
 
   let showContent: any;
   const middleStyle = position === "middle" ? style.contentMiddle : undefined;
@@ -62,13 +62,14 @@ export function Toast(props: ToastProps) {
     showContent = <div css={[middleStyle, contentStyle]}>{content}</div>;
   } else {
     showContent = (
-      <p css={[style.content(rounded), middleStyle, contentStyle]}>{content}</p>
+      <p css={[style.content(radius), middleStyle, contentStyle]}>{content}</p>
     );
   }
 
   // toast消失动画结束触发
   const animationEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
-    if (event.animationName === hideAnimation.name) {
+    const { keyframes } = getAnimation(position, "hide");
+    if (event.animationName === keyframes.name) {
       onHide?.();
     }
   };
@@ -84,7 +85,7 @@ export function Toast(props: ToastProps) {
 
   return (
     <div
-      css={[style.container, positionStyle, animation, containerStyle]}
+      css={[style.container(), positionStyle, animation, containerStyle]}
       onAnimationEnd={animationEnd}
       {...attributes}
     >

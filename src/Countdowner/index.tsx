@@ -7,15 +7,11 @@ import {
   CountdownValue,
   CountdownValueIndex,
 } from "../utils/Countdown";
-import isPlainObject from "lodash/isPlainObject";
-import { Row } from "../Layout/Flex";
+import { RowStart } from "../Flex/Row";
 
 export interface CountdownerOption
   extends CountdownOption,
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    > {
+    React.HTMLProps<HTMLDivElement> {
   // 数字之间的分隔符
   seperator?: React.ReactNode;
   // 分隔符之间的样式
@@ -48,7 +44,7 @@ export function Countdowner(props: CountdownerOption) {
   const [value, setValue] = useState<CountdownValue | null>(null);
 
   let content: Array<React.ReactNode> = [];
-  if (isPlainObject(value)) {
+  if (value && typeof value === "object") {
     for (let i = 0; i < format.length; i++) {
       // 渲染数字进组件
       const key = format[i] as CountdownValueIndex;
@@ -103,8 +99,8 @@ export function Countdowner(props: CountdownerOption) {
   }, [format, remain]);
 
   return (
-    <Row {...extra} css={containerStyle}>
+    <RowStart {...extra} css={containerStyle}>
       {content}
-    </Row>
+    </RowStart>
   );
 }
