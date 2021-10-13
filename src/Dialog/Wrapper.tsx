@@ -1,19 +1,7 @@
 /** @jsx jsx */
-import {
-  jsx,
-  Theme,
-  Interpolation,
-  ArrayInterpolation,
-  CSSObject,
-} from "@emotion/react";
+import { jsx, Theme, Interpolation, ArrayInterpolation } from "@emotion/react";
 import { Overlay } from "../Overlay";
-import {
-  style,
-  maskHide,
-  DialogType,
-  AnimationStatus,
-  getAnimation,
-} from "./style";
+import { style, DialogType, AnimationStatus, getAnimation } from "./style";
 
 export interface WrapperProps {
   // 对话框类型
@@ -24,10 +12,12 @@ export interface WrapperProps {
   status?: AnimationStatus;
   // 对话框完全关闭时触发的回调
   onHide?: () => void;
+  // 是否显示遮罩
+  showMask?: boolean;
   // 遮罩颜色
   maskColor?: string;
   // 容器被点击时触发
-  onMaskClick?: () => void;
+  onBlankClick?: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   // 容器的样式
   boxStyle?: Interpolation<Theme>;
   // 遮罩样式
@@ -40,22 +30,13 @@ export function Wrapper(props: WrapperProps) {
     status = "show",
     children,
     onHide,
+    showMask = true,
     maskColor,
     maskStyle,
     boxStyle,
-    onMaskClick,
+    onBlankClick,
   } = props;
-  const { animation } = getAnimation(type, status);
-
-  /**
-   * 完全关闭动画结束之后会触发
-   * @param event
-   */
-  const animationEnd = (event: React.AnimationEvent) => {
-    if (event.animationName === maskHide.name) {
-      onHide?.();
-    }
-  };
+  const { animation, keyframes } = getAnimation(type, status);
 
   // 选取特定的类型对应的样式
   let boxCss: ArrayInterpolation<Theme> = [style.boxCss];
@@ -63,36 +44,44 @@ export function Wrapper(props: WrapperProps) {
     boxCss.push(style[type as keyof typeof style]);
   }
 
+  // 遮罩的样式
+  let maskCss: ArrayInterpolation<Theme> = [
+    style.mask,
+    status === "show" ? style.maskShow : style.maskHide,
+    maskStyle,
+  ];
   // 遮罩颜色
-  let maskColorStyle: CSSObject | undefined;
   if (maskColor) {
-    maskColorStyle = { backgroundColor: maskColor };
+    maskCss.push({ backgroundColor: maskColor });
   }
+
+  // 空白处点击
+  const blankClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (event.target === event.currentTarget) {
+      event.stopPropagation();
+      onBlankClick?.(event);
+    }
+  };
 
   return (
     <Overlay
+      css={{ overflow: "hidden" }}
       centerContent={type === "center"}
       maskColor="transparent"
       fullScreen
+      onClick={showMask ? undefined : blankClick}
     >
+      {showMask && <div css={maskCss} onClick={blankClick} />}
       <div
-        css={[
-          style.mask,
-          maskStyle,
-          maskColorStyle,
-          status === "show" ? style.maskShow : style.maskHide,
-        ]}
-        onAnimationEnd={animationEnd}
-        onClick={(event) => {
-          // 阻止冒泡
-          event.stopPropagation();
-          // 当点击对象是背景对象本身时触发
-          if (event.target === event.currentTarget) {
-            onMaskClick?.();
+        css={[boxCss, boxStyle, animation]}
+        onAnimationEnd={(event) => {
+          if (status === "hide" && event.animationName === keyframes.name) {
+            onHide?.();
           }
         }}
-      />
-      <div css={[boxCss, boxStyle, animation]}>{children}</div>
+      >
+        {children}
+      </div>
     </Overlay>
   );
 }

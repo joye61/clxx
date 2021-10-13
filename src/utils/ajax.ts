@@ -63,22 +63,22 @@ function regenUrl(option: RegenOption) {
 }
 
 /**
- * 获取结果
+ * 获取结果，默认假设响应为json串
  * @param url
  * @param option
  * @returns
  */
-function raceFetch<D>(
+function raceFetch<ResponseData = any>(
   url: string,
   option: AjaxOption & RequestInit
-): Promise<D | void> {
+): Promise<ResponseData | void> {
   return Promise.race([
     // 请求逻辑
     fetch(url, option)
       .then((response) => {
         return response.json();
       })
-      .then((result: D) => {
+      .then((result: ResponseData) => {
         return result;
       })
       .catch((error) => {
@@ -86,10 +86,10 @@ function raceFetch<D>(
       }),
 
     // 超时逻辑
-    new Promise<undefined>((resolve) => {
+    new Promise<void>((resolve) => {
       window.setTimeout(() => {
         option?.onTimeout?.();
-        resolve(undefined);
+        resolve();
       }, option?.timeout || 30000);
     }),
   ]);
@@ -102,7 +102,7 @@ function raceFetch<D>(
  * @param option
  * @returns
  */
-export async function GET<D>(
+export async function GET<ResponseData = any>(
   url: string,
   data?: Record<string, any>,
   option?: AjaxOption & RequestInit
@@ -122,7 +122,7 @@ export async function GET<D>(
   option.method = "GET";
 
   // 返回最终结果
-  return raceFetch<D>(url, option);
+  return raceFetch<ResponseData>(url, option);
 }
 
 /**
@@ -132,7 +132,7 @@ export async function GET<D>(
  * @param option
  * @returns
  */
-export async function POST<D>(
+export async function POST<ResponseData = any>(
   url: string,
   data?: Record<string, any>,
   option?: AjaxOption & RequestInit
@@ -159,5 +159,38 @@ export async function POST<D>(
   }
   option.body = form;
 
-  return raceFetch<D>(url, option);
+  return raceFetch<ResponseData>(url, option);
+}
+
+/**
+ * 发送原始JSON对象到远端
+ * @param url 
+ * @param data 
+ * @param option 
+ * @returns 
+ */
+export async function sendJSON<ResponseData = any>(
+  url: string,
+  data?: Record<string, any>,
+  option?: AjaxOption & RequestInit
+) {
+  // 生成新的url
+  url = regenUrl({
+    url,
+    noCache: option?.noCache ?? false,
+    transmitParam: option?.transmitParam ?? false,
+  });
+
+  if (!option || typeof option !== "object") {
+    option = {};
+  }
+  if (typeof option.headers !== "object") {
+    option.headers = {};
+  }
+  (option.headers as Record<string, string>)["Content-Type"] =
+    "application/json";
+  option.method = "POST";
+  option.body = JSON.stringify(data);
+
+  return raceFetch<ResponseData>(url, option);
 }

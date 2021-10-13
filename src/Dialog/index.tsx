@@ -7,7 +7,7 @@ import omit from "lodash/omit";
 
 export interface ShowDialogOption extends WrapperProps {
   // 空白处可点击关闭
-  maskClosable?: boolean;
+  blankClosable?: boolean;
   // 弹框内容
   content?: React.ReactNode;
   // 弹窗类型
@@ -23,7 +23,7 @@ export async function showDialog(option: React.ReactNode | ShowDialogOption) {
   const { mount, destroy } = createPortalDOM();
 
   // 生成全部配置
-  let config: ShowDialogOption = { status: "show", maskClosable: false };
+  let config: ShowDialogOption = { status: "show", blankClosable: false };
   if (React.isValidElement(option) || !isPlainObject(option)) {
     config.content = option;
   } else {
@@ -31,23 +31,23 @@ export async function showDialog(option: React.ReactNode | ShowDialogOption) {
   }
 
   // 提取需要单独处理的配置项
-  const maskClosable = !!config.maskClosable;
+  const blankClosable = !!config.blankClosable;
   const children = config.content;
-  const onMaskClick = config.onMaskClick;
-  const props: WrapperProps = omit(config, ["maskClosable", "content"]);
+  const onBlankClick = config.onBlankClick;
+  const props: WrapperProps = omit(config, ["blankClosable", "content"]);
 
   // 关闭弹窗
-  const closeDialog = () => {
+  const closeDialog = async () => {
     props.status = "hide";
     props.onHide = destroy;
-    mount(<Wrapper {...props}>{children}</Wrapper>);
+    await mount(<Wrapper {...props}>{children}</Wrapper>);
   };
 
   // 空白处可点击关闭
-  if (maskClosable) {
-    props.onMaskClick = () => {
-      closeDialog();
-      onMaskClick?.();
+  if (blankClosable) {
+    props.onBlankClick = async (event) => {
+      await closeDialog();
+      onBlankClick?.(event);
     };
   }
 

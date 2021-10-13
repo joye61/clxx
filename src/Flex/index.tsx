@@ -36,6 +36,7 @@ export function Flex(props: FlexProps) {
   return (
     <div
       css={{
+        display: "flex",
         alignItems,
         alignContent,
         justifyContent,

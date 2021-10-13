@@ -9,7 +9,8 @@ export default function () {
         <button
           onClick={async () => {
             const close = await showDialog({
-              maskClosable: true,
+              showMask: false,
+              blankClosable: true,
               content: (
                 <RowCenter className={style.contentBox}>
                   <button
@@ -34,6 +35,8 @@ export default function () {
               id: "hello",
               className: "world",
               type: "pullUp",
+              showMask: false,
+              blankClosable: true,
               content: (
                 <RowCenter className={style.contentBox}>
                   <button onClick={() => close()}>关闭</button>

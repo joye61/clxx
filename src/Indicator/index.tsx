@@ -2,7 +2,7 @@
 import { jsx, css, Interpolation, Theme } from "@emotion/react";
 import React from "react";
 import * as CSS from "csstype";
-import { normalizeUnit } from "../utils/cssUtil";
+import { adaptive, normalizeUnit } from "../utils/cssUtil";
 import { getBarChangeKeyFrames } from "./style";
 
 export interface IndicatorProps
@@ -11,19 +11,19 @@ export interface IndicatorProps
     HTMLDivElement
   > {
   // 容器的尺寸
-  size: CSS.Property.Width;
+  size?: CSS.Property.Width | number;
   // bar是否圆角，默认：true
-  rounded: boolean;
+  rounded?: boolean;
   // bar宽度，默认：7
-  barWidth: number;
+  barWidth?: number;
   // bar高度，默认：26
-  barHeight: number;
+  barHeight?: number;
   // bar颜色，默认：#fff
-  barColor: string;
+  barColor?: string;
   // bar个数，默认：12
-  barCount: number;
+  barCount?: number;
   // 每转一圈的持续时间，单位毫秒，默认：500ms
-  duration: number;
+  duration?: number;
   // 容器样式
   containerStyle?: Interpolation<Theme>;
 }
@@ -32,7 +32,7 @@ export interface IndicatorProps
  * SVG转圈指示器，一般用作loading效果
  * @param props
  */
-export function Indicator(props: Partial<IndicatorProps>) {
+export function Indicator(props: IndicatorProps) {
   const {
     size,
     rounded = true,
@@ -66,13 +66,25 @@ export function Indicator(props: Partial<IndicatorProps>) {
     );
   }
 
-  const style: Interpolation<Theme> = {
-    fontSize: 0,
-  };
-  if (typeof size !== undefined) {
+  const style: Interpolation<Theme> = [
+    {
+      fontSize: 0,
+    },
+  ];
+  if (typeof size !== "undefined") {
     const unitSize = normalizeUnit(size);
-    style.width = unitSize;
-    style.height = unitSize;
+    style.push({
+      width: unitSize,
+      height: unitSize,
+    });
+  } else {
+    // 容器尺寸未传时，这里是默认的尺寸
+    style.push(
+      adaptive({
+        width: 60,
+        height: 60,
+      })
+    );
   }
   const svgStyle = css({
     width: "100%",
@@ -87,8 +99,10 @@ export function Indicator(props: Partial<IndicatorProps>) {
   });
 
   return (
-    <div css={[css(style), containerStyle]} {...attributes}>
-      <svg viewBox="0 0 100 100" css={svgStyle}>{barList}</svg>
+    <div css={[style, containerStyle]} {...attributes}>
+      <svg viewBox="0 0 100 100" css={svgStyle}>
+        {barList}
+      </svg>
     </div>
   );
 }

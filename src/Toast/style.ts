@@ -138,8 +138,8 @@ export const style = {
         fontSize: 26,
         paddingLeft: 30,
         paddingRight: 30,
-        paddingTop: 30,
-        paddingBottom: 30,
+        paddingTop: 40,
+        paddingBottom: 40,
         borderRadius: radius ?? 0,
       })
     );
