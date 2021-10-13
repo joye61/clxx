@@ -10,7 +10,7 @@ const pageConfig = [
   // { path: 'indicator', title: 'Indicator菊花转圈指示器', enable: true },
   // { path: 'alert', title: 'showAlert弹框功能', enable: true },
   { path: "countdown", title: "Countdown倒计时", enable: true },
-  // { path: 'dialog', title: 'Dialog对话框', enable: true },
+  { path: 'dialog', title: 'Dialog对话框', enable: true },
   // { path: 'layout', title: '常用布局组件', enable: false },
   { path: "toast", title: "showToast轻提示", enable: true },
   // { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },

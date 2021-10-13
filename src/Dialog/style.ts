@@ -1,7 +1,7 @@
 import { css, keyframes } from "@emotion/react";
 import { Keyframes } from "@emotion/serialize";
 
-const containerShow = keyframes`
+const maskShow = keyframes`
 	from {
 		opacity: 0;
 	}
@@ -9,7 +9,7 @@ const containerShow = keyframes`
 		opacity: 1;
 	}
 `;
-export const containerHide = keyframes`
+export const maskHide = keyframes`
 	from {
 		opacity: 1;
 	}
@@ -112,42 +112,47 @@ export type DialogType =
 export type AnimationStatus = "show" | "hide";
 
 export function getAnimation(type: DialogType, status: AnimationStatus) {
-  const showAnimation = {
-    center: centerShow,
-    pullUp: pullUpShow,
-    pullDown: pullDownShow,
-    pullLeft: pullLeftShow,
-    pullRight: pullRightShow,
-  };
-  const hideAnimation = {
-    center: centerHide,
-    pullUp: pullUpHide,
-    pullDown: pullDownHide,
-    pullLeft: pullLeftHide,
-    pullRight: pullRightHide,
+  const animation = {
+    center: [centerShow, centerHide],
+    pullUp: [pullUpShow, pullUpHide],
+    pullDown: [pullDownShow, pullDownHide],
+    pullLeft: [pullLeftShow, pullLeftHide],
+    pullRight: [pullRightShow, pullRightHide],
   };
 
   let keyframes: Keyframes;
   if (status === "show") {
-    keyframes = showAnimation[type];
+    keyframes = animation[type][0];
   } else {
-    keyframes = hideAnimation[type];
+    keyframes = animation[type][1];
   }
 
   return {
     keyframes,
     animation: css({
-      animation: `${keyframes} 200ms`,
+      animation: `${keyframes} 300ms ease`,
     }),
   };
 }
 
 export const style = {
-  containerShow: css({
-    animation: `${containerShow} 200ms`,
+  maskShow: css({
+    animation: `${maskShow} 300ms ease`,
   }),
-  containerHide: css({
-    animation: `${containerHide} 200ms`,
+  maskHide: css({
+    animation: `${maskHide} 300ms ease`,
+  }),
+  mask: css({
+    zIndex: 1,
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  }),
+  boxCss: css({
+    zIndex: 2,
   }),
   pullUp: css({
     position: "absolute",

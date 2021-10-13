@@ -1,9 +1,15 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles, Theme, Interpolation } from "@emotion/react";
-import { Overlay, OverlayProps } from "../Overlay";
+import {
+  jsx,
+  Theme,
+  Interpolation,
+  ArrayInterpolation,
+  CSSObject,
+} from "@emotion/react";
+import { Overlay } from "../Overlay";
 import {
   style,
-  containerHide,
+  maskHide,
   DialogType,
   AnimationStatus,
   getAnimation,
@@ -24,6 +30,8 @@ export interface WrapperProps {
   onMaskClick?: () => void;
   // 容器的样式
   boxStyle?: Interpolation<Theme>;
+  // 遮罩样式
+  maskStyle?: Interpolation<Theme>;
 }
 
 export function Wrapper(props: WrapperProps) {
@@ -33,6 +41,7 @@ export function Wrapper(props: WrapperProps) {
     children,
     onHide,
     maskColor,
+    maskStyle,
     boxStyle,
     onMaskClick,
   } = props;
@@ -43,39 +52,47 @@ export function Wrapper(props: WrapperProps) {
    * @param event
    */
   const animationEnd = (event: React.AnimationEvent) => {
-    if (event.animationName === containerHide.name) {
+    if (event.animationName === maskHide.name) {
       onHide?.();
     }
   };
 
   // 选取特定的类型对应的样式
-  let boxCss: SerializedStyles | undefined = undefined;
+  let boxCss: ArrayInterpolation<Theme> = [style.boxCss];
   if (["pullUp", "pullDown", "pullLeft", "pullRight"].includes(type)) {
-    boxCss = style[type as keyof typeof style];
+    boxCss.push(style[type as keyof typeof style]);
   }
 
-  // 遮罩的选项
-  let overlayOption: OverlayProps = {
-    centerContent: type === "center",
-    maskColor,
-    fullScreen: true,
-  };
+  // 遮罩颜色
+  let maskColorStyle: CSSObject | undefined;
+  if (maskColor) {
+    maskColorStyle = { backgroundColor: maskColor };
+  }
 
   return (
     <Overlay
-      css={status === "show" ? style.containerShow : style.containerHide}
-      onAnimationEnd={animationEnd}
-      onClick={(event) => {
-        // 阻止冒泡
-        event.stopPropagation();
-        // 当点击对象是背景对象本身时触发
-        if (event.target === event.currentTarget) {
-          onMaskClick?.();
-        }
-      }}
-      {...overlayOption}
+      centerContent={type === "center"}
+      maskColor="transparent"
+      fullScreen
     >
-      <div css={[animation, boxCss, boxStyle]}>{children}</div>
+      <div
+        css={[
+          style.mask,
+          maskStyle,
+          maskColorStyle,
+          status === "show" ? style.maskShow : style.maskHide,
+        ]}
+        onAnimationEnd={animationEnd}
+        onClick={(event) => {
+          // 阻止冒泡
+          event.stopPropagation();
+          // 当点击对象是背景对象本身时触发
+          if (event.target === event.currentTarget) {
+            onMaskClick?.();
+          }
+        }}
+      />
+      <div css={[boxCss, boxStyle, animation]}>{children}</div>
     </Overlay>
   );
 }

@@ -69,35 +69,30 @@ export const bottomHideAnimation = keyframes`
 
 /**
  * 根据位置和类型获取动画
- * @param position 
- * @param type 
- * @returns 
+ * @param position
+ * @param type
+ * @returns
  */
 export function getAnimation(
   position: "top" | "middle" | "bottom",
   type: "show" | "hide"
 ) {
-  const showAnimation = {
-    top: topShowAnimation,
-    middle: middleShowAnimation,
-    bottom: bottomShowAnimation,
-  };
-  const hideAnimation = {
-    top: topHideAnimation,
-    middle: middleHideAnimation,
-    bottom: bottomHideAnimation,
+  const animation = {
+    top: [topShowAnimation, topHideAnimation],
+    middle: [middleShowAnimation, middleHideAnimation],
+    bottom: [bottomShowAnimation, bottomHideAnimation],
   };
   let keyframes: Keyframes;
   if (type === "show") {
-    keyframes = showAnimation[position];
+    keyframes = animation[position][0];
   } else {
-    keyframes = hideAnimation[position];
+    keyframes = animation[position][1];
   }
 
   return {
     keyframes,
     animation: css({
-      animation: `${keyframes} 200ms ease`,
+      animation: `${keyframes} 300ms ease`,
     }),
   };
 }

@@ -58,7 +58,7 @@ export function Overlay(props: OverlayProps) {
       height: "100%",
       maxWidth: `${ctx.maxScreenWidth}px`,
       minWidth: `${ctx.minScreenWidth}px`,
-      backgroundColor: `rgba(0, 0, 0, .6)`,
+      backgroundColor: maskColor,
     });
   }
 
