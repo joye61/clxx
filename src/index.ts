@@ -16,6 +16,7 @@ export { Ago } from "./Ago";
 export { Container } from "./Container";
 export { Flex } from "./Flex";
 export {
+  Row,
   RowAround,
   RowBetween,
   RowCenter,
@@ -24,6 +25,7 @@ export {
   RowStart,
 } from "./Flex/Row";
 export {
+  Col,
   ColAround,
   ColBetween,
   ColCenter,
@@ -39,3 +41,5 @@ export { Clickable } from "./Clickable";
 export { Indicator } from "./Indicator";
 export { showLoading, showLoadingAtLeast } from "./Loading";
 export { SafeArea } from "./SafeArea";
+export { AutoGrid } from "./AutoGrid";
+export { showAlert } from "./Alert";

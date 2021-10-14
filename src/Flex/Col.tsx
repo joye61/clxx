@@ -86,3 +86,5 @@ export function ColEvenly(props: FlexProps) {
     />
   );
 }
+
+export { ColStart as Col };

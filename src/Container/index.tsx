@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";
 import { metaContent } from "./fn";
+import round from "lodash/round";
 
 export interface ContainerProps extends ContextValue {
   // 用户自定义的全局样式
@@ -52,7 +53,7 @@ export function Container(props: ContainerProps) {
       window.getComputedStyle(document.documentElement).fontSize
     );
     if (typeof computeSize === "number" && computeSize !== baseFontSize) {
-      setBaseFontSize(baseFontSize ** 2 / computeSize);
+      setBaseFontSize(round(baseFontSize ** 2 / computeSize, 1));
     }
   }, [baseFontSize]);
   // 字体更新时，同步更新缩放逻辑

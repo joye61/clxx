@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { ContextValue, getContextValue } from "../context";
-import { CSSObject } from "@emotion/serialize";
+import * as CSS from "csstype";
+import { CSSObject, CSSProperties } from "@emotion/serialize";
 /**
  * 匹配所有的CSS数值类型的值
  */
@@ -70,10 +71,6 @@ export function splitValue(
   throw new Error("Invalid numeric format");
 }
 
-type AdaptiveStyle = {
-  [key: string]: number | string;
-};
-
 /**
  * 生成自适应的样式，仅供库内部使用
  * 所有内部组件的默认设计尺寸约定为750
@@ -81,7 +78,7 @@ type AdaptiveStyle = {
  * @param style
  * @returns
  */
-export function adaptive(style: AdaptiveStyle) {
+export function adaptive(style: Record<string, number | string>) {
   const ctx = getContextValue() as ContextValue;
   const max: CSSObject = {};
   const min: CSSObject = {};

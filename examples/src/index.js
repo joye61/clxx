@@ -8,8 +8,8 @@ import { Container, setContextValue } from "@";
 
 const pageConfig = [
   { path: 'indicator', title: 'Indicator菊花转圈指示器', enable: true },
-  // { path: 'alert', title: 'showAlert弹框功能', enable: true },
   { path: "countdown", title: "Countdown倒计时", enable: true },
+  { path: 'alert', title: 'showAlert弹框功能', enable: true },
   { path: 'dialog', title: 'showDialog对话框', enable: true },
   // { path: 'layout', title: '常用布局组件', enable: false },
   { path: "toast", title: "showToast轻提示", enable: true },
@@ -20,7 +20,7 @@ const pageConfig = [
   { path: "overlay", title: "Overlay通用覆盖层", enable: true },
   { path: 'clickable', title: 'Clickable可触摸组件', enable: true },
   // { path: 'privacy', title: 'Privacy去标识化', enable: true },
-  // { path: 'autogrid', title: 'AutoGrid生成自动对齐的表格', enable: true },
+  { path: 'autogrid', title: 'AutoGrid生成自动对齐的表格', enable: true },
   // { path: 'image-picker', title: 'ImagePicker图片选择器', enable: true },
 ];
 

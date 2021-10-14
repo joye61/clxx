@@ -13,6 +13,7 @@ export const style = {
       content: "''",
       display: "block",
       height: 0,
+      // 这个属性是设置块为方形的关键
       paddingBottom: "100%",
     },
   }),

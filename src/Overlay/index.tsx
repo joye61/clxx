@@ -43,10 +43,10 @@ export function Overlay(props: OverlayProps) {
   if (fullScreen) {
     // 获取宽度
     let width = innerWidth;
-    if (width >= ctx.maxScreenWidth) {
-      width = ctx.maxScreenWidth;
-    } else if (width <= ctx.minScreenWidth) {
-      width = ctx.minScreenWidth;
+    if (width >= ctx.maxDocWidth) {
+      width = ctx.maxDocWidth;
+    } else if (width <= ctx.minDocWidth) {
+      width = ctx.minDocWidth;
     }
     style.push({
       zIndex: 9999,
@@ -56,8 +56,8 @@ export function Overlay(props: OverlayProps) {
       marginLeft: `-${width / 2}px`,
       width: `${width}px`,
       height: "100%",
-      maxWidth: `${ctx.maxScreenWidth}px`,
-      minWidth: `${ctx.minScreenWidth}px`,
+      maxWidth: `${ctx.maxDocWidth}px`,
+      minWidth: `${ctx.minDocWidth}px`,
       backgroundColor: maskColor,
     });
   }

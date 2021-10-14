@@ -14,7 +14,7 @@ export interface AutoGridOption
   // 容器的样式
   containerStyle?: Interpolation<Theme>;
   // 元素之间空白槽的宽度
-  gutter?: CSS.Property.Width;
+  gap?: CSS.Property.Width;
   // 列的数目
   cols?: number;
   // 是否显示正方形
@@ -31,7 +31,7 @@ export function AutoGrid(props: AutoGridOption) {
   let {
     children,
     cols = 1,
-    gutter = 0,
+    gap = 0,
     isSquare = false,
     itemStyle,
     containerStyle,
@@ -40,7 +40,7 @@ export function AutoGrid(props: AutoGridOption) {
 
   // 规范化数字单位
   cols = +cols;
-  gutter = normalizeUnit(gutter) as string;
+  gap = normalizeUnit(gap) as string;
 
   // 获取表格数据
   const getGridData = useCallback(() => {
@@ -61,8 +61,8 @@ export function AutoGrid(props: AutoGridOption) {
   const finalItemBoxStyle: Interpolation<Theme> = [
     style.itemBoxStyle,
     {
-      marginRight: gutter,
-      width: `calc((100% - ${cols - 1} * ${gutter}) / ${cols})`,
+      marginRight: gap,
+      width: `calc((100% - ${cols - 1} * ${gap}) / ${cols})`,
     },
   ];
 
@@ -77,7 +77,7 @@ export function AutoGrid(props: AutoGridOption) {
       if (rowIndex !== gridData.length - 1) {
         // 最后一行不需要marginBottom
         finalRowStyle.push({
-          marginBottom: gutter,
+          marginBottom: gap,
         });
       }
 
