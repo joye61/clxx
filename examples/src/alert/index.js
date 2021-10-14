@@ -10,7 +10,7 @@ export default function () {
             showAlert({
               title: "允许“车轮查违章”在您使用该应用时访问你的位置吗",
               description: "访问位置将查找定位信息",
-              showCancel: true,
+              // showCancel: true,
               onCancel() {
                 console.log("cancel");
               },
@@ -28,7 +28,8 @@ export default function () {
           onClick={() => {
             showAlert({
               title: "这是一个带取消的弹框",
-              showCancel: true,
+              confirm: "知道了"
+              // showCancel: true,
             });
           }}
         >

@@ -61,6 +61,7 @@ export const style: Record<string, Interpolation<Theme>> = {
           alignItems: "center",
           justifyContent: "center",
           userSelect: "none",
+          letterSpacing: "1px"
         },
         adaptive({
           fontSize: 32,
