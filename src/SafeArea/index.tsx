@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { Interpolation, jsx, Theme } from "@emotion/react";
-import { useEffect } from "react";
 
 export interface SafeAreaProps extends React.HTMLProps<HTMLDivElement> {
   children?: React.ReactNode;
@@ -11,30 +10,19 @@ export interface SafeAreaProps extends React.HTMLProps<HTMLDivElement> {
 export function SafeArea(props: SafeAreaProps) {
   const { children, type = "bottom", ...extra } = props;
 
-  useEffect(() => {
-    let meta: HTMLMetaElement | null = document.querySelector(
-      "meta[name='viewport']"
-    );
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "viewport";
-      meta.content = "width=device-width, initial-scale=1, viewport-fit=cover";
-      document.head.prepend(meta);
-    } else {
-      // 解析meta.content TODO
-    }
-  }, []);
-
   let boxCss: Interpolation<Theme>;
   if (type === "top") {
     boxCss = {
-      height: [`constant(safe-area-inset-top)`, `env(safe-area-inset-top)`],
+      height: [
+        `constant(safe-area-inset-top, 0)`,
+        `env(safe-area-inset-top, 0)`,
+      ],
     };
   } else if (type === "bottom") {
     boxCss = {
       height: [
-        `constant(safe-area-inset-bottom)`,
-        `env(safe-area-inset-bottom)`,
+        `constant(safe-area-inset-bottom, 0)`,
+        `env(safe-area-inset-bottom, 0)`,
       ],
     };
   }

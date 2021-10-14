@@ -7,7 +7,7 @@ import { Toast as ToastComponent, ToastProps } from "./Toast";
  * 显示一个全局的轻提示，这个toast不是唯一的
  * @param option 可以是一个字符串，也可以是一个React组件
  */
-export async function showToast(option: React.ReactNode | ToastProps) {
+export function showToast(option: React.ReactNode | ToastProps) {
   const { mount, destroy } = createPortalDOM();
   let props: ToastProps = {};
   if (React.isValidElement(option) || typeof option !== "object") {
@@ -16,8 +16,7 @@ export async function showToast(option: React.ReactNode | ToastProps) {
     props = option as ToastProps;
   }
   props.onHide = destroy;
-  await mount(<ToastComponent {...props} />);
-  return destroy;
+  mount(<ToastComponent {...props} />);
 }
 
 /**
@@ -25,7 +24,7 @@ export async function showToast(option: React.ReactNode | ToastProps) {
  * @param option
  */
 let portalDOM: PortalDOM | null = null;
-export async function showUniqToast(option: React.ReactNode | ToastProps) {
+export function showUniqToast(option: React.ReactNode | ToastProps) {
   if (!portalDOM) {
     portalDOM = createPortalDOM();
   }
@@ -42,6 +41,5 @@ export async function showUniqToast(option: React.ReactNode | ToastProps) {
     portalDOM = null;
   };
   props.onHide = onHide;
-  await portalDOM.mount(<ToastComponent {...props} key={uniqKey()} />);
-  return onHide;
+  portalDOM.mount(<ToastComponent {...props} key={uniqKey()} />);
 }

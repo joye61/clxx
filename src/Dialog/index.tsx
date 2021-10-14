@@ -19,7 +19,7 @@ export interface ShowDialogOption extends WrapperProps {
  * @param option
  * @returns
  */
-export async function showDialog(option: React.ReactNode | ShowDialogOption) {
+export function showDialog(option: React.ReactNode | ShowDialogOption) {
   const { mount, destroy } = createPortalDOM();
 
   // 生成全部配置
@@ -52,8 +52,11 @@ export async function showDialog(option: React.ReactNode | ShowDialogOption) {
   }
 
   // 挂载容器对象
-  await mount(<Wrapper {...props}>{children}</Wrapper>);
+  const amountShow = mount(<Wrapper {...props}>{children}</Wrapper>);
 
-  // 等待对话框挂载完成才能返回，防止提前调用关闭
-  return closeDialog;
+  return async () => {
+    // 关闭前确保容器已经被挂载
+    await amountShow;
+    await closeDialog();
+  };
 }

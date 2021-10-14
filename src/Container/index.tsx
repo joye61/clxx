@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { jsx, Global, css, Interpolation, Theme } from "@emotion/react";
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";
+import { metaContent } from "./fn";
 
 export interface ContainerProps extends ContextValue {
   // 用户自定义的全局样式
@@ -20,8 +21,8 @@ export function Container(props: ContainerProps) {
   // 获取环境变量
   const {
     designWidth = ctx.designWidth,
-    minScreenWidth = ctx.minScreenWidth,
-    maxScreenWidth = ctx.maxScreenWidth,
+    minDocWidth = ctx.minDocWidth,
+    maxDocWidth = ctx.maxDocWidth,
     style,
     children,
   } = props;
@@ -30,33 +31,51 @@ export function Container(props: ContainerProps) {
   const expectFontSize = useCallback(() => {
     const winWidth = window.innerWidth;
     let expectFontSize: number;
-    if (winWidth >= maxScreenWidth) {
-      expectFontSize = (maxScreenWidth * 100) / designWidth;
-    } else if (winWidth <= minScreenWidth) {
-      expectFontSize = (minScreenWidth * 100) / designWidth;
+    if (winWidth >= maxDocWidth) {
+      expectFontSize = (maxDocWidth * 100) / designWidth;
+    } else if (winWidth <= minDocWidth) {
+      expectFontSize = (minDocWidth * 100) / designWidth;
     } else {
       expectFontSize = (winWidth * 100) / designWidth;
     }
     return expectFontSize;
-  }, [designWidth, minScreenWidth, maxScreenWidth]);
+  }, [designWidth, minDocWidth, maxDocWidth]);
 
   // 基准字体尺寸
   const [baseFontSize, setBaseFontSize] = useState<number>(expectFontSize());
+  // 页面大小变化时，基准字体同步变化
+  useWindowResize(() => setBaseFontSize(() => expectFontSize()));
 
-  // 移除useLayoutEffect的依赖，保证只会被执行一次
-  const scaleRef = useRef<() => void>(() => {
+  // 字体缩放逻辑
+  const scaleFont = useCallback<() => void>(() => {
     let computeSize = parseFloat(
       window.getComputedStyle(document.documentElement).fontSize
     );
-
     if (typeof computeSize === "number" && computeSize !== baseFontSize) {
       setBaseFontSize(baseFontSize ** 2 / computeSize);
     }
-  });
+  }, [baseFontSize]);
+  // 字体更新时，同步更新缩放逻辑
+  useEffect(scaleFont, [scaleFont]);
 
-  // 防止UI突闪
-  useLayoutEffect(() => {
-    scaleRef.current();
+  // 一些页面的初始化逻辑
+  useEffect(() => {
+    // 确保viewport的合法逻辑
+    let meta: HTMLMetaElement | null = document.querySelector(
+      "meta[name='viewport']"
+    );
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "viewport";
+      document.head.prepend(meta);
+    }
+    meta.content = metaContent.stringify({
+      width: "device-width",
+      "initial-scale": ctx.initialScale,
+      "user-scalable": ctx.userScalable,
+      "viewport-fit": ctx.viewportFit,
+    });
+
     // 激活iOS上的:active
     const activable = () => {};
     document.body.addEventListener("touchstart", activable);
@@ -64,9 +83,6 @@ export function Container(props: ContainerProps) {
       document.body.removeEventListener("touchstart", activable);
     };
   }, []);
-
-  // 页面大小变化时，基准字体同步变化
-  useWindowResize(() => setBaseFontSize(() => expectFontSize()));
 
   return (
     <React.Fragment>
@@ -82,22 +98,21 @@ export function Container(props: ContainerProps) {
               WebkitTextSizeAdjust: "100%",
               fontSize: `${baseFontSize}px`,
               touchAction: "manipulation",
-              lineHeight: 1.15,
             },
             body: {
               fontSize: "16px",
               margin: "0 auto",
-              maxWidth: `${maxScreenWidth}px`,
-              minWidth: `${minScreenWidth}px`,
+              maxWidth: `${maxDocWidth}px`,
+              minWidth: `${minDocWidth}px`,
             },
-            [`@media (min-width: ${maxScreenWidth}px)`]: {
+            [`@media (min-width: ${maxDocWidth}px)`]: {
               html: {
-                fontSize: `${(100 * maxScreenWidth) / designWidth}px`,
+                fontSize: `${(100 * maxDocWidth) / designWidth}px`,
               },
             },
-            [`@media (max-width: ${minScreenWidth}px)`]: {
+            [`@media (max-width: ${minDocWidth}px)`]: {
               html: {
-                fontSize: `${(100 * minScreenWidth) / designWidth}px`,
+                fontSize: `${(100 * minDocWidth) / designWidth}px`,
               },
             },
           }),

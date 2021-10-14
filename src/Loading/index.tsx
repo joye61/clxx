@@ -10,7 +10,7 @@ import isPlainObject from "lodash/isPlainObject";
  * @param option
  * @returns
  */
-export async function showLoading(hint?: string, option?: LoadingWrapperProps) {
+export function showLoading(hint?: string, option?: LoadingWrapperProps) {
   const { mount, destroy } = createPortalDOM();
   let props: LoadingWrapperProps = { hint, status: "show" };
   if (isPlainObject(option)) {
@@ -26,10 +26,13 @@ export async function showLoading(hint?: string, option?: LoadingWrapperProps) {
   };
 
   // 显示loading
-  await mount(<Wrapper {...props} />);
+  const mountShow = mount(<Wrapper {...props} />);
 
   // 关闭loading
-  return closeLoading;
+  return async () => {
+    await mountShow;
+    await closeLoading();
+  };
 }
 
 /**
@@ -39,12 +42,12 @@ export async function showLoading(hint?: string, option?: LoadingWrapperProps) {
  * @param option 各种可定制的选项
  * @returns
  */
-export async function showLoadingAtLeast(
+export function showLoadingAtLeast(
   atLeast = 300,
   hint?: string,
   option?: LoadingWrapperProps
 ) {
-  const closeLoading = await showLoading(hint, option);
+  const closeLoading = showLoading(hint, option);
   // 记录开始展示的时间
   const start = Date.now();
 

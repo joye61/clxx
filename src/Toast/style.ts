@@ -1,6 +1,4 @@
 import { css, keyframes } from "@emotion/react";
-import { getContextValue } from "../context";
-import { ContextValue } from "../context";
 import { adaptive } from "../utils/cssUtil";
 import { Keyframes } from "@emotion/serialize";
 
@@ -99,20 +97,17 @@ export function getAnimation(
 
 export const style = {
   container() {
-    const ctx = getContextValue() as ContextValue;
-    return css({
-      position: "fixed",
-      left: "50%",
-      transform: "translateX(-50%)",
-      zIndex: 9999,
-      maxWidth: "80vw",
-      [`@media (min-width: ${ctx.maxScreenWidth}px)`]: {
-        maxWidth: `${ctx.maxScreenWidth * 0.8}px`,
+    return css(
+      {
+        position: "fixed",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 9999,
       },
-      [`@media (max-width: ${ctx.minScreenWidth}px)`]: {
-        maxWidth: `${ctx.minScreenWidth * 0.8}px`,
-      },
-    });
+      adaptive({
+        maxWidth: 600,
+      })
+    );
   },
 
   top(offset: number) {

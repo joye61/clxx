@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import { ContextValue, getContextValue } from "../context";
-import * as CSS from "csstype";
 import { CSSObject } from "@emotion/serialize";
 /**
  * 匹配所有的CSS数值类型的值
@@ -93,13 +92,13 @@ export function adaptive(style: AdaptiveStyle) {
       normal[name] = value;
     } else {
       normal[name] = (value * 100) / 750 + "vw";
-      max[name] = (value * ctx.maxScreenWidth) / 750 + "px";
-      min[name] = (value * ctx.minScreenWidth) / 750 + "px";
+      max[name] = (value * ctx.maxDocWidth) / 750 + "px";
+      min[name] = (value * ctx.minDocWidth) / 750 + "px";
     }
   }
   return css({
     ...normal,
-    [`@media (min-width: ${ctx.maxScreenWidth}px)`]: max,
-    [`@media (max-width: ${ctx.minScreenWidth}px)`]: min,
+    [`@media (min-width: ${ctx.maxDocWidth}px)`]: max,
+    [`@media (max-width: ${ctx.minDocWidth}px)`]: min,
   });
 }

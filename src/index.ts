@@ -38,3 +38,4 @@ export { showDialog } from "./Dialog";
 export { Clickable } from "./Clickable";
 export { Indicator } from "./Indicator";
 export { showLoading, showLoadingAtLeast } from "./Loading";
+export { SafeArea } from "./SafeArea";
