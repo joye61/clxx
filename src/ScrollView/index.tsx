@@ -67,9 +67,6 @@ export function ScrollView(props: ScrollViewProps) {
     heightStyle.height = height;
   }
 
-  // 是否显示loading
-  // const [loadingShow, setLoadingShow] = useState<boolean>(false);
-
   // 滚动容器
   const container = useRef<HTMLDivElement>(null);
 
@@ -77,23 +74,22 @@ export function ScrollView(props: ScrollViewProps) {
   const top = useRef<number>(0);
 
   const scrollCallback = (rawEvent: React.UIEvent<HTMLDivElement>) => {
-    // 滚动容器的子元素内容
-    const children = container.current!.children;
-    // 滚动内容总高度
-    const contentHeight = children.item(0)?.scrollHeight;
-    // loading高度
-    const loadingHeight = children.item(1)?.scrollHeight ?? 0;
-    // 容器高度
-    const containerHeight = container.current!.getBoundingClientRect().height;
-    // 最大滚动距离
-    const maxScroll = contentHeight! - containerHeight;
+    const box = container.current!;
     // 已经滚动的距离
-    const scrollTop = container.current!.scrollTop;
+    const scrollTop = box.scrollTop;
+    // 滚动容器的包含滚动内容的高度
+    const contentHeight = box.scrollHeight;
+    // 滚动容器的视口高度
+    const containerHeight = Math.min(box.clientHeight, box.offsetHeight);
+    // 加载指示的高度，如果加载指示不存在，则高度为0
+    const loadingHeight =
+      (box.children.item(1) as HTMLElement)?.offsetHeight ?? 0;
+    const maxScroll = contentHeight - containerHeight;
 
     // 生成滚动事件参数
     const event: ScrollEvent = {
       containerHeight,
-      contentHeight: contentHeight!,
+      contentHeight,
       maxScroll,
       scrollTop,
       direction: scrollTop > top.current ? "downward" : "upward",
@@ -126,7 +122,7 @@ export function ScrollView(props: ScrollViewProps) {
     if (!loadingContent) {
       showLoadingContent = (
         <RowCenter css={[style.loading, loadingStyle]}>
-          <Indicator barColor="#666" barCount={12} />
+          <Indicator barColor="#333" barCount={12} />
           <p>数据加载中...</p>
         </RowCenter>
       );

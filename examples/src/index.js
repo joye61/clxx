@@ -13,7 +13,7 @@ const pageConfig = [
   { path: 'dialog', title: 'showDialog对话框', enable: true },
   // { path: 'layout', title: '常用布局组件', enable: false },
   { path: "toast", title: "showToast轻提示", enable: true },
-  // { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
+  { path: 'carouse-notice', title: 'CarouseNotice轮播公告', enable: true },
   { path: 'loading', title: 'showLoading加载', enable: true },
   { path: 'scrollview', title: 'ScrollView滚动容器', enable: true },
   { path: "ago", title: "Ago多久以前", enable: true },

@@ -2,8 +2,8 @@
 import { jsx, Interpolation, css, Theme } from "@emotion/react";
 import * as CSS from "csstype";
 import { useState, useEffect } from "react";
+import useInterval from "../effect/useInterval";
 import { style, Bubble } from "./style";
-import { useInterval } from "react-use";
 
 export interface CarouselNoticeOption
   extends React.DetailedHTMLProps<

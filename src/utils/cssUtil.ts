@@ -78,13 +78,15 @@ export function splitValue(
  * @param style
  * @returns
  */
-export function adaptive(style: Record<string, number | string>) {
+export function adaptive(
+  style: Partial<Record<keyof CSSProperties, number | string>>
+) {
   const ctx = getContextValue() as ContextValue;
   const max: CSSObject = {};
   const min: CSSObject = {};
   const normal: CSSObject = {};
   for (let name in style) {
-    let value = style[name]!;
+    let value = style[name as keyof CSSProperties]!;
     if (typeof value !== "number") {
       normal[name] = value;
     } else {
