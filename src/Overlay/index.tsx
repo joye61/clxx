@@ -1,12 +1,16 @@
 /**@jsx jsx */
 import { jsx, ArrayInterpolation, Theme } from "@emotion/react";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { getContextValue } from "../context";
 import { ContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";
 
 export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
+  // 挂载元素的子元素
   children?: React.ReactNode;
+  // 挂载位置，是否挂载到外部
+  outside?: boolean;
   // 内容是否居中，默认居中
   centerContent?: boolean;
   // 是否全屏，默认全屏
@@ -23,13 +27,28 @@ export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
 export function Overlay(props: OverlayProps) {
   const {
     children,
+    outside = false,
     centerContent = true,
     fullScreen = true,
     maskColor = "rgba(0, 0, 0, .6)",
     ...extra
   } = props;
 
+  const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
+
+  useLayoutEffect(() => {
+    if (outside) {
+      const div = document.createElement("div");
+      document.body.appendChild(div);
+      setMount(div);
+
+      return () => {
+        ReactDOM.unmountComponentAtNode(div);
+        div.remove();
+      };
+    }
+  }, [outside]);
 
   // 页面大小变化时，innerWidth也会更新
   useWindowResize(() => {
@@ -71,9 +90,28 @@ export function Overlay(props: OverlayProps) {
     });
   }
 
-  return (
+  const content = (
     <div css={style} {...extra}>
       {children}
     </div>
   );
+
+  /**
+   * 如果是挂载到当前位置，直接返回
+   */
+  if (!outside) {
+    return content;
+  }
+
+  /**
+   * 如果是挂载到外部，但是挂载点还没准备好，返回空
+   */
+  if (!mount) {
+    return null;
+  }
+
+  /**
+   * 挂载到外部，且挂载点已经准备好
+   */
+  return ReactDOM.createPortal(content, mount);
 }

@@ -10,7 +10,7 @@ export default function () {
           showToast("一个简单的Toast轻提示");
         }}
       >
-        显示Toast
+        显示Toast，默认屏幕居中
       </button>
 
       <p>toast内容为可定制组件</p>
@@ -69,7 +69,7 @@ export default function () {
       >
         显示Toast
       </button>
-      <p>全局唯一的Toast,永不消失</p>
+      <p>全局唯一的顶部Toast,永不消失</p>
       <button
         onClick={() => {
           showUniqToast({

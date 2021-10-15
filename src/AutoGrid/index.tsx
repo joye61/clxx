@@ -5,11 +5,7 @@ import CSS from "csstype";
 import { style } from "./style";
 import { normalizeUnit } from "../utils/cssUtil";
 
-export interface AutoGridOption
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+export interface AutoGridOption extends React.HTMLProps<HTMLDivElement> {
   children?: React.ReactNode;
   // 容器的样式
   containerStyle?: Interpolation<Theme>;

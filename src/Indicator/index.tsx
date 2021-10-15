@@ -40,7 +40,7 @@ export function Indicator(props: IndicatorProps) {
     barHeight = 28,
     barColor = "#fff",
     barCount = 12,
-    duration = 500,
+    duration = 600,
     containerStyle,
     ...attributes
   } = props;

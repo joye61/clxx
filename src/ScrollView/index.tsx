@@ -3,7 +3,7 @@ import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import * as CSS from "csstype";
 import { useRef } from "react";
 import { Indicator } from "../Indicator";
-import { RowCenter } from "../Layout/Flex";
+import { RowCenter } from "../Flex/Row";
 import { style } from "./style";
 
 // 经过特别计算的滚动事件参数
@@ -17,13 +17,7 @@ export interface ScrollEvent {
 }
 
 export interface ScrollViewProps
-  extends Omit<
-    React.DetailedHTMLProps<
-      React.HTMLAttributes<HTMLDivElement>,
-      HTMLDivElement
-    >,
-    "onScroll"
-  > {
+  extends Omit<React.HTMLProps<HTMLDivElement>, "onScroll"> {
   // 滚动的内容
   children?: React.ReactNode;
   // 容器的高度，默认100%
@@ -132,7 +126,7 @@ export function ScrollView(props: ScrollViewProps) {
     if (!loadingContent) {
       showLoadingContent = (
         <RowCenter css={[style.loading, loadingStyle]}>
-          <Indicator barColor="#666" barCount={14} />
+          <Indicator barColor="#666" barCount={12} />
           <p>数据加载中...</p>
         </RowCenter>
       );

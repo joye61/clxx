@@ -28,8 +28,8 @@ export default function () {
           onClick={() => {
             showAlert({
               title: "这是一个带取消的弹框",
-              confirm: "知道了"
-              // showCancel: true,
+              confirm: "知道了",
+              showCancel: true,
             });
           }}
         >

@@ -51,27 +51,10 @@ export const style: Record<string, Interpolation<Theme>> = {
       marginTop: -45,
     }),
   ],
-  btnBox: [
-    {
-      position: "relative",
-      ">div": [
-        {
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          userSelect: "none",
-          letterSpacing: "1px"
-        },
-        adaptive({
-          fontSize: 32,
-        }),
-      ],
-    },
-    adaptive({
-      height: 84,
-    }),
-  ],
+  btnBox: adaptive({
+    position: "relative",
+    height: 83,
+  }),
   btnBoxWithCancel: {
     "&:after,&::after": {
       content: "''",
@@ -85,4 +68,17 @@ export const style: Record<string, Interpolation<Theme>> = {
       transform: `scale(${1 / devicePixelRatio}, 1)`,
     },
   },
+  btn: [
+    {
+      flex: 1,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      userSelect: "none",
+      letterSpacing: "1px",
+    },
+    adaptive({
+      fontSize: 32,
+    }),
+  ],
 };

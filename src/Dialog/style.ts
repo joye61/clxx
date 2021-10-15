@@ -149,7 +149,7 @@ export const style = {
     bottom: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   }),
   boxCss: css({
     zIndex: 2,

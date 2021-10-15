@@ -25,7 +25,7 @@ export default function () {
             });
           }}
         >
-          content普通弹框
+          普通弹框，没有遮罩，空白可关闭
         </button>
       </p>
       <p>
@@ -45,7 +45,7 @@ export default function () {
             });
           }}
         >
-          从底部上拉出
+          从底部上拉出，没有遮罩，空白可关闭
         </button>
       </p>
       <p>
@@ -61,7 +61,7 @@ export default function () {
             });
           }}
         >
-          从顶部下拉出
+          从顶部下拉出，有遮罩，空白不可关闭
         </button>
       </p>
       <p>
@@ -77,7 +77,7 @@ export default function () {
             });
           }}
         >
-          左侧往右侧拉出
+          左侧往右侧拉出，有遮罩，空白不可关闭
         </button>
       </p>
       <p>
@@ -93,7 +93,7 @@ export default function () {
             });
           }}
         >
-          右侧往左侧拉出
+          右侧往左侧拉出，有遮罩，空白不可关闭
         </button>
       </p>
     </div>

@@ -24,6 +24,13 @@ export interface AlertWrapperProps {
   onConfirm?: () => void;
   // 取消回调
   onCancel?: () => void;
+
+  // 可定制的样式
+  titleStyle?: Interpolation<Theme>;
+  descStyle?: Interpolation<Theme>;
+  btnStyle?: Interpolation<Theme>;
+  confirmStyle?: Interpolation<Theme>;
+  cancelStyle?: Interpolation<Theme>;
 }
 
 export function AlertWrapper(props: AlertWrapperProps) {
@@ -37,6 +44,13 @@ export function AlertWrapper(props: AlertWrapperProps) {
     showCancel = false,
     onConfirm,
     onCancel,
+
+    // 可定制的样式
+    titleStyle,
+    descStyle,
+    btnStyle,
+    cancelStyle,
+    confirmStyle,
   } = props;
 
   // 展示按钮组
@@ -49,15 +63,15 @@ export function AlertWrapper(props: AlertWrapperProps) {
     <div css={style.container}>
       <div css={style.content}>
         {/* 标题 */}
-        <div css={style.title}>{title}</div>
+        <div css={[style.title, titleStyle]}>{title}</div>
         {/* 内容 */}
-        {description && <div css={style.desc}>{description}</div>}
+        {description && <div css={[style.desc, descStyle]}>{description}</div>}
       </div>
       <Row alignItems="stretch" css={btnBoxCss}>
         {/* 取消按钮 */}
         {showCancel && (
           <Clickable
-            css={{ color: cancelColor }}
+            css={[style.btn, btnStyle, cancelStyle, { color: cancelColor }]}
             onClick={onCancel}
             activeStyle={{
               backgroundColor: `#c0c0c022`,
@@ -68,7 +82,7 @@ export function AlertWrapper(props: AlertWrapperProps) {
         )}
         {/* 确认按钮 */}
         <Clickable
-          css={{ color: confirmColor }}
+          css={[style.btn, btnStyle, confirmStyle, { color: confirmColor }]}
           onClick={onConfirm}
           activeStyle={{
             backgroundColor: `#c0c0c022`,
