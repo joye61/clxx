@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import { ContextValue, getContextValue } from "../context";
-import * as CSS from "csstype";
 import { CSSObject, CSSProperties } from "@emotion/serialize";
 /**
  * 匹配所有的CSS数值类型的值
