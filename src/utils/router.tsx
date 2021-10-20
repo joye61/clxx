@@ -81,7 +81,9 @@ export function createAppWithRouter(
           pathname = defaultRoute.replace(pathReg, "");
         }
         // 如果有loading，要先显示loading
-        setPage(renderLoading?.(pathname));
+        if(typeof renderLoading === "function") {
+          setPage(renderLoading?.(pathname));
+        }
         // 加载页面之前可能会存在的逻辑
         await onBeforeLoadPage?.(pathname);
         // 加载并显示页面
