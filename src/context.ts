@@ -1,6 +1,4 @@
 export interface ContextValue {
-  // 设计稿尺寸
-  designWidth: number;
   // 最大文档尺寸
   maxDocWidth: number;
   // 最小文档尺寸
@@ -14,7 +12,6 @@ export interface ContextValue {
 }
 
 let context: ContextValue = {
-  designWidth: 750,
   maxDocWidth: 576,
   minDocWidth: 312,
   initialScale: 1,

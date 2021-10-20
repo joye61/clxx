@@ -11,6 +11,8 @@ export interface ContainerProps extends ContextValue {
   style?: Interpolation<Theme>;
   // 容器包裹的子元素
   children?: React.ReactNode;
+  // 设计尺寸
+  designWidth?: number;
 }
 
 /**
@@ -21,7 +23,7 @@ export function Container(props: ContainerProps) {
   const ctx = getContextValue() as ContextValue;
   // 获取环境变量
   const {
-    designWidth = ctx.designWidth,
+    designWidth = 750,
     minDocWidth = ctx.minDocWidth,
     maxDocWidth = ctx.maxDocWidth,
     style,
@@ -49,9 +51,7 @@ export function Container(props: ContainerProps) {
 
   // 字体缩放逻辑
   const scaleFont = useCallback<() => void>(() => {
-    let computeSize = parseFloat(
-      window.getComputedStyle(document.documentElement).fontSize
-    );
+    let computeSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
     if (typeof computeSize === "number" && computeSize !== baseFontSize) {
       setBaseFontSize(round(baseFontSize ** 2 / computeSize, 1));
     }
@@ -62,9 +62,7 @@ export function Container(props: ContainerProps) {
   // 一些页面的初始化逻辑
   useEffect(() => {
     // 确保viewport的合法逻辑
-    let meta: HTMLMetaElement | null = document.querySelector(
-      "meta[name='viewport']"
-    );
+    let meta: HTMLMetaElement | null = document.querySelector("meta[name='viewport']");
     if (!meta) {
       meta = document.createElement("meta");
       meta.name = "viewport";
