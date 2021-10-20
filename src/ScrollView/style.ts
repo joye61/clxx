@@ -1,12 +1,12 @@
-import { css, Interpolation, Theme } from "@emotion/react";
+import { Interpolation, Theme } from "@emotion/react";
 import { adaptive } from "../utils/cssUtil";
 
 export const style: Record<string, Interpolation<Theme>> = {
-  container: css({
+  container: {
     overflow: "auto",
     height: "100%",
     WebkitOverflowScrolling: "touch",
-  }),
+  },
   loading: [
     adaptive({
       paddingTop: 15,

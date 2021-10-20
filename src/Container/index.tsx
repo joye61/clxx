@@ -3,10 +3,10 @@ import { jsx, Global, css, Interpolation, Theme } from "@emotion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";
-import { metaContent } from "./fn";
 import round from "lodash/round";
+import { useViewport } from "../effect/useViewport";
 
-export interface ContainerProps extends ContextValue {
+export interface ContainerProps {
   // 用户自定义的全局样式
   style?: Interpolation<Theme>;
   // 容器包裹的子元素
@@ -20,15 +20,10 @@ export interface ContainerProps extends ContextValue {
  * @param props
  */
 export function Container(props: ContainerProps) {
-  const ctx = getContextValue() as ContextValue;
+  // 来自全局的环境变量
+  const { minDocWidth, maxDocWidth } = getContextValue() as ContextValue;
   // 获取环境变量
-  const {
-    designWidth = 750,
-    minDocWidth = ctx.minDocWidth,
-    maxDocWidth = ctx.maxDocWidth,
-    style,
-    children,
-  } = props;
+  const { designWidth = 750, style, children } = props;
 
   // 获取期待的根字体尺寸，采用rem布局
   const expectFontSize = useCallback(() => {
@@ -59,22 +54,11 @@ export function Container(props: ContainerProps) {
   // 字体更新时，同步更新缩放逻辑
   useEffect(scaleFont, [scaleFont]);
 
+  // 设置meta, 确保viewport的合法逻辑
+  useViewport();
+
   // 一些页面的初始化逻辑
   useEffect(() => {
-    // 确保viewport的合法逻辑
-    let meta: HTMLMetaElement | null = document.querySelector("meta[name='viewport']");
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "viewport";
-      document.head.prepend(meta);
-    }
-    meta.content = metaContent.stringify({
-      width: "device-width",
-      "initial-scale": ctx.initialScale,
-      "user-scalable": ctx.userScalable,
-      "viewport-fit": ctx.viewportFit,
-    });
-
     // 激活iOS上的:active
     const activable = () => {};
     document.body.addEventListener("touchstart", activable);

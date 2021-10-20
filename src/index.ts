@@ -11,28 +11,13 @@ export { defaultScroll } from "./utils/defaultScroll";
 export { is } from "./utils/is";
 export { waitFor, waitUntil } from "./utils/wait";
 export { normalizeUnit, splitValue } from "./utils/cssUtil";
+export { createAppWithRouter } from "./utils/router";
 
 export { Ago } from "./Ago";
 export { Container } from "./Container";
 export { Flex } from "./Flex";
-export {
-  Row,
-  RowAround,
-  RowBetween,
-  RowCenter,
-  RowEnd,
-  RowEvenly,
-  RowStart,
-} from "./Flex/Row";
-export {
-  Col,
-  ColAround,
-  ColBetween,
-  ColCenter,
-  ColEnd,
-  ColEvenly,
-  ColStart,
-} from "./Flex/Col";
+export { Row, RowAround, RowBetween, RowCenter, RowEnd, RowEvenly, RowStart } from "./Flex/Row";
+export { Col, ColAround, ColBetween, ColCenter, ColEnd, ColEvenly, ColStart } from "./Flex/Col";
 export { Countdowner } from "./Countdowner";
 export { Overlay } from "./Overlay";
 export { showToast, showUniqToast } from "./Toast";

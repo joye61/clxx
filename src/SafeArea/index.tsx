@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { Interpolation, jsx, Theme } from "@emotion/react";
+import { useViewport } from "../effect/useViewport";
 
 export interface SafeAreaProps extends React.HTMLProps<HTMLDivElement> {
   children?: React.ReactNode;
@@ -9,6 +10,8 @@ export interface SafeAreaProps extends React.HTMLProps<HTMLDivElement> {
 
 export function SafeArea(props: SafeAreaProps) {
   const { children, type = "bottom", ...extra } = props;
+
+  useViewport({viewportFit: "cover"});
 
   let boxCss: Interpolation<Theme>;
   if (type === "top") {

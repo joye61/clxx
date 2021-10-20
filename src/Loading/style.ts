@@ -1,4 +1,4 @@
-import { css, keyframes } from "@emotion/react";
+import { Interpolation, keyframes, Theme } from "@emotion/react";
 import { adaptive } from "../utils/cssUtil";
 
 export const LoadingShow = keyframes`
@@ -18,7 +18,7 @@ export const LoadingHide = keyframes`
   }
 `;
 
-export const style = {
+export const style: Record<string, Interpolation<Theme>> = {
   boxCommon: adaptive({
     backgroundColor: `rgba(0, 0, 0, .8)`,
     borderRadius: 16,
@@ -27,18 +27,21 @@ export const style = {
     width: 160,
     height: 160,
   }),
-  boxShow: css({
+  boxShow: {
     animation: `${LoadingShow} 200ms`,
-  }),
-  boxHide: css({
+  },
+  boxHide: {
     animation: `${LoadingHide} 200ms`,
-  }),
-  boxWithExtra: css(adaptive({ padding: 30 }), {
-    "> div:first-of-type": adaptive({
-      width: 48,
-      height: 48,
-    }),
-  }),
+  },
+  boxWithExtra: [
+    adaptive({ padding: 30 }),
+    {
+      "> div:first-of-type": adaptive({
+        width: 48,
+        height: 48,
+      }),
+    },
+  ],
   hint: adaptive({
     color: "#f5f5f5dd",
     whiteSpace: "nowrap",
