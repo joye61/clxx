@@ -3,20 +3,11 @@ export interface ContextValue {
   maxDocWidth: number;
   // 最小文档尺寸
   minDocWidth: number;
-  // 是否可缩放
-  userScalable: "yes" | "no";
-  // 初始缩放比例
-  initialScale: number;
-  // 视口匹配
-  viewportFit: "cover" | "contain" | "auto";
 }
 
 let context: ContextValue = {
   maxDocWidth: 576,
   minDocWidth: 312,
-  initialScale: 1,
-  userScalable: "no",
-  viewportFit: "cover",
 };
 
 /**

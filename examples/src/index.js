@@ -1,7 +1,6 @@
 import "./index.scss";
 import React from "react";
-import { history } from "./env";
-import { createApp } from "@";
+import { createApp, history } from "@";
 import Home from "./index/index";
 
 createApp({

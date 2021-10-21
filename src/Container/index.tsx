@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Global, css, Interpolation, Theme } from "@emotion/react";
+import { jsx, Global, Interpolation, Theme } from "@emotion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../effect/useWindowResize";

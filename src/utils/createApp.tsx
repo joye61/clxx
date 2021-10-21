@@ -8,11 +8,13 @@ import {
   State,
 } from "history";
 import { Container, ContainerProps } from "../Container";
+import { ContextValue, setContextValue } from "../context";
+import pick from "lodash/pick";
 
 export type RouteMethod = "browser" | "hash" | "memory";
 export type AwaitValue<T> = T | Promise<T>;
 
-export interface CreateAppOption extends Omit<ContainerProps, "children"> {
+export interface CreateAppOption extends Omit<ContainerProps, "children">, ContextValue {
   // 加载页面组件之前触发的钩子函数
   onBeforeRenderPage?: (pathname?: string) => AwaitValue<void>;
   // 加载页面组件之后触发的钩子函数
@@ -61,6 +63,14 @@ export async function createApp(option: CreateAppOption) {
   // 这里是为了确保历史记录对象在组件渲染之前一定存在
   history = getHistory();
 
+  // 提取关键数据
+  const context: ContextValue = pick(option, ["minDocWidth", "maxDocWidth"]);
+  const containerProps: ContainerProps = pick(option, ["designWidth", "globalStyle"]);
+  const { onBeforeRenderPage, onAfterRenderPage, renderLoading, renderPage } = option;
+
+  // 设置上下文属性
+  setContextValue(context);
+
   /**
    * 全局APP组件对象
    * @returns
@@ -71,9 +81,7 @@ export async function createApp(option: CreateAppOption) {
     /**
      * 渲染一个新页面
      */
-    const renderPage = useCallback(async (pathname: string) => {
-      const { onBeforeRenderPage, onAfterRenderPage, renderLoading, renderPage } = option;
-
+    const showPage = useCallback(async (pathname: string) => {
       const pathReg = /^\/*|\/*$/g;
       pathname = pathname.replace(pathReg, "");
       if (!pathname) {
@@ -98,20 +106,16 @@ export async function createApp(option: CreateAppOption) {
     useEffect(() => {
       // 监听页面变化，一旦变化渲染新页面
       const unlisten = history!.listen(({ location }) => {
-        renderPage(location.pathname);
+        showPage(location.pathname);
       });
       // 初始化时渲染一个页面
-      renderPage(history!.location.pathname);
+      showPage(history!.location.pathname);
 
       // 卸载时，取消监听
       return unlisten;
     }, []);
 
-    return (
-      <Container designWidth={option.designWidth} globalStyle={option.globalStyle}>
-        {page}
-      </Container>
-    );
+    return <Container {...containerProps}>{page}</Container>;
   };
 
   // 获取挂载对象
