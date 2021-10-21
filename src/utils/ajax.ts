@@ -164,10 +164,10 @@ export async function POST<ResponseData = any>(
 
 /**
  * 发送原始JSON对象到远端
- * @param url 
- * @param data 
- * @param option 
- * @returns 
+ * @param url
+ * @param data
+ * @param option
+ * @returns
  */
 export async function sendJSON<ResponseData = any>(
   url: string,
@@ -187,8 +187,7 @@ export async function sendJSON<ResponseData = any>(
   if (typeof option.headers !== "object") {
     option.headers = {};
   }
-  (option.headers as Record<string, string>)["Content-Type"] =
-    "application/json";
+  (option.headers as Record<string, string>)["Content-Type"] = "application/json";
   option.method = "POST";
   option.body = JSON.stringify(data);
 

@@ -11,7 +11,7 @@ export { defaultScroll } from "./utils/defaultScroll";
 export { is } from "./utils/is";
 export { waitFor, waitUntil } from "./utils/wait";
 export { normalizeUnit, splitValue } from "./utils/cssUtil";
-export { createAppWithRouter } from "./utils/router";
+export { createApp, history, getHistory } from "./utils/createApp";
 
 export { Ago } from "./Ago";
 export { Container } from "./Container";

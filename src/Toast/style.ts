@@ -1,6 +1,6 @@
-import { css, keyframes, Theme } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { adaptive } from "../utils/cssUtil";
-import { Interpolation, Keyframes } from "@emotion/serialize";
+import { Keyframes } from "@emotion/serialize";
 
 export const middleShowAnimation = keyframes`
   from {
@@ -92,10 +92,7 @@ export function getAnimation(position: "top" | "middle" | "bottom", type: "show"
   };
 }
 
-export const style: Record<
-  string,
-  Interpolation<Theme> | ((...params: any[]) => Interpolation<Theme>)
-> = {
+export const style = {
   container() {
     return css(
       {
@@ -113,7 +110,7 @@ export const style: Record<
   top(offset: number) {
     return adaptive({ top: offset });
   },
-  middle: { top: "50%" },
+  middle: css({ top: "50%" }),
   bottom(offset: number) {
     return adaptive({ bottom: offset });
   },

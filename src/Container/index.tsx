@@ -8,7 +8,7 @@ import { useViewport } from "../effect/useViewport";
 
 export interface ContainerProps {
   // 用户自定义的全局样式
-  style?: Interpolation<Theme>;
+  globalStyle?: Interpolation<Theme>;
   // 容器包裹的子元素
   children?: React.ReactNode;
   // 设计尺寸
@@ -23,7 +23,7 @@ export function Container(props: ContainerProps) {
   // 来自全局的环境变量
   const { minDocWidth, maxDocWidth } = getContextValue() as ContextValue;
   // 获取环境变量
-  const { designWidth = 750, style, children } = props;
+  const { designWidth = 750, globalStyle, children } = props;
 
   // 获取期待的根字体尺寸，采用rem布局
   const expectFontSize = useCallback(() => {
@@ -71,7 +71,7 @@ export function Container(props: ContainerProps) {
     <React.Fragment>
       <Global
         styles={[
-          css({
+          {
             "*": {
               boxSizing: "border-box",
             },
@@ -98,8 +98,8 @@ export function Container(props: ContainerProps) {
                 fontSize: `${(100 * minDocWidth) / designWidth}px`,
               },
             },
-          }),
-          style,
+          },
+          globalStyle,
         ]}
       />
       {children}

@@ -94,8 +94,6 @@ export function useViewport(attr?: Partial<ViewportAttr>) {
     }
 
     meta.content = metaContent.stringify(content);
-
-    console.log(content, meta.content);
   }, [
     config.width,
     config.height,
