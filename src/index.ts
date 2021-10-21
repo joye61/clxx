@@ -4,7 +4,7 @@ export { setContextValue, getContextValue } from "./context";
 export { jsonp } from "./utils/jsonp";
 export { uniqKey } from "./utils/uniqKey";
 export { ago } from "./utils/ago";
-export { GET, POST } from "./utils/ajax";
+export { GET, POST, sendJSON } from "./utils/ajax";
 export { calendarTable } from "./utils/calendarTable";
 export { Countdown } from "./utils/Countdown";
 export { defaultScroll } from "./utils/defaultScroll";
