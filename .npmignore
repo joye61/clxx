@@ -2,7 +2,6 @@
 /examples/
 /.vscode/
 node_modules/
-/assets/
 tsconfig.json
 package-lock.json
 /.npmignore
