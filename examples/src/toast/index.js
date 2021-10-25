@@ -1,7 +1,7 @@
 import React from "react";
 import { showToast, showUniqToast } from "@";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>toast内容为纯文本</p>

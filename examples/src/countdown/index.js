@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Countdown, Countdowner } from "@";
 
-export default function () {
+export default function Index () {
   const [show1, setShow1] = useState("");
   const [show2, setShow2] = useState("");
   const [show2Closed, setShow2Close] = useState(false);

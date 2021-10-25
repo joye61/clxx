@@ -1,7 +1,7 @@
 import React from 'react';
 import { CarouselNotice } from '@';
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>轮播条目只有一条（不滚动）：</p>

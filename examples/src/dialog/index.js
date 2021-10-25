@@ -2,7 +2,7 @@ import React from "react";
 import { showDialog, RowCenter } from "@";
 import style from "./index.module.scss";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>

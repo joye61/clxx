@@ -2,7 +2,7 @@ import "./index.scss";
 import React from "react";
 import { AutoGrid } from "@";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>简单测试</p>

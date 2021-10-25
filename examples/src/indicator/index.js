@@ -1,7 +1,7 @@
 import React from "react";
 import { Indicator } from "@";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>常规圆角条</p>

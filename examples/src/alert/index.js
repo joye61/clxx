@@ -1,7 +1,7 @@
 import React from "react";
 import { showAlert, RowCenter } from "@";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>

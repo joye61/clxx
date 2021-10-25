@@ -2,7 +2,7 @@ import './index.scss';
 import React from 'react';
 import { Clickable } from '@';
 
-export default function () {
+export default function Index () {
   return (
     <div className="Touchable">
       <Clickable className="btntest">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Ago } from '@';
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>2019-11-2</p>

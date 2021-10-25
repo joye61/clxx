@@ -1,7 +1,7 @@
-import { Overlay, SafeArea } from "@";
+import { Overlay } from "@";
 import { useState } from "react";
 
-export default function () {
+export default function Index () {
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
 

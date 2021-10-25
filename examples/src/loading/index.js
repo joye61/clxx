@@ -1,7 +1,7 @@
 import React from "react";
 import { showLoading, showLoadingAtLeast } from "@";
 
-export default function () {
+export default function Index () {
   return (
     <div>
       <p>普通加载(5秒后自动关闭)</p>

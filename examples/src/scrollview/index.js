@@ -2,7 +2,7 @@ import "./index.scss";
 import React, { useRef, useState } from "react";
 import { ScrollView } from "@";
 
-export default function () {
+export default function Index () {
   const [list, setList] = useState([1]);
   const isLoading = useRef(false);
   const [showLoading, setShowLoading] = useState(true);
