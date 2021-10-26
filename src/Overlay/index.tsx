@@ -1,6 +1,6 @@
 /**@jsx jsx */
 import { jsx, ArrayInterpolation, Theme } from "@emotion/react";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { getContextValue } from "../context";
 import { ContextValue } from "../context";
@@ -37,6 +37,14 @@ export function Overlay(props: OverlayProps) {
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
 
+  // 这里是为了修复一个非挂载状态触发resize事件的bug
+  const isUnmount = useRef<boolean | null>(false);
+  useEffect(() => {
+    return () => {
+      isUnmount.current = true;
+    };
+  }, []);
+
   useLayoutEffect(() => {
     if (outside) {
       const div = document.createElement("div");
@@ -52,7 +60,9 @@ export function Overlay(props: OverlayProps) {
 
   // 页面大小变化时，innerWidth也会更新
   useWindowResize(() => {
-    setInnerWidth(window.innerWidth);
+    if (!isUnmount.current) {
+      setInnerWidth(window.innerWidth);
+    }
   });
 
   const ctx = getContextValue() as ContextValue;
