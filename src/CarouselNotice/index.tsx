@@ -2,14 +2,11 @@
 import { jsx, Interpolation, css, Theme } from "@emotion/react";
 import * as CSS from "csstype";
 import { useState, useEffect } from "react";
-import useInterval from "../effect/useInterval";
+import { useInterval } from "../effect/useInterval";
 import { style, Bubble } from "./style";
 
 export interface CarouselNoticeOption
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   // 需要滚动的列表
   list: Array<React.ReactNode>;
   // 滚动容器的宽度
@@ -151,10 +148,7 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     Array.isArray(list) &&
     list.length > 0 && (
       <div {...attrs} css={[style.box, { width, height }, containerStyle]}>
-        <div
-          onAnimationEnd={animationEnd}
-          css={[style.wrapper, getAnimation(), wrapperStyle]}
-        >
+        <div onAnimationEnd={animationEnd} css={[style.wrapper, getAnimation(), wrapperStyle]}>
           {showContent()}
         </div>
       </div>

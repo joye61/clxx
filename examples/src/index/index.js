@@ -22,25 +22,27 @@ const pageConfig = [
 
 export default function Index() {
   return (
-    <ul className="Home">
-      {pageConfig.map((item) => {
-        return (
-          <li
-            className={item.enable ? "item" : "item-disable"}
-            key={item.path}
-            onClick={() => {
-              if (item.enable) {
-                history.push(`/${item.path}`);
-              }
-            }}
-          >
-            {item.title}
-            <svg viewBox="0 0 1024 1024">
-              <path d="M347.687 144.188l-52.761 52.238 313.928 316.082-316.568 313.42 52.314 52.673 369.322-365.663z" />
-            </svg>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <ul className="Home">
+        {pageConfig.map((item) => {
+          return (
+            <li
+              className={item.enable ? "item" : "item-disable"}
+              key={item.path}
+              onClick={() => {
+                if (item.enable) {
+                  history.push(`/${item.path}`);
+                }
+              }}
+            >
+              {item.title}
+              <svg viewBox="0 0 1024 1024">
+                <path d="M347.687 144.188l-52.761 52.238 313.928 316.082-316.568 313.42 52.314 52.673 369.322-365.663z" />
+              </svg>
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }

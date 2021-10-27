@@ -10,6 +10,6 @@ export function useTick(frame: () => void) {
   const framer = useRef(frame);
   framer.current = frame;
   useEffect(() => {
-    return tick(framer.current);
+    return tick(() => framer.current());
   }, []);
 }

@@ -10,15 +10,17 @@ export function useWindowResize(onResize: () => void) {
   resizeRef.current = onResize;
 
   useEffect(() => {
-    window.addEventListener("resize", resizeRef.current);
+    const callback = () => resizeRef.current();
+
+    window.addEventListener("resize", callback);
     if (window.onorientationchange !== undefined) {
-      window.addEventListener("orientationchange", resizeRef.current);
+      window.addEventListener("orientationchange", callback);
     }
 
     return () => {
-      window.removeEventListener("resize", resizeRef.current);
+      window.removeEventListener("resize", callback);
       if (window.onorientationchange !== undefined) {
-        window.removeEventListener("orientationchange", resizeRef.current);
+        window.removeEventListener("orientationchange", callback);
       }
     };
   }, []);
