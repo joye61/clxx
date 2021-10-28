@@ -89,12 +89,12 @@ export function Wrapper(props: PickerWrapperProps) {
     if (showTitle) {
       const option = options[index];
       if (typeof renderTitle === "function") {
-        return renderTitle(option, index);
+        return <div css={style.title}>{renderTitle(option, index)}</div>;
       } else {
         return (
           <Col css={style.title}>
-            <span>当前选择</span>
-            <span>{option.label}</span>
+            <span css={style.titleLabel}>当前选择</span>
+            <span css={style.titleContent}>{option.label}</span>
           </Col>
         );
       }
@@ -134,8 +134,12 @@ export function Wrapper(props: PickerWrapperProps) {
       {/* 头部 */}
       <RowBetween css={style.header}>
         {showTitleContent()}
-        <Clickable onClick={onCancel}>{showCancel()}</Clickable>
-        <Clickable onClick={() => onConfirm?.(options[index], index)}>{showConfirm()}</Clickable>
+        <Clickable css={style.btnBox} onClick={onCancel}>
+          {showCancel()}
+        </Clickable>
+        <Clickable css={style.btnBox} onClick={() => onConfirm?.(options[index], index)}>
+          {showConfirm()}
+        </Clickable>
       </RowBetween>
       {/* 滚动部分 */}
       <div css={[swiperStyle, style.body]}>

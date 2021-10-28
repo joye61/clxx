@@ -32,7 +32,6 @@ export const style: Record<string, Interpolation<Theme>> = {
     {
       position: "relative",
       backgroundColor: "#fafafa",
-      zIndex: 2,
       "&:after,&::after": {
         bottom: 0,
       },
@@ -48,27 +47,30 @@ export const style: Record<string, Interpolation<Theme>> = {
     top: "50%",
     transform: "translate(-50%, -50%)",
     zIndex: 1,
-    "span:nth-of-type(1)": [
-      {
-        color: "#666",
-        lineHeight: 1,
-      },
-      adaptive({
-        fontSize: 20,
-        marginBottom: 5,
-      }),
-    ],
-    "span:nth-of-type(2)": [
-      {
-        color: "#333",
-        lineHeight: 1,
-      },
-      adaptive({
-        fontSize: 28,
-      }),
-    ],
   },
+  titleLabel: [
+    {
+      color: "#666",
+      lineHeight: 1,
+    },
+    adaptive({
+      fontSize: 20,
+      marginBottom: 5,
+    }),
+  ],
+  titleContent: [
+    {
+      color: "#333",
+      lineHeight: 1,
+    },
+    adaptive({
+      fontSize: 28,
+    }),
+  ],
 
+  btnBox: {
+    zIndex: 2,
+  },
   btn: [
     { textAlign: "center", lineHeight: 2 },
     adaptive({
