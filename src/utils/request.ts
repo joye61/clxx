@@ -254,7 +254,7 @@ export function parseRequestOption(option: RequestOption) {
  */
 export async function sendRequest<T = StandardAjaxResult>(option: RequestOption) {
   const { url, fetchOption, timeout } = parseRequestOption(option);
-  return await Promise.race([
+  return Promise.race([
     // 网络请求
     fetch(url, fetchOption)
       .then((response) => {
@@ -274,7 +274,7 @@ export async function sendRequest<T = StandardAjaxResult>(option: RequestOption)
     new Promise<StandardAjaxResult>((resolve) => {
       window.setTimeout(() => {
         const result: StandardAjaxResult = {
-          code: -10000,
+          code: -10001,
           message: "Network request timeout",
         };
         resolve(result);
@@ -320,7 +320,7 @@ export async function GET<T = StandardAjaxResult>(
   data: SendDataType,
   option?: RequestOption
 ) {
-  return sugarSend("normal", url, data, option);
+  return sugarSend<T>("normal", url, data, option);
 }
 
 /**
