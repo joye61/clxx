@@ -53,6 +53,13 @@ export function AlertWrapper(props: AlertWrapperProps) {
     confirmStyle,
   } = props;
 
+  // 标题样式
+  let titleCss: Interpolation<Theme> = [style.title];
+  if (description) {
+    titleCss.push({ paddingBottom: 0 });
+  }
+  titleCss.push(titleStyle);
+
   // 展示按钮组
   let btnBoxCss: Interpolation<Theme> = [style.btnBox];
   if (showCancel) {
@@ -63,8 +70,8 @@ export function AlertWrapper(props: AlertWrapperProps) {
     <div css={style.container}>
       <div css={style.content}>
         {/* 标题 */}
-        <div css={[style.title, titleStyle]}>{title}</div>
-        {/* 内容 */}
+        <div css={titleCss}>{title}</div>
+        {/* 描述 */}
         {description && <div css={[style.desc, descStyle]}>{description}</div>}
       </div>
       <Row alignItems="stretch" css={btnBoxCss}>

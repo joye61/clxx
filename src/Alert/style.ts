@@ -10,7 +10,7 @@ export const style: Record<string, Interpolation<Theme>> = {
     },
     adaptive({
       borderRadius: 16,
-      width: 750 * 0.8,
+      width: 750 * 0.84,
     }),
   ],
 
@@ -32,11 +32,13 @@ export const style: Record<string, Interpolation<Theme>> = {
       textAlign: "center",
       lineHeight: 1.4,
       color: "#000",
-      // fontWeight: "bold",
     },
     adaptive({
-      padding: 30,
-      fontSize: 32,
+      paddingTop: 50,
+      paddingLeft: 40,
+      paddingRight: 40,
+      paddingBottom: 50,
+      fontSize: 33,
     }),
   ],
   desc: [
@@ -46,14 +48,16 @@ export const style: Record<string, Interpolation<Theme>> = {
       color: "#666",
     },
     adaptive({
-      padding: 30,
-      fontSize: 28,
-      marginTop: -45,
+      paddingTop: 20,
+      paddingLeft: 40,
+      paddingRight: 40,
+      paddingBottom: 50,
+      fontSize: 29,
     }),
   ],
   btnBox: adaptive({
     position: "relative",
-    height: 83,
+    height: 90,
   }),
   btnBoxWithCancel: {
     "&:after,&::after": {
@@ -78,7 +82,7 @@ export const style: Record<string, Interpolation<Theme>> = {
       letterSpacing: "1px",
     },
     adaptive({
-      fontSize: 32,
+      fontSize: 33,
     }),
   ],
 };
