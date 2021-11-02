@@ -7,6 +7,7 @@ export const style: Record<string, Interpolation<Theme>> = {
       position: "relative",
       overflow: "hidden",
       backgroundColor: "#fff",
+      boxShadow: "0 0 2px 0 #00000055",
     },
     adaptive({
       borderRadius: 16,
