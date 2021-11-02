@@ -17,7 +17,7 @@ export interface ToastProps
   offsetBottom?: number;
   // toast持续时间
   duration?: number;
-  // 默认toast是否圆角
+  // 默认圆角值
   radius?: number;
   // 容器样式
   containerStyle?: Interpolation<Theme>;

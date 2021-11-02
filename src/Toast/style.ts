@@ -118,7 +118,7 @@ export const style = {
     return css(
       {
         position: "relative",
-        backgroundColor: "rgba(0, 0, 0, .7)",
+        backgroundColor: "rgba(0, 0, 0, .8)",
         color: "#fff",
         margin: 0,
         whiteSpace: "nowrap",
