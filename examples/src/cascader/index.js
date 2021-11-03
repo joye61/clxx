@@ -43,6 +43,9 @@ export default function Index() {
       <p>2、组件式调用，默认通过click事件触发</p>
       <Cascader
         defaultValue={["anhui", "huangshan", "shexian", "shendu"]}
+        onClick={() => {
+          console.log("点击");
+        }}
         onSelect={(value) => {
           console.log("selectChange", value);
         }}
