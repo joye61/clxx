@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useLayoutEffect } from "react";
 import { style } from "./style";
 import Swiper from "swiper";
 import { RowCenter } from "../Flex/Row";
-import { swiperStyle } from "./swiperStyle";
+import { swiperStyle } from "../Picker/swiperStyle";
 
 export interface ColumnItem {
   label: React.ReactNode;
