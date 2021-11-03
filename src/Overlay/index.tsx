@@ -45,7 +45,7 @@ export function Overlay(props: OverlayProps) {
       setMount(div);
 
       return () => {
-        ReactDOM.unmountComponentAtNode(div);
+        // ReactDOM.unmountComponentAtNode(div);
         div.remove();
       };
     }
