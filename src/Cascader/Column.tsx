@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useLayoutEffect } from "react";
 import { style } from "./style";
 import Swiper from "swiper";
 import { RowCenter } from "../Flex/Row";
+import { swiperStyle } from "./swiperStyle";
 
 export interface ColumnItem {
   label: React.ReactNode;
@@ -33,9 +34,7 @@ export function Column(props: ColumnProps) {
   const getInitialSlide = useCallback<() => number>(() => {
     let initialSlide = 0;
     if (Array.isArray(columnOptions)) {
-      let findIndex = columnOptions.findIndex(
-        (option) => option.value === defaultValue
-      );
+      let findIndex = columnOptions.findIndex((option) => option.value === defaultValue);
       if (findIndex >= 0) {
         initialSlide = findIndex;
       }
@@ -76,18 +75,20 @@ export function Column(props: ColumnProps) {
   }, []);
 
   return (
-    <div ref={swiperRef} css={style.swiper}>
-      <div className="swiper-wrapper">
-        {columnOptions.map((item) => {
-          return (
-            <RowCenter className="swiper-slide" key={item.value}>
-              {item.label}
-            </RowCenter>
-          );
-        })}
+    <div css={[swiperStyle, style.body]}>
+      <div className="swiper" ref={swiperRef} css={style.swiper}>
+        <div className="swiper-wrapper">
+          {columnOptions.map((item) => {
+            return (
+              <RowCenter className="swiper-slide" key={item.value}>
+                {item.label}
+              </RowCenter>
+            );
+          })}
+        </div>
+        <div css={[style.mask, style.maskTop]}></div>
+        <div css={[style.mask, style.maskBottom]}></div>
       </div>
-      <div css={[style.mask, style.maskTop]}></div>
-      <div css={[style.mask, style.maskBottom]}></div>
     </div>
   );
 }

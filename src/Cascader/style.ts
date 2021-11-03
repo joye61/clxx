@@ -68,7 +68,11 @@ export const style: Record<string, Interpolation<Theme>> = {
   btnConfirm: {
     color: "#007afe",
   },
-  Columns: [],
+  body: {
+    overflow: "hidden",
+    position: "relative",
+    flex: "1 1 0",
+  },
   swiper: [
     {
       position: "relative",
