@@ -2,9 +2,9 @@
 import { jsx, Global, Interpolation, Theme } from "@emotion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { ContextValue, getContextValue } from "../context";
-import { useWindowResize } from "../effect/useWindowResize";
+import { useWindowResize } from "../Effect/useWindowResize";
 import round from "lodash/round";
-import { useViewport } from "../effect/useViewport";
+import { useViewport } from "../Effect/useViewport";
 
 export interface ContainerProps {
   // 用户自定义的全局样式

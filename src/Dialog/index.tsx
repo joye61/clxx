@@ -34,12 +34,16 @@ export function showDialog(option: React.ReactNode | ShowDialogOption) {
   const blankClosable = !!config.blankClosable;
   const children = config.content;
   const onBlankClick = config.onBlankClick;
-  const props: WrapperProps = omit(config, ["blankClosable", "content"]);
+  const onHide = config.onHide;
+  const props: WrapperProps = omit(config, ["blankClosable", "content", "onHide"]);
 
   // 关闭弹窗
   const closeDialog = async () => {
     props.status = "hide";
-    props.onHide = destroy;
+    props.onHide = () => {
+      destroy();
+      onHide?.();
+    };
     await mount(<Wrapper {...props}>{children}</Wrapper>);
   };
 
