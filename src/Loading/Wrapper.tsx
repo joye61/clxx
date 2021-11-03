@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, SerializedStyles } from "@emotion/react";
+import { jsx, Interpolation, Theme } from "@emotion/react";
 import React from "react";
 import { style, LoadingHide } from "./style";
 import { Indicator, IndicatorProps } from "../Indicator";
@@ -18,7 +18,7 @@ export interface LoadingWrapperProps {
   // 隐藏动画结束时触发
   onHide?: () => void;
   // 容器样式
-  containerStyle?: SerializedStyles;
+  containerStyle?: Interpolation<Theme>;
 }
 
 export function Wrapper(props: LoadingWrapperProps) {

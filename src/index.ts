@@ -18,7 +18,7 @@ export { useTick } from "./effect/useTick";
 
 export { Ago } from "./Ago";
 export { Container } from "./Container";
-export { Flex } from "./Flex";
+export { Flex, FlexItem } from "./Flex";
 export { Row, RowAround, RowBetween, RowCenter, RowEnd, RowEvenly, RowStart } from "./Flex/Row";
 export { Col, ColAround, ColBetween, ColCenter, ColEnd, ColEvenly, ColStart } from "./Flex/Col";
 export { Countdowner } from "./Countdowner";
