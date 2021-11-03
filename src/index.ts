@@ -13,8 +13,8 @@ export { waitFor, waitUntil } from "./utils/wait";
 export { normalizeUnit, splitValue } from "./utils/cssUtil";
 export { createApp, history, getHistory } from "./utils/createApp";
 
-export { useInterval } from "./effect/useInterval";
-export { useTick } from "./effect/useTick";
+export { useInterval } from "./Effect/useInterval";
+export { useTick } from "./Effect/useTick";
 
 export { Ago } from "./Ago";
 export { Container } from "./Container";
