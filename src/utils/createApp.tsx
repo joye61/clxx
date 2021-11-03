@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import {
-  createBrowserHistory,
-  createHashHistory,
-  createMemoryHistory,
-  History,
-  State,
-} from "history";
+import { createBrowserHistory, createHashHistory, createMemoryHistory, History } from "history";
 import { Container, ContainerProps } from "../Container";
 import { ContextValue, setContextValue } from "../context";
 import pick from "lodash/pick";
@@ -32,11 +26,11 @@ export interface CreateAppOption extends Omit<ContainerProps, "children">, Conte
 }
 
 // 存储历史记录对象
-export let history: null | History<State> = null;
+export let history: null | History = null;
 // 获取历史记录对象
 export function getHistory(routeMethod: RouteMethod = "browser") {
   if (history === null) {
-    const createMap: Record<RouteMethod, () => History<State>> = {
+    const createMap: Record<RouteMethod, () => History> = {
       browser: createBrowserHistory,
       hash: createHashHistory,
       memory: createMemoryHistory,

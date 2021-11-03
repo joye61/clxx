@@ -4,7 +4,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { getContextValue } from "../context";
 import { ContextValue } from "../context";
-import { useWindowResize } from "../effect/useWindowResize";
+import { useWindowResize } from "../Effect/useWindowResize";
 
 export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
   // 挂载元素的子元素
@@ -25,14 +25,7 @@ export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
  * @returns
  */
 export function Overlay(props: OverlayProps) {
-  const {
-    children,
-    outside = false,
-    centerContent = true,
-    fullScreen = true,
-    maskColor = "rgba(0, 0, 0, .6)",
-    ...extra
-  } = props;
+  const { children, outside = false, centerContent = true, fullScreen = true, maskColor = "rgba(0, 0, 0, .6)", ...extra } = props;
 
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);

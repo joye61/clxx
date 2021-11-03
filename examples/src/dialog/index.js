@@ -2,7 +2,7 @@ import React from "react";
 import { showDialog, RowCenter } from "@";
 import style from "./index.module.scss";
 
-export default function Index () {
+export default function Index() {
   return (
     <div>
       <p>
@@ -11,6 +11,9 @@ export default function Index () {
             const close = await showDialog({
               showMask: false,
               blankClosable: true,
+              onHide: () => {
+                console.log("closed");
+              },
               content: (
                 <RowCenter className={style.contentBox}>
                   <button
