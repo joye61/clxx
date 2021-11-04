@@ -25,7 +25,14 @@ export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
  * @returns
  */
 export function Overlay(props: OverlayProps) {
-  const { children, outside = false, centerContent = true, fullScreen = true, maskColor = "rgba(0, 0, 0, .6)", ...extra } = props;
+  const {
+    children,
+    outside = false,
+    centerContent = true,
+    fullScreen = true,
+    maskColor = "rgba(0, 0, 0, .6)",
+    ...extra
+  } = props;
 
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
