@@ -1,4 +1,4 @@
-import { tick } from "../utils/tick";
+import { Tick } from "../utils/tick";
 import { useEffect, useRef } from "react";
 
 /**
@@ -10,6 +10,8 @@ export function useTick(frame: () => void) {
   const framer = useRef(frame);
   framer.current = frame;
   useEffect(() => {
-    return tick(() => framer.current());
+    const tick = new Tick(() => framer.current());
+    tick.start();
+    return () => tick.destroy();
   }, []);
 }
