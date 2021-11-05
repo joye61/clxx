@@ -1,4 +1,4 @@
-export { tick } from "./utils/tick";
+export { Tick } from "./utils/tick";
 export { setContextValue, getContextValue } from "./context";
 
 export { jsonp } from "./utils/jsonp";

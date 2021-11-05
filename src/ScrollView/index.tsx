@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import * as CSS from "csstype";
-import { useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Indicator } from "../Indicator";
 import { RowCenter } from "../Flex/Row";
 import { style } from "./style";
@@ -16,8 +16,7 @@ export interface ScrollEvent {
   rawEvent?: React.UIEvent;
 }
 
-export interface ScrollViewProps
-  extends Omit<React.HTMLProps<HTMLDivElement>, "onScroll"> {
+export interface ScrollViewProps extends Omit<React.HTMLProps<HTMLDivElement>, "onScroll"> {
   // 滚动的内容
   children?: React.ReactNode;
   // 容器的高度，默认100%
@@ -69,6 +68,7 @@ export function ScrollView(props: ScrollViewProps) {
 
   // 滚动容器
   const container = useRef<HTMLDivElement>(null);
+  const child = useRef<HTMLDivElement>(null);
 
   // 当前滚动到顶部的距离
   const top = useRef<number>(0);
@@ -82,8 +82,7 @@ export function ScrollView(props: ScrollViewProps) {
     // 滚动容器的视口高度
     const containerHeight = Math.min(box.clientHeight, box.offsetHeight);
     // 加载指示的高度，如果加载指示不存在，则高度为0
-    const loadingHeight =
-      (box.children.item(1) as HTMLElement)?.offsetHeight ?? 0;
+    const loadingHeight = (box.children.item(1) as HTMLElement)?.offsetHeight ?? 0;
     const maxScroll = contentHeight - containerHeight;
 
     // 生成滚动事件参数
@@ -105,10 +104,7 @@ export function ScrollView(props: ScrollViewProps) {
     }
 
     // 判断是否触发触底事件
-    if (
-      event.direction === "downward" &&
-      scrollTop > maxScroll - reachBottomThreshold - loadingHeight
-    ) {
+    if (event.direction === "downward" && scrollTop > maxScroll - reachBottomThreshold - loadingHeight) {
       onReachBottom?.(event);
     }
 
@@ -131,15 +127,20 @@ export function ScrollView(props: ScrollViewProps) {
     }
   }
 
+  // container是否有滚动条
+  const [hasScrollBar, setHasScrollBar] = useState(false);
+
+  useEffect(() => {
+    let hasScrollBar = container.current!.scrollHeight > container.current!.clientHeight;
+    setHasScrollBar(hasScrollBar);
+  });
+
   return (
-    <div
-      css={[style.container, heightStyle, containerStyle]}
-      onScroll={scrollCallback}
-      ref={container}
-      {...attrs}
-    >
-      <div css={wrapperStyle}>{children}</div>
-      {showLoadingContent}
+    <div css={[style.container, heightStyle, containerStyle]} onScroll={scrollCallback} ref={container} {...attrs}>
+      <div css={wrapperStyle} ref={child}>
+        {children}
+      </div>
+      {hasScrollBar && showLoadingContent}
     </div>
   );
 }

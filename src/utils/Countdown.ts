@@ -1,4 +1,4 @@
-import { StopTick, tick } from "./tick";
+import { Tick } from "./tick";
 
 export type CountdownValueIndex = "d" | "h" | "i" | "s";
 export type CountdownValue = {
@@ -34,7 +34,7 @@ export class Countdown {
   format = ["d", "h", "i", "s"];
 
   // 逐帧tick
-  _stopTick?: StopTick;
+  _stopTick?: () => void;
   // 每次更新时都会调用
   _onUpdate?: UpdateCallback;
   // 结束时触发调用
@@ -86,7 +86,8 @@ export class Countdown {
 
     // 记录倒计时开启时的时间
     const start = Date.now();
-    this._stopTick = tick(() => {
+
+    const tickInstance = new Tick(() => {
       // 获取倒计时已经持续的时间
       const duration = Math.floor((Date.now() - start) / 1000);
       const currentRemain = this.total - duration;
@@ -106,6 +107,10 @@ export class Countdown {
         this._onUpdate?.(this.formatValue());
       }
     });
+
+    tickInstance.start();
+
+    this._stopTick = () => tickInstance.destroy();
   }
 
   // 停止倒计时
