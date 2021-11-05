@@ -1,17 +1,10 @@
 /** @jsx jsx */
 import React, { useEffect, useState } from "react";
 import { Interpolation, jsx, Theme } from "@emotion/react";
-import {
-  Countdown,
-  CountdownOption,
-  CountdownValue,
-  CountdownValueIndex,
-} from "../utils/Countdown";
+import { Countdown, CountdownOption, CountdownValue, CountdownValueIndex } from "../utils/Countdown";
 import { RowStart } from "../Flex/Row";
 
-export interface CountdownerOption
-  extends CountdownOption,
-    React.HTMLProps<HTMLDivElement> {
+export interface CountdownerOption extends CountdownOption, React.HTMLProps<HTMLDivElement> {
   // 数字之间的分隔符
   seperator?: React.ReactNode;
   // 分隔符之间的样式
@@ -54,9 +47,7 @@ export function Countdowner(props: CountdownerOption) {
         numberComponent = renderNumber(num, key);
       } else {
         // 默认以span包围，且数字不足10的时候有前置0
-        numberComponent = (
-          <span css={numberStyle}>{num < 10 ? `0${num}` : num}</span>
-        );
+        numberComponent = <span css={numberStyle}>{num < 10 ? `0${num}` : num}</span>;
       }
       content.push(<React.Fragment key={i}>{numberComponent}</React.Fragment>);
 
@@ -66,13 +57,9 @@ export function Countdowner(props: CountdownerOption) {
         if (typeof renderSeperator === "function") {
           seperatorComponent = renderSeperator(num, key);
         } else {
-          seperatorComponent = seperator ? (
-            <span css={seperatorStyle}>{seperator}</span>
-          ) : null;
+          seperatorComponent = seperator ? <span css={seperatorStyle}>{seperator}</span> : null;
         }
-        content.push(
-          <React.Fragment key={`s${i}`}>{seperatorComponent}</React.Fragment>
-        );
+        content.push(<React.Fragment key={`s${i}`}>{seperatorComponent}</React.Fragment>);
       }
     }
   }

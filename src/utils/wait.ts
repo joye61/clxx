@@ -1,4 +1,4 @@
-import { tick } from "./tick";
+import { tick, StopTick } from "./tick";
 
 /**
  * 直接条件为真或者超时才返回结果
@@ -8,10 +8,7 @@ import { tick } from "./tick";
  *
  * @returns 返回检测的结果，超时返回false
  */
-export async function waitUntil(
-  condition: () => boolean | Promise<boolean>,
-  maxTime?: number
-) {
+export async function waitUntil(condition: () => boolean | Promise<boolean>, maxTime?: number) {
   // 记录检测开始时间
   const start = Date.now();
 
@@ -26,19 +23,20 @@ export async function waitUntil(
   }
 
   return new Promise<boolean>((resolve) => {
-    const stop = tick(() => {
+    let stop: StopTick;
+    stop = tick(() => {
       const now = Date.now();
       const result = condition();
       // 超时返回false
       if (now - start >= maxTime!) {
-        stop();
+        stop?.();
         resolve(false);
         return;
       }
       // 处理结果
       const handle = (res: boolean) => {
         if (res) {
-          stop();
+          stop?.();
           resolve(true);
         }
       };

@@ -2,7 +2,7 @@ import "./index.scss";
 import React, { useRef, useState } from "react";
 import { ScrollView } from "@";
 
-export default function Index () {
+export default function Index() {
   const [list, setList] = useState([1]);
   const isLoading = useRef(false);
   const [showLoading, setShowLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function Index () {
   return (
     <div className="ScrollView">
       <ScrollView
-        onReachTop={(e)=>{
+        onReachTop={(e) => {
           console.log("reachTop", e);
         }}
         onReachBottom={(e) => {
