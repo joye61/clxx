@@ -55,7 +55,7 @@ export async function createApp(option: CreateAppOption) {
   }
 
   // 这里是为了确保历史记录对象在组件渲染之前一定存在
-  history = getHistory();
+  history = getHistory(option.routeMethod);
 
   // 提取关键数据
   const context: ContextValue = pick(option, ["minDocWidth", "maxDocWidth"]);

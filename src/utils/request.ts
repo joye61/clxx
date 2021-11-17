@@ -153,6 +153,7 @@ export function parseRequestOption(option: RequestOption) {
     timeout: 30000,
   };
   config.sendType = config.sendType!.toLowerCase() as SendType;
+  config.method = config.method?.toUpperCase();
 
   // 传递过来的参数覆盖默认值
   if (isPlainObject(option)) {
@@ -167,7 +168,7 @@ export function parseRequestOption(option: RequestOption) {
    * 1、调用方没有传递请求方法
    * 2、请求类型不为normal
    */
-  if (!config.method && config.sendType !== "normal") {
+  if ((config.method === "GET" || !config.method) && config.sendType !== "normal") {
     config.method = "POST";
   }
 

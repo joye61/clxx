@@ -5,6 +5,7 @@ import Home from "./index/index";
 
 createApp({
   target: document.getElementById("root"),
+  // maxDocWidth: 10000,
   async renderPage(pathname) {
     let page = await import(`./${pathname}/index.js`);
     if (pathname === "index") {
