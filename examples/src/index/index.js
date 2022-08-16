@@ -16,9 +16,6 @@ const pageConfig = [
   { path: "clickable", title: "Clickable可触摸组件", enable: true },
   // { path: 'privacy', title: 'Privacy去标识化', enable: true },
   { path: "autogrid", title: "AutoGrid生成自动对齐的表格", enable: true },
-  { path: "picker", title: "showPicker选择器", enable: true },
-  // { path: 'image-picker', title: 'ImagePicker图片选择器', enable: true },
-  { path: "cascader", title: "Cascader级联选择器", enable: true },
 ];
 
 export default function Index() {

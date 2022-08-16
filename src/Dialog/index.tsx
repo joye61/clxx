@@ -1,9 +1,9 @@
-import React from "react";
-import { createPortalDOM } from "../utils/dom";
-import { DialogType } from "./style";
-import { WrapperProps, Wrapper } from "./Wrapper";
-import isPlainObject from "lodash/isPlainObject";
-import omit from "lodash/omit";
+import React from 'react';
+import { createPortalDOM } from '../utils/dom';
+import { DialogType } from './style';
+import { WrapperProps, Wrapper } from './Wrapper';
+import isPlainObject from 'lodash/isPlainObject';
+import omit from 'lodash/omit';
 
 export interface ShowDialogOption extends WrapperProps {
   // 空白处可点击关闭
@@ -20,12 +20,12 @@ export interface ShowDialogOption extends WrapperProps {
  * @returns
  */
 export function showDialog(option: React.ReactNode | ShowDialogOption) {
-  const { mount, destroy } = createPortalDOM();
+  const { mount, unmount } = createPortalDOM();
 
   // 生成全部配置
-  let config: ShowDialogOption = { status: "show", blankClosable: false };
+  let config: ShowDialogOption = { status: 'show', blankClosable: false };
   if (React.isValidElement(option) || !isPlainObject(option)) {
-    config.content = option;
+    config.content = option as React.ReactNode;
   } else {
     config = { ...config, ...(option as ShowDialogOption) };
   }
@@ -35,13 +35,17 @@ export function showDialog(option: React.ReactNode | ShowDialogOption) {
   const children = config.content;
   const onBlankClick = config.onBlankClick;
   const onHide = config.onHide;
-  const props: WrapperProps = omit(config, ["blankClosable", "content", "onHide"]);
+  const props: WrapperProps = omit(config, [
+    'blankClosable',
+    'content',
+    'onHide',
+  ]);
 
   // 关闭弹窗
   const closeDialog = async () => {
-    props.status = "hide";
+    props.status = 'hide';
     props.onHide = () => {
-      destroy();
+      unmount();
       onHide?.();
     };
     await mount(<Wrapper {...props}>{children}</Wrapper>);

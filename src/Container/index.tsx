@@ -1,10 +1,9 @@
-/** @jsx jsx */
-import { jsx, Global, Interpolation, Theme } from "@emotion/react";
-import React, { useCallback, useEffect, useState } from "react";
-import { ContextValue, getContextValue } from "../context";
-import { useWindowResize } from "../Effect/useWindowResize";
-import round from "lodash/round";
-import { useViewport } from "../Effect/useViewport";
+import { Global, Interpolation, Theme } from '@emotion/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ContextValue, getContextValue } from '../context';
+import { useWindowResize } from '../Effect/useWindowResize';
+import round from 'lodash/round';
+import { useViewport } from '../Effect/useViewport';
 
 export interface ContainerProps {
   // 用户自定义的全局样式
@@ -46,8 +45,10 @@ export function Container(props: ContainerProps) {
 
   // 字体缩放逻辑
   const scaleFont = useCallback<() => void>(() => {
-    let computeSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
-    if (typeof computeSize === "number" && computeSize !== baseFontSize) {
+    let computeSize = parseFloat(
+      window.getComputedStyle(document.documentElement).fontSize
+    );
+    if (typeof computeSize === 'number' && computeSize !== baseFontSize) {
       setBaseFontSize(round(baseFontSize ** 2 / computeSize, 1));
     }
   }, [baseFontSize]);
@@ -61,9 +62,9 @@ export function Container(props: ContainerProps) {
   useEffect(() => {
     // 激活iOS上的:active
     const activable = () => {};
-    document.body.addEventListener("touchstart", activable);
+    document.body.addEventListener('touchstart', activable);
     return () => {
-      document.body.removeEventListener("touchstart", activable);
+      document.body.removeEventListener('touchstart', activable);
     };
   }, []);
 
@@ -72,19 +73,19 @@ export function Container(props: ContainerProps) {
       <Global
         styles={[
           {
-            "*": {
-              boxSizing: "border-box",
+            '*': {
+              boxSizing: 'border-box',
             },
             html: {
-              WebkitTapHighlightColor: "transparent",
-              WebkitOverflowScrolling: "touch",
-              WebkitTextSizeAdjust: "100%",
+              WebkitTapHighlightColor: 'transparent',
+              WebkitOverflowScrolling: 'touch',
+              WebkitTextSizeAdjust: '100%',
               fontSize: `${baseFontSize}px`,
-              touchAction: "manipulation",
+              touchAction: 'manipulation',
             },
             body: {
-              fontSize: "16px",
-              margin: "0 auto",
+              fontSize: '16px',
+              margin: '0 auto',
               maxWidth: `${maxDocWidth}px`,
               minWidth: `${minDocWidth}px`,
             },

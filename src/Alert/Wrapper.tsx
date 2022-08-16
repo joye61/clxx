@@ -1,9 +1,8 @@
-/** @jsx jsx */
-import { Interpolation, jsx, Theme } from "@emotion/react";
-import { Clickable } from "../Clickable";
-import { Row } from "../Flex/Row";
-import { style } from "./style";
-import * as CSS from "csstype";
+import { Interpolation, Theme } from '@emotion/react';
+import { Clickable } from '../Clickable';
+import { Row } from '../Flex/Row';
+import { style } from './style';
+import * as CSS from 'csstype';
 
 export interface AlertWrapperProps {
   // 标题
@@ -35,12 +34,12 @@ export interface AlertWrapperProps {
 
 export function AlertWrapper(props: AlertWrapperProps) {
   const {
-    title = "提示",
+    title = '提示',
     description,
-    confirm = "确定",
-    confirmColor = "#007afe",
-    cancel = "取消",
-    cancelColor = "#666",
+    confirm = '确定',
+    confirmColor = '#007afe',
+    cancel = '取消',
+    cancelColor = '#666',
     showCancel = false,
     onConfirm,
     onCancel,

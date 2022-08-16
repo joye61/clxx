@@ -1,11 +1,14 @@
-/** @jsx jsx */
-import { jsx, Interpolation, css, Theme } from "@emotion/react";
-import * as CSS from "csstype";
-import { useState, useEffect } from "react";
-import { useInterval } from "../Effect/useInterval";
-import { style, Bubble } from "./style";
+import { Interpolation, css, Theme } from '@emotion/react';
+import * as CSS from 'csstype';
+import { useState, useEffect } from 'react';
+import { useInterval } from '../Effect/useInterval';
+import { style, Bubble } from './style';
 
-export interface CarouselNoticeOption extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface CarouselNoticeOption
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   // 需要滚动的列表
   list: Array<React.ReactNode>;
   // 滚动容器的宽度
@@ -13,7 +16,7 @@ export interface CarouselNoticeOption extends React.DetailedHTMLProps<React.HTML
   // 滚动容器的高度
   height: CSS.Property.Height;
   // 滚动的内容水平对齐，默认center
-  justify: "start" | "center" | "end";
+  justify: 'start' | 'center' | 'end';
   // 每一次冒泡持续时间(单位毫秒)，默认200ms
   duration: number;
   // 每一轮冒泡切换的时间间(单位毫秒)，默认3000ms
@@ -31,7 +34,18 @@ export interface CarouselNoticeOption extends React.DetailedHTMLProps<React.HTML
  * @param props
  */
 export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
-  const { width, height, justify = "center", interval = 3000, duration = 200, list = [], containerStyle, wrapperStyle, itemStyle, ...attrs } = props;
+  const {
+    width,
+    height,
+    justify = 'center',
+    interval = 3000,
+    duration = 200,
+    list = [],
+    containerStyle,
+    wrapperStyle,
+    itemStyle,
+    ...attrs
+  } = props;
 
   const [current, setCurrent] = useState<number>(0);
   const [animation, setAnimation] = useState<boolean>(false);
@@ -59,14 +73,14 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
    */
   const showContent = () => {
     const justifyStyle: Interpolation<any> = {};
-    if (justify === "center") {
-      justifyStyle.justifyContent = "center";
-    } else if (justify === "start") {
-      justifyStyle.justifyContent = "flex-start";
-    } else if (justify === "end") {
-      justifyStyle.justifyContent = "flex-end";
+    if (justify === 'center') {
+      justifyStyle.justifyContent = 'center';
+    } else if (justify === 'start') {
+      justifyStyle.justifyContent = 'flex-start';
+    } else if (justify === 'end') {
+      justifyStyle.justifyContent = 'flex-end';
     } else {
-      justifyStyle.justifyContent = "center";
+      justifyStyle.justifyContent = 'center';
     }
 
     const itemCss = [style.item, justifyStyle];
@@ -115,7 +129,7 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     }
     return css({
       animationName: Bubble,
-      animationTimingFunction: "linear",
+      animationTimingFunction: 'linear',
       animationDuration: `${duration}ms`,
     });
   };
@@ -136,7 +150,10 @@ export function CarouselNotice(props: Partial<CarouselNoticeOption>) {
     Array.isArray(list) &&
     list.length > 0 && (
       <div {...attrs} css={[style.box, { width, height }, containerStyle]}>
-        <div onAnimationEnd={animationEnd} css={[style.wrapper, getAnimation(), wrapperStyle]}>
+        <div
+          onAnimationEnd={animationEnd}
+          css={[style.wrapper, getAnimation(), wrapperStyle]}
+        >
           {showContent()}
         </div>
       </div>

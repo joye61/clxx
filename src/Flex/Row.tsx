@@ -1,11 +1,9 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/react";
-import { Flex, FlexProps } from ".";
+import { Flex, FlexProps } from '.';
 
 export function RowStart(props: FlexProps) {
   const {
-    flexDirection = "row",
-    justifyContent = "flex-start",
+    flexDirection = 'row',
+    justifyContent = 'flex-start',
     ...extra
   } = props;
   return (
@@ -18,8 +16,8 @@ export function RowStart(props: FlexProps) {
 }
 export function RowEnd(props: FlexProps) {
   const {
-    flexDirection = "row",
-    justifyContent = "flex-end",
+    flexDirection = 'row',
+    justifyContent = 'flex-end',
     ...extra
   } = props;
   return (
@@ -31,7 +29,7 @@ export function RowEnd(props: FlexProps) {
   );
 }
 export function RowCenter(props: FlexProps) {
-  const { flexDirection = "row", justifyContent = "center", ...extra } = props;
+  const { flexDirection = 'row', justifyContent = 'center', ...extra } = props;
   return (
     <Flex
       flexDirection={flexDirection}
@@ -42,8 +40,8 @@ export function RowCenter(props: FlexProps) {
 }
 export function RowBetween(props: FlexProps) {
   const {
-    flexDirection = "row",
-    justifyContent = "space-between",
+    flexDirection = 'row',
+    justifyContent = 'space-between',
     ...extra
   } = props;
   return (
@@ -56,8 +54,8 @@ export function RowBetween(props: FlexProps) {
 }
 export function RowAround(props: FlexProps) {
   const {
-    flexDirection = "row",
-    justifyContent = "space-around",
+    flexDirection = 'row',
+    justifyContent = 'space-around',
     ...extra
   } = props;
   return (
@@ -70,8 +68,8 @@ export function RowAround(props: FlexProps) {
 }
 export function RowEvenly(props: FlexProps) {
   const {
-    flexDirection = "row",
-    justifyContent = "space-evenly",
+    flexDirection = 'row',
+    justifyContent = 'space-evenly',
     ...extra
   } = props;
   return (

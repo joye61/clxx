@@ -1,8 +1,6 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/react";
-import { Wrapper, LoadingWrapperProps } from "./Wrapper";
-import { createPortalDOM } from "../utils/dom";
-import isPlainObject from "lodash/isPlainObject";
+import { Wrapper, LoadingWrapperProps } from './Wrapper';
+import { createPortalDOM } from '../utils/dom';
+import isPlainObject from 'lodash/isPlainObject';
 
 /**
  * 显示loading
@@ -11,8 +9,8 @@ import isPlainObject from "lodash/isPlainObject";
  * @returns
  */
 export function showLoading(hint?: string, option?: LoadingWrapperProps) {
-  const { mount, destroy } = createPortalDOM();
-  let props: LoadingWrapperProps = { hint, status: "show" };
+  const { mount, unmount } = createPortalDOM();
+  let props: LoadingWrapperProps = { hint, status: 'show' };
   if (isPlainObject(option)) {
     delete option!.status;
     props = { ...props, ...option };
@@ -20,8 +18,8 @@ export function showLoading(hint?: string, option?: LoadingWrapperProps) {
 
   // 关闭loading
   const closeLoading = async () => {
-    props.status = "hide";
-    props.onHide = destroy;
+    props.status = 'hide';
+    props.onHide = unmount;
     await mount(<Wrapper {...props} />);
   };
 

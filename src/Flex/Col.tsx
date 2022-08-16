@@ -1,11 +1,9 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/react";
-import { Flex, FlexProps } from ".";
+import { Flex, FlexProps } from '.';
 
 export function ColStart(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "flex-start",
+    flexDirection = 'column',
+    justifyContent = 'flex-start',
     ...extra
   } = props;
   return (
@@ -18,8 +16,8 @@ export function ColStart(props: FlexProps) {
 }
 export function ColEnd(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "flex-end",
+    flexDirection = 'column',
+    justifyContent = 'flex-end',
     ...extra
   } = props;
   return (
@@ -32,8 +30,8 @@ export function ColEnd(props: FlexProps) {
 }
 export function ColCenter(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "center",
+    flexDirection = 'column',
+    justifyContent = 'center',
     ...extra
   } = props;
   return (
@@ -46,8 +44,8 @@ export function ColCenter(props: FlexProps) {
 }
 export function ColBetween(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "space-between",
+    flexDirection = 'column',
+    justifyContent = 'space-between',
     ...extra
   } = props;
   return (
@@ -60,8 +58,8 @@ export function ColBetween(props: FlexProps) {
 }
 export function ColAround(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "space-around",
+    flexDirection = 'column',
+    justifyContent = 'space-around',
     ...extra
   } = props;
   return (
@@ -74,8 +72,8 @@ export function ColAround(props: FlexProps) {
 }
 export function ColEvenly(props: FlexProps) {
   const {
-    flexDirection = "column",
-    justifyContent = "space-evenly",
+    flexDirection = 'column',
+    justifyContent = 'space-evenly',
     ...extra
   } = props;
   return (

@@ -1,9 +1,8 @@
-/** @jsx jsx */
-import { jsx, css, Interpolation, Theme } from "@emotion/react";
-import React from "react";
-import * as CSS from "csstype";
-import { adaptive, normalizeUnit } from "../utils/cssUtil";
-import { getBarChangeKeyFrames } from "./style";
+import { css, Interpolation, Theme } from '@emotion/react';
+import React from 'react';
+import * as CSS from 'csstype';
+import { adaptive, normalizeUnit } from '../utils/cssUtil';
+import { getBarChangeKeyFrames } from './style';
 
 export interface IndicatorProps
   extends React.DetailedHTMLProps<
@@ -38,7 +37,7 @@ export function Indicator(props: IndicatorProps) {
     rounded = true,
     barWidth = 7,
     barHeight = 28,
-    barColor = "#fff",
+    barColor = '#fff',
     barCount = 12,
     duration = 600,
     containerStyle,
@@ -71,7 +70,7 @@ export function Indicator(props: IndicatorProps) {
       fontSize: 0,
     },
   ];
-  if (typeof size !== "undefined") {
+  if (typeof size !== 'undefined') {
     const unitSize = normalizeUnit(size);
     style.push({
       width: unitSize,
@@ -87,14 +86,14 @@ export function Indicator(props: IndicatorProps) {
     );
   }
   const svgStyle = css({
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     rect: {
-      fill: "transparent",
+      fill: 'transparent',
       animationName: getBarChangeKeyFrames(barColor),
       animationDuration: `${duration}ms`,
-      animationTimingFunction: "linear",
-      animationIterationCount: "infinite",
+      animationTimingFunction: 'linear',
+      animationIterationCount: 'infinite',
     },
   });
 
