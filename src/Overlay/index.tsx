@@ -1,10 +1,9 @@
-/**@jsx jsx */
-import { jsx, ArrayInterpolation, Theme } from "@emotion/react";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
-import { getContextValue } from "../context";
-import { ContextValue } from "../context";
-import { useWindowResize } from "../Effect/useWindowResize";
+import { ArrayInterpolation, Theme } from '@emotion/react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { getContextValue } from '../context';
+import { ContextValue } from '../context';
+import { useWindowResize } from '../Effect/useWindowResize';
 
 export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
   // 挂载元素的子元素
@@ -30,7 +29,7 @@ export function Overlay(props: OverlayProps) {
     outside = false,
     centerContent = true,
     fullScreen = true,
-    maskColor = "rgba(0, 0, 0, .6)",
+    maskColor = 'rgba(0, 0, 0, .6)',
     ...extra
   } = props;
 
@@ -47,12 +46,11 @@ export function Overlay(props: OverlayProps) {
 
   useLayoutEffect(() => {
     if (outside) {
-      const div = document.createElement("div");
+      const div = document.createElement('div');
       document.body.appendChild(div);
       setMount(div);
 
       return () => {
-        // ReactDOM.unmountComponentAtNode(div);
         div.remove();
       };
     }
@@ -79,12 +77,12 @@ export function Overlay(props: OverlayProps) {
     }
     style.push({
       zIndex: 9999,
-      position: "fixed",
+      position: 'fixed',
       top: 0,
-      left: "50%",
+      left: '50%',
       marginLeft: `-${width / 2}px`,
       width: `${width}px`,
-      height: "100%",
+      height: '100%',
       maxWidth: `${ctx.maxDocWidth}px`,
       minWidth: `${ctx.minDocWidth}px`,
       backgroundColor: maskColor,
@@ -94,9 +92,9 @@ export function Overlay(props: OverlayProps) {
   // 如果内容居中，设置内容居中有样式
   if (centerContent) {
     style.push({
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     });
   }
 
@@ -123,5 +121,5 @@ export function Overlay(props: OverlayProps) {
   /**
    * 挂载到外部，且挂载点已经准备好
    */
-  return ReactDOM.createPortal(content, mount);
+  return createPortal(content, mount);
 }

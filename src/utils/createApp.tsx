@@ -1,14 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import { createBrowserHistory, createHashHistory, createMemoryHistory, History } from "history";
-import { Container, ContainerProps } from "../Container";
-import { ContextValue, setContextValue } from "../context";
-import pick from "lodash/pick";
+import React, { useCallback, useEffect, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import {
+  createBrowserHistory,
+  createHashHistory,
+  createMemoryHistory,
+  History,
+} from 'history';
+import { Container, ContainerProps } from '../Container';
+import { ContextValue, setContextValue } from '../context';
+import pick from 'lodash/pick';
 
-export type RouteMethod = "browser" | "hash" | "memory";
+export type RouteMethod = 'browser' | 'hash' | 'memory';
 export type AwaitValue<T> = T | Promise<T>;
 
-export interface CreateAppOption extends Omit<ContainerProps, "children">, ContextValue {
+export interface CreateAppOption
+  extends Omit<ContainerProps, 'children'>,
+    ContextValue {
   // 加载页面组件之前触发的钩子函数
   onBeforeRenderPage?: (pathname?: string) => AwaitValue<void>;
   // 加载页面组件之后触发的钩子函数
@@ -28,7 +35,7 @@ export interface CreateAppOption extends Omit<ContainerProps, "children">, Conte
 // 存储历史记录对象
 export let history: null | History = null;
 // 获取历史记录对象
-export function getHistory(routeMethod: RouteMethod = "browser") {
+export function getHistory(routeMethod: RouteMethod = 'browser') {
   if (history === null) {
     const createMap: Record<RouteMethod, () => History> = {
       browser: createBrowserHistory,
@@ -46,21 +53,28 @@ export function getHistory(routeMethod: RouteMethod = "browser") {
  */
 export async function createApp(option: CreateAppOption) {
   // 设置默认的路由方式
-  if (!option.routeMethod || ["browser", "hash", "memory"].indexOf(option.routeMethod) === -1) {
-    option.routeMethod = "browser";
+  if (
+    !option.routeMethod ||
+    ['browser', 'hash', 'memory'].indexOf(option.routeMethod) === -1
+  ) {
+    option.routeMethod = 'browser';
   }
   // 设置默认路由路径
   if (!option.defaultRoute) {
-    option.defaultRoute = "/index";
+    option.defaultRoute = '/index';
   }
 
   // 这里是为了确保历史记录对象在组件渲染之前一定存在
   history = getHistory(option.routeMethod);
 
   // 提取关键数据
-  const context: ContextValue = pick(option, ["minDocWidth", "maxDocWidth"]);
-  const containerProps: ContainerProps = pick(option, ["designWidth", "globalStyle"]);
-  const { onBeforeRenderPage, onAfterRenderPage, renderLoading, renderPage } = option;
+  const context: ContextValue = pick(option, ['minDocWidth', 'maxDocWidth']);
+  const containerProps: ContainerProps = pick(option, [
+    'designWidth',
+    'globalStyle',
+  ]);
+  const { onBeforeRenderPage, onAfterRenderPage, renderLoading, renderPage } =
+    option;
 
   // 设置上下文属性
   setContextValue(context);
@@ -77,14 +91,14 @@ export async function createApp(option: CreateAppOption) {
      */
     const showPage = useCallback(async (pathname: string) => {
       const pathReg = /^\/*|\/*$/g;
-      pathname = pathname.replace(pathReg, "");
+      pathname = pathname.replace(pathReg, '');
       if (!pathname) {
-        pathname = option.defaultRoute!.replace(pathReg, "");
+        pathname = option.defaultRoute!.replace(pathReg, '');
       }
 
       // 如果有loading，要先显示loading
-      if (typeof renderLoading === "function") {
-        setPage(renderLoading?.(pathname));
+      if (typeof renderLoading === 'function') {
+        setPage(await renderLoading?.(pathname));
       }
       // 加载页面之前可能会存在的逻辑
       await onBeforeRenderPage?.(pathname);
@@ -114,14 +128,14 @@ export async function createApp(option: CreateAppOption) {
 
   // 获取挂载对象
   let mount: HTMLElement | null = null;
-  if (typeof option.target === "string") {
+  if (typeof option.target === 'string') {
     mount = document.querySelector(option.target);
   } else if (option.target instanceof HTMLElement) {
     mount = option.target;
+  } else {
+    throw new Error('No mounted object is specified');
   }
 
-  // 挂载组件
-  await new Promise<void>((resolve) => {
-    ReactDOM.render(<App />, mount, resolve);
-  });
+  const root = createRoot(mount!);
+  root.render(<App />);
 }

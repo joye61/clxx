@@ -1,21 +1,21 @@
-import React from "react";
-import { uniqKey } from "../utils/uniqKey";
-import { createPortalDOM, PortalDOM } from "../utils/dom";
-import { Toast as ToastComponent, ToastProps } from "./Toast";
+import React from 'react';
+import { uniqKey } from '../utils/uniqKey';
+import { createPortalDOM, PortalDOM } from '../utils/dom';
+import { Toast as ToastComponent, ToastProps } from './Toast';
 
 /**
  * 显示一个全局的轻提示，这个toast不是唯一的
  * @param option 可以是一个字符串，也可以是一个React组件
  */
 export function showToast(option: React.ReactNode | ToastProps) {
-  const { mount, destroy } = createPortalDOM();
+  const { mount, unmount } = createPortalDOM();
   let props: ToastProps = {};
-  if (React.isValidElement(option) || typeof option !== "object") {
+  if (React.isValidElement(option) || typeof option !== 'object') {
     props.content = option;
   } else {
     props = option as ToastProps;
   }
-  props.onHide = destroy;
+  props.onHide = unmount;
   mount(<ToastComponent {...props} />);
 }
 
@@ -30,14 +30,14 @@ export function showUniqToast(option: React.ReactNode | ToastProps) {
   }
   let props: ToastProps = {};
   // 默认Toast是唯一的
-  if (React.isValidElement(option) || typeof option !== "object") {
+  if (React.isValidElement(option) || typeof option !== 'object') {
     props.content = option;
   } else {
     props = option as ToastProps;
   }
 
   const onHide = () => {
-    portalDOM?.destroy();
+    portalDOM?.unmount();
     portalDOM = null;
   };
   props.onHide = onHide;

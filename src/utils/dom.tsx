@@ -1,41 +1,40 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
 export interface PortalDOM {
   element: HTMLDivElement;
-  mount: (component: React.ReactNode) => Promise<void>;
-  destroy: () => void;
+  mount: (component: React.ReactNode) => void;
+  unmount: () => void;
 }
 
 /**
- * 类似ReactDOM.createPortal，这个函数将会在body下创建一个组件的挂载点
+ * 
  * 组件可以通过函数的第一个参数传递进去
  *
- * @param point HTMLElement 挂载点
+ * @param point HTMLElement 挂载点，如果未指定，则挂载点为body
  * @returns CreatePortalDOMResult
  */
 export function createPortalDOM(point?: HTMLElement): PortalDOM {
-  const element = document.createElement("div");
+  const container = document.createElement('div');
   let mountPoint: HTMLElement = document.body;
   if (point instanceof HTMLElement) {
     mountPoint = point;
   }
-  mountPoint.appendChild(element);
+  mountPoint.appendChild(container);
+  const root = createRoot(container);
 
   return {
-    element,
-    async mount(component) {
-      return new Promise<void>((resolve) => {
-        ReactDOM.render(<>{component}</>, element, resolve);
-      });
+    element: container,
+    mount(component) {
+      root.render(component);
     },
-    destroy() {
-      if (element instanceof HTMLDivElement) {
-        ReactDOM.unmountComponentAtNode(element);
-        if (typeof element.remove === "function") {
-          element.remove();
+    unmount() {
+      root.unmount();
+      if (container instanceof HTMLDivElement) {
+        if (typeof container.remove === 'function') {
+          container.remove();
         } else {
-          mountPoint.removeChild(element);
+          mountPoint.removeChild(container);
         }
       }
     },

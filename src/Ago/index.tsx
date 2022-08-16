@@ -1,11 +1,8 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/react";
-import dayjs from "dayjs";
-import { ago, AgoValue } from "../utils/ago";
+import dayjs from 'dayjs';
+import { ago, AgoValue } from '../utils/ago';
 
 export interface AgoProps
   extends React.HTMLProps<HTMLSpanElement | HTMLDivElement> {
-    
   // 将要格式化显示的日期，任意的dayjs识别的格式
   date?: dayjs.ConfigType;
   // 是否显示为块div，默认为span
@@ -20,7 +17,7 @@ export function Ago(props: AgoProps) {
 
   // 格式化内容
   let content: string | React.ReactNode = agoValue.format;
-  if (typeof renderContent === "function") {
+  if (typeof renderContent === 'function') {
     content = renderContent(agoValue);
   }
 
