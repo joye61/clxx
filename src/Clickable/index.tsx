@@ -4,8 +4,8 @@ import React, {
   useState,
   useEffect,
   CSSProperties,
-} from "react";
-import { is } from "../utils/is";
+} from 'react';
+import { is } from '../utils/is';
 
 /**
  * 可触摸元素的属性，兼容PC
@@ -41,9 +41,15 @@ export function Clickable(props: Partial<ClickableProps>) {
       opacity: 0.6,
     };
   }
-  const touchable = is("touchable");
+  const touchable = is('touchable');
   const [boxClass, setBoxClass] = useState<undefined | string>(className);
   const [boxStyle, setBoxStyle] = useState<CSSProperties | undefined>(style);
+
+  // 监控属性的更新
+  useEffect(() => {
+    setBoxClass(className);
+    setBoxStyle(style);
+  }, [className, style]);
 
   // 标记是否正处于触摸状态
   const touchRef = useRef<boolean>(false);
@@ -57,16 +63,16 @@ export function Clickable(props: Partial<ClickableProps>) {
         event.stopPropagation();
       }
       // 激活目标样式
-      if (typeof activeClassName === "string") {
+      if (typeof activeClassName === 'string') {
         setBoxClass(
-          typeof boxClass === "string"
+          typeof boxClass === 'string'
             ? `${boxClass} ${activeClassName}`
             : activeClassName
         );
       }
-      if (typeof activeStyle === "object") {
+      if (typeof activeStyle === 'object') {
         setBoxStyle(
-          typeof boxStyle === "object"
+          typeof boxStyle === 'object'
             ? { ...boxStyle, ...activeStyle }
             : activeStyle
         );
@@ -87,9 +93,9 @@ export function Clickable(props: Partial<ClickableProps>) {
   useEffect(() => {
     if (!disable && !touchable) {
       const doc = document.documentElement;
-      doc.addEventListener("mouseup", onEnd);
+      doc.addEventListener('mouseup', onEnd);
       return () => {
-        doc.removeEventListener("mouseup", onEnd);
+        doc.removeEventListener('mouseup', onEnd);
       };
     }
   }, [disable, touchable, onEnd]);
