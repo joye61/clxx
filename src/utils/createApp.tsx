@@ -21,7 +21,7 @@ export interface CreateAppOption
   // 加载页面组件之后触发的钩子函数
   onAfterRenderPage?: (pathname?: string) => AwaitValue<void>;
   // 加载页面组件之前有一段空白期，这里渲染的是这段空白期的内容
-  renderLoading?: (pathname?: string) => AwaitValue<React.ReactNode>;
+  onLoadingPage?: (pathname?: string) => AwaitValue<React.ReactNode>;
   // 加载并返回页面组件
   renderPage?: (pathname?: string) => AwaitValue<React.ReactNode>;
   // 路由环境
@@ -73,7 +73,7 @@ export async function createApp(option: CreateAppOption) {
     'designWidth',
     'globalStyle',
   ]);
-  const { onBeforeRenderPage, onAfterRenderPage, renderLoading, renderPage } =
+  const { onBeforeRenderPage, onAfterRenderPage, onLoadingPage, renderPage } =
     option;
 
   // 设置上下文属性
@@ -97,8 +97,8 @@ export async function createApp(option: CreateAppOption) {
       }
 
       // 如果有loading，要先显示loading
-      if (typeof renderLoading === 'function') {
-        setPage(await renderLoading?.(pathname));
+      if (typeof onLoadingPage === 'function') {
+        setPage(await onLoadingPage?.(pathname));
       }
       // 加载页面之前可能会存在的逻辑
       await onBeforeRenderPage?.(pathname);

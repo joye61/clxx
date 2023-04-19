@@ -1,6 +1,4 @@
-/** @jsx jsx */
-import { jsx } from "@emotion/react";
-import * as CSS from "csstype";
+import * as CSS from 'csstype';
 
 export interface FlexProps extends React.HTMLProps<HTMLDivElement> {
   children?: React.ReactNode;
@@ -25,7 +23,7 @@ export interface FlexItemProps extends React.HTMLProps<HTMLDivElement> {
 export function Flex(props: FlexProps) {
   const {
     children,
-    alignItems = "center",
+    alignItems = 'center',
     alignContent,
     justifyContent,
     flexFlow,
@@ -36,7 +34,7 @@ export function Flex(props: FlexProps) {
   return (
     <div
       css={{
-        display: "flex",
+        display: 'flex',
         alignItems,
         alignContent,
         justifyContent,
