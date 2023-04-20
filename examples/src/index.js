@@ -1,14 +1,14 @@
-import "./index.scss";
-import React from "react";
-import { createApp, history } from "@";
-import Home from "./index/index";
+import './index.scss';
+import React from 'react';
+import { createApp, history } from '@';
+import Home from './index/index';
 
 createApp({
-  target: document.getElementById("root"),
+  target: document.getElementById('root'),
   // maxDocWidth: 10000,
   async renderPage(pathname) {
     let page = await import(`./${pathname}/index.js`);
-    if (pathname === "index") {
+    if (pathname === 'index') {
       return <Home />;
     }
     return (

@@ -1,6 +1,6 @@
-import { Tick } from "./tick";
+import { tick } from './tick';
 
-export type CountdownValueIndex = "d" | "h" | "i" | "s";
+export type CountdownValueIndex = 'd' | 'h' | 'i' | 's';
 export type CountdownValue = {
   [key in CountdownValueIndex]?: number;
 };
@@ -31,7 +31,7 @@ export class Countdown {
    * i：分
    * s：秒
    */
-  format = ["d", "h", "i", "s"];
+  format = ['d', 'h', 'i', 's'];
 
   // 逐帧tick
   _stopTick?: () => void;
@@ -41,13 +41,13 @@ export class Countdown {
   _onEnd?: () => void;
 
   constructor(option: CountdownOption) {
-    if (typeof option.remain === "number" && option.remain >= 0) {
+    if (typeof option.remain === 'number' && option.remain >= 0) {
       this.total = this.remain = option.remain;
     }
 
     // 倒计时需要展示的时间格式
-    if (typeof option.format === "string") {
-      const parts = option.format.split("");
+    if (typeof option.format === 'string') {
+      const parts = option.format.split('');
       const output: string[] = [];
       this.format.forEach((item) => {
         if (parts.includes(item)) {
@@ -57,7 +57,7 @@ export class Countdown {
       this.format = output;
     } else {
       // 设置默认的倒计时格式
-      this.format = ["h", "i", "s"];
+      this.format = ['h', 'i', 's'];
     }
 
     this._onUpdate = option.onUpdate;
@@ -87,7 +87,7 @@ export class Countdown {
     // 记录倒计时开启时的时间
     const start = Date.now();
 
-    const tickInstance = new Tick(() => {
+    this._stopTick = tick(() => {
       // 获取倒计时已经持续的时间
       const duration = Math.floor((Date.now() - start) / 1000);
       const currentRemain = this.total - duration;
@@ -107,10 +107,6 @@ export class Countdown {
         this._onUpdate?.(this.formatValue());
       }
     });
-
-    tickInstance.start();
-
-    this._stopTick = () => tickInstance.destroy();
   }
 
   // 停止倒计时
@@ -129,19 +125,19 @@ export class Countdown {
 
     this.format.forEach((key) => {
       switch (key) {
-        case "d":
+        case 'd':
           result.d = Math.floor(remainTime / 86400);
           remainTime = remainTime - result.d * 86400;
           break;
-        case "h":
+        case 'h':
           result.h = Math.floor(remainTime / 3600);
           remainTime = remainTime - result.h * 3600;
           break;
-        case "i":
+        case 'i':
           result.i = Math.floor(remainTime / 60);
           remainTime = remainTime - result.i * 60;
           break;
-        case "s":
+        case 's':
           result.s = remainTime;
           break;
         default:

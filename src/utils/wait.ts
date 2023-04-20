@@ -1,4 +1,4 @@
-import { Tick } from "./tick";
+import { tick } from './tick';
 
 /**
  * 直接条件为真或者超时才返回结果
@@ -8,34 +8,37 @@ import { Tick } from "./tick";
  *
  * @returns 返回检测的结果，超时返回false
  */
-export async function waitUntil(condition: () => boolean | Promise<boolean>, maxTime?: number) {
+export async function waitUntil(
+  condition: () => boolean | Promise<boolean>,
+  maxTime?: number
+) {
   // 记录检测开始时间
   const start = Date.now();
 
   // 如果检测条件不为函数，直接返回结果
-  if (typeof condition !== "function") {
+  if (typeof condition !== 'function') {
     return !!condition;
   }
 
   // 设置默认检测时间的最大值，如果没有设置，则一直检测
-  if (!maxTime || typeof maxTime !== "number") {
+  if (!maxTime || typeof maxTime !== 'number') {
     maxTime = Infinity;
   }
 
   return new Promise<boolean>((resolve) => {
-    const tick = new Tick(() => {
+    const stop = tick(() => {
       const now = Date.now();
       const result = condition();
       // 超时返回false
       if (now - start >= maxTime!) {
-        tick.destroy();
+        stop();
         resolve(false);
         return;
       }
       // 处理结果
       const handle = (res: boolean) => {
         if (res) {
-          tick.destroy();
+          stop();
           resolve(true);
         }
       };
@@ -48,7 +51,6 @@ export async function waitUntil(condition: () => boolean | Promise<boolean>, max
       // 普通一般的结果
       handle(result);
     });
-    tick.start();
   });
 }
 

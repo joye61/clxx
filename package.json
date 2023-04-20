@@ -1,6 +1,6 @@
 {
   "name": "clxx",
-  "version": "2.0.9",
+  "version": "2.1.1",
   "description": "Basic JS library for mobile devices",
   "main": "./build/index.js",
   "module": "./build/index.js",
