@@ -1,6 +1,6 @@
 {
   "name": "clxx",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "Basic JS library for mobile devices",
   "main": "./build/index.js",
   "module": "./build/index.js",
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "tsc -w --pretty",
-    "build": "rm -rfv ./build && tsc"
+    "build": "rm -rfv ./build && tsc",
+    "pub": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
