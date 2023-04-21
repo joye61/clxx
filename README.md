@@ -11,7 +11,7 @@
 - [`is`](./src/utils/is.ts)：一些简单的环境判断
 - [`jsonp`](./src/utils/jsonp.ts)：发送一个 jsonp 请求
 - [`GET，POST`](./src/utils/request.ts)：ajax 请求的简单封装
-- [`Tick`](./src/utils/tick.ts)：嘀嗒器，每帧都会执行
+- [`tick`](./src/utils/tick.ts)：嘀嗒器，每帧都会执行
 - [`uniqKey`](./src/utils/uniqKey.ts)：生成一个全局唯一的 key
 - [`waitUntil`](./src/utils/wait.ts)：执行某种检测，直接条件为真或者超时才返回
 
