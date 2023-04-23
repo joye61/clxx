@@ -20,6 +20,7 @@ export { is } from './utils/is';
 export { waitFor, waitUntil } from './utils/wait';
 export { normalizeUnit, splitValue, adaptive } from './utils/cssUtil';
 export { createApp, history, getHistory } from './utils/createApp';
+export { createPortalDOM } from './utils/dom';
 
 export { useInterval } from './Effect/useInterval';
 export { useTick } from './Effect/useTick';
