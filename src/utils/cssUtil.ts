@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import { ContextValue, getContextValue } from "../context";
-import { CSSObject, CSSProperties } from "@emotion/serialize";
+import { Interpolation, Theme, css } from '@emotion/react';
+import { ContextValue, getContextValue } from '../context';
 /**
  * 匹配所有的CSS数值类型的值
  */
@@ -12,12 +11,12 @@ export const CSSValueReg = /^((?:\-)?(?:\d+\.?|\.\d+|\d+\.\d+))([a-zA-Z%]*)$/;
  * @param value 长度值
  * @param defaultUnit 默认长度值单位
  */
-export function normalizeUnit(value?: number | string, defaultUnit = "px") {
-  if (typeof value === "number") {
+export function normalizeUnit(value?: number | string, defaultUnit = 'px') {
+  if (typeof value === 'number') {
     return value + defaultUnit;
   }
 
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const result = value.match(CSSValueReg);
     if (Array.isArray(result)) {
       return result[2]
@@ -54,20 +53,20 @@ export interface SplitedValue {
  */
 export function splitValue(
   value: number | string,
-  defaultUnit = "px"
+  defaultUnit = 'px'
 ): SplitedValue {
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     return { num: value, unit: defaultUnit };
   }
 
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const result = value.match(CSSValueReg);
     if (Array.isArray(result)) {
       return { num: parseFloat(result[1]), unit: result[2] || defaultUnit };
     }
   }
 
-  throw new Error("Invalid numeric format");
+  throw new Error('Invalid numeric format');
 }
 
 /**
@@ -77,21 +76,31 @@ export function splitValue(
  * @param style
  * @returns
  */
-export function adaptive(
-  style: Partial<Record<keyof CSSProperties, number | string>>
-) {
+export function adaptive(style: Record<string, Interpolation<Theme>>) {
   const ctx = getContextValue() as ContextValue;
-  const max: CSSObject = {};
-  const min: CSSObject = {};
-  const normal: CSSObject = {};
+  const max: Interpolation<Theme> = {};
+  const min: Interpolation<Theme> = {};
+  const normal: Interpolation<Theme> = {};
   for (let name in style) {
-    let value = style[name as keyof CSSProperties]!;
-    if (typeof value !== "number") {
-      normal[name] = value;
+    let value = style[name];
+    if (typeof value !== 'number') {
+      normal[name] = value as any;
+    } else if (
+      [
+        'flex',
+        'flexGrow',
+        'flexShrink',
+        'lineHeight',
+        'fontWeight',
+        'zIndex',
+      ].includes(name) &&
+      typeof value === 'number'
+    ) {
+      normal[name] = value as any;
     } else {
-      normal[name] = (value * 100) / 750 + "vw";
-      max[name] = (value * ctx.maxDocWidth) / 750 + "px";
-      min[name] = (value * ctx.minDocWidth) / 750 + "px";
+      normal[name] = (value * 100) / 750 + 'vw';
+      max[name] = (value * ctx.maxDocWidth) / 750 + 'px';
+      min[name] = (value * ctx.minDocWidth) / 750 + 'px';
     }
   }
   return css({
