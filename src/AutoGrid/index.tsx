@@ -23,10 +23,10 @@ export interface AutoGridOption extends React.HTMLProps<HTMLDivElement> {
  * @param props
  */
 export function AutoGrid(props: AutoGridOption) {
-  let {
+  const {
     children,
-    cols = 1,
-    gap = 0,
+    cols: rawCols = 1,
+    gap: rawGap = 0,
     isSquare = false,
     itemStyle,
     containerStyle,
@@ -34,8 +34,8 @@ export function AutoGrid(props: AutoGridOption) {
   } = props;
 
   // 规范化数字单位
-  cols = +cols;
-  gap = normalizeUnit(gap) as string;
+  const cols = +rawCols;
+  const gap = normalizeUnit(rawGap) as string;
 
   // 获取表格数据
   const getGridData = useCallback(() => {
@@ -68,34 +68,28 @@ export function AutoGrid(props: AutoGridOption) {
     const gridData = getGridData();
     return gridData.map((row, rowIndex) => {
       // 每行的槽样式，最后一行没有
-      let finalRowStyle: Interpolation<Theme> = [style.rowStyle];
-      if (rowIndex !== gridData.length - 1) {
-        // 最后一行不需要marginBottom
-        finalRowStyle.push({
-          marginBottom: gap,
-        });
-      }
+      let finalRowStyle: Interpolation<Theme> = [
+        style.rowStyle,
+        rowIndex !== gridData.length - 1 ? { marginBottom: gap } : {}
+      ];
 
       return (
         <div key={rowIndex} css={finalRowStyle}>
           {row.map((item, colIndex) => {
-            let finalCss: Interpolation<Theme> = [...finalItemBoxStyle];
-
-            // 如果是方形的，加入方形相关的样式
-            if (isSquare) {
-              finalCss.push(style.itemBoxSquare);
-            }
-            finalCss.push(itemStyle);
+            let finalCss: Interpolation<Theme> = [
+              ...finalItemBoxStyle,
+              itemStyle
+            ];
 
             if (isSquare) {
               return (
-                <div css={finalCss} key={colIndex}>
+                <div css={[...finalCss, style.itemBoxSquare]} key={colIndex}>
                   <div css={style.itemInnerStyle}>{item}</div>
                 </div>
               );
             } else {
               return (
-                <div css={finalItemBoxStyle} key={colIndex}>
+                <div css={finalCss} key={colIndex}>
                   {item}
                 </div>
               );

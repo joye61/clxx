@@ -53,17 +53,17 @@ export function AlertWrapper(props: AlertWrapperProps) {
   } = props;
 
   // 标题样式
-  let titleCss: Interpolation<Theme> = [style.title];
-  if (description) {
-    titleCss.push({ paddingBottom: 0 });
-  }
-  titleCss.push(titleStyle);
+  let titleCss: Interpolation<Theme> = [
+    style.title,
+    description ? { paddingBottom: 0 } : {},
+    titleStyle
+  ];
 
   // 展示按钮组
-  let btnBoxCss: Interpolation<Theme> = [style.btnBox];
-  if (showCancel) {
-    btnBoxCss.push(style.btnBoxWithCancel);
-  }
+  let btnBoxCss: Interpolation<Theme> = [
+    style.btnBox,
+    showCancel ? style.btnBoxWithCancel : {}
+  ];
 
   return (
     <div css={style.container}>

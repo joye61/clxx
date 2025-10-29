@@ -87,6 +87,7 @@ export class Countdown {
     // 记录倒计时开启时的时间
     const start = Date.now();
 
+    // 使用 1000ms 间隔，避免每帧都执行（性能优化）
     this._stopTick = tick(() => {
       // 获取倒计时已经持续的时间
       const duration = Math.floor((Date.now() - start) / 1000);
@@ -106,7 +107,7 @@ export class Countdown {
         this.remain = currentRemain;
         this._onUpdate?.(this.formatValue());
       }
-    });
+    }, 1000);  // ← 添加 1000ms 间隔
   }
 
   // 停止倒计时
@@ -117,7 +118,9 @@ export class Countdown {
 
   /**
    * 格式化每次更新的值
-   * @param remainTime
+   * 注意：format 的顺序决定了如何分配时间
+   * 例如：format='his' 时，72小时会显示为 72:00:00
+   *      format='dhis' 时，72小时会显示为 3:0:00:00（3天）
    */
   formatValue(): CountdownValue {
     let remainTime = this.remain;

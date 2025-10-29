@@ -255,16 +255,26 @@ export function parseRequestOption(option: RequestOption) {
  */
 export async function sendRequest<T = StandardAjaxResult>(option: RequestOption) {
   const { url, fetchOption, timeout } = parseRequestOption(option);
+  const controller = new AbortController();
+  
   return Promise.race([
     // 网络请求
-    fetch(url, fetchOption)
+    fetch(url, { ...fetchOption, signal: controller.signal })
       .then((response) => {
         return response.json();
       })
       .then((result: T) => {
         return result;
       })
-      .catch(() => {
+      .catch((error) => {
+        // 如果是主动取消的请求，返回超时错误
+        if (error.name === 'AbortError') {
+          const result: StandardAjaxResult = {
+            code: -10001,
+            message: "Network request timeout",
+          };
+          return result;
+        }
         const result: StandardAjaxResult = {
           code: -10000,
           message: "An exception occurred in the network request",
@@ -274,6 +284,7 @@ export async function sendRequest<T = StandardAjaxResult>(option: RequestOption)
     // 超时逻辑
     new Promise<StandardAjaxResult>((resolve) => {
       window.setTimeout(() => {
+        controller.abort(); // 取消请求
         const result: StandardAjaxResult = {
           code: -10001,
           message: "Network request timeout",

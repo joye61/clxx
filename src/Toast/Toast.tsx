@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
+import { Interpolation, SerializedStyles, Theme } from "@emotion/react";
 import React, { useState, useEffect } from "react";
 import { style, getAnimation } from "./style";
 
@@ -52,9 +52,9 @@ export function Toast(props: ToastProps) {
     }, duration);
 
     return () => {
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
     };
-  }, [position]);
+  }, [position, duration]);
 
   let showContent: any;
   const middleStyle = position === "middle" ? style.contentMiddle : undefined;

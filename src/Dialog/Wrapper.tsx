@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Theme, Interpolation, ArrayInterpolation } from "@emotion/react";
+import { jsx, Theme, Interpolation } from "@emotion/react";
 import { Overlay } from "../Overlay";
 import { style, DialogType, AnimationStatus, getAnimation } from "./style";
 
@@ -39,21 +39,18 @@ export function Wrapper(props: WrapperProps) {
   const { animation, keyframes } = getAnimation(type, status);
 
   // 选取特定的类型对应的样式
-  let boxCss: ArrayInterpolation<Theme> = [style.boxCss];
-  if (["pullUp", "pullDown", "pullLeft", "pullRight"].includes(type)) {
-    boxCss.push(style[type as keyof typeof style]);
-  }
+  let boxCss: any[] = [
+    style.boxCss,
+    ["pullUp", "pullDown", "pullLeft", "pullRight"].includes(type) ? style[type as keyof typeof style] : {}
+  ];
 
   // 遮罩的样式
-  let maskCss: ArrayInterpolation<Theme> = [
+  let maskCss: any[] = [
     style.mask,
     status === "show" ? style.maskShow : style.maskHide,
     maskStyle,
+    maskColor ? { backgroundColor: maskColor } : {}
   ];
-  // 遮罩颜色
-  if (maskColor) {
-    maskCss.push({ backgroundColor: maskColor });
-  }
 
   // 空白处点击
   const blankClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

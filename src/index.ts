@@ -24,6 +24,9 @@ export { createPortalDOM } from './utils/dom';
 
 export { useInterval } from './Effect/useInterval';
 export { useTick } from './Effect/useTick';
+export { useUpdate } from './Effect/useUpdate';
+export { useWindowResize } from './Effect/useWindowResize';
+export { useViewport } from './Effect/useViewport';
 
 export { Ago } from './Ago';
 export { Container } from './Container';

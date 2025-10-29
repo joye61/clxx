@@ -46,46 +46,44 @@ export function Indicator(props: IndicatorProps) {
 
   const radius = rounded ? barWidth / 2 : 0;
 
-  const barList = [];
-  for (let i = 0; i < barCount; i++) {
-    barList.push(
-      <rect
-        key={i}
-        x={(100 - barWidth) / 2}
-        y="0"
-        rx={radius}
-        ry={radius}
-        width={barWidth}
-        height={barHeight}
-        transform={`rotate(${(360 / barCount) * i}, 50, 50)`}
-        css={{
-          animationDelay: `${-(duration * (barCount - i)) / barCount}ms`,
-        }}
-      />
-    );
-  }
+  // 使用 useMemo 缓存 barList，避免每次渲染都重新生成
+  const barList = React.useMemo(() => {
+    const bars = [];
+    for (let i = 0; i < barCount; i++) {
+      bars.push(
+        <rect
+          key={i}
+          x={(100 - barWidth) / 2}
+          y="0"
+          rx={radius}
+          ry={radius}
+          width={barWidth}
+          height={barHeight}
+          transform={`rotate(${(360 / barCount) * i}, 50, 50)`}
+          css={{
+            animationDelay: `${-(duration * (barCount - i)) / barCount}ms`,
+          }}
+        />
+      );
+    }
+    return bars;
+  }, [barCount, barWidth, barHeight, radius, duration]);
 
-  const style: Interpolation<Theme> = [
+  // 使用 useMemo 缓存样式，避免每次都重新计算
+  const style = React.useMemo<Interpolation<Theme>>(() => [
     {
       fontSize: 0,
     },
-  ];
-  if (typeof size !== 'undefined') {
-    const unitSize = normalizeUnit(size);
-    style.push({
-      width: unitSize,
-      height: unitSize,
-    });
-  } else {
-    // 容器尺寸未传时，这里是默认的尺寸
-    style.push(
-      adaptive({
-        width: 60,
-        height: 60,
-      })
-    );
-  }
-  const svgStyle = css({
+    typeof size !== 'undefined' ? {
+      width: normalizeUnit(size),
+      height: normalizeUnit(size),
+    } : adaptive({
+      width: 60,
+      height: 60,
+    })
+  ], [size]);
+
+  const svgStyle = React.useMemo(() => css({
     width: '100%',
     height: '100%',
     rect: {
@@ -95,7 +93,7 @@ export function Indicator(props: IndicatorProps) {
       animationTimingFunction: 'linear',
       animationIterationCount: 'infinite',
     },
-  });
+  }), [barColor, duration]);
 
   return (
     <div css={[style, containerStyle]} {...attributes}>

@@ -12,15 +12,15 @@ import { is } from '../utils/is';
  */
 export interface ClickableProps extends React.HTMLProps<HTMLDivElement> {
   // 包裹元素的子元素
-  children: React.ReactNode;
+  children?: React.ReactNode;
   // 是否允许冒泡
-  bubble: boolean;
+  bubble?: boolean;
   // 激活时的类
-  activeClassName: string;
+  activeClassName?: string;
   // 激活时的样式
-  activeStyle: React.CSSProperties;
+  activeStyle?: React.CSSProperties;
   // 禁用点击态行为
-  disable: boolean;
+  disable?: boolean;
 }
 
 export function Clickable(props: Partial<ClickableProps>) {
@@ -36,11 +36,16 @@ export function Clickable(props: Partial<ClickableProps>) {
   } = props;
 
   // 如果激活样式和激活类都不存在，则设置激活默认样式
-  if (!activeClassName && !activeStyle) {
-    activeStyle = {
-      opacity: 0.6,
-    };
-  }
+  // 使用 useMemo 避免每次渲染都创建新对象
+  const defaultActiveStyle = React.useMemo(() => {
+    if (!activeClassName && !activeStyle) {
+      return { opacity: 0.6 };
+    }
+    return activeStyle;
+  }, [activeClassName, activeStyle]);
+
+  const finalActiveStyle = defaultActiveStyle || activeStyle;
+
   const touchable = is('touchable');
   const [boxClass, setBoxClass] = useState<undefined | string>(className);
   const [boxStyle, setBoxStyle] = useState<CSSProperties | undefined>(style);
@@ -70,11 +75,11 @@ export function Clickable(props: Partial<ClickableProps>) {
             : activeClassName
         );
       }
-      if (typeof activeStyle === 'object') {
+      if (typeof finalActiveStyle === 'object') {
         setBoxStyle(
           typeof boxStyle === 'object'
-            ? { ...boxStyle, ...activeStyle }
-            : activeStyle
+            ? { ...boxStyle, ...finalActiveStyle }
+            : finalActiveStyle
         );
       }
     }

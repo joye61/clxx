@@ -1,9 +1,8 @@
-import { ArrayInterpolation, Theme } from '@emotion/react';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { getContextValue } from '../context';
-import { ContextValue } from '../context';
-import { useWindowResize } from '../Effect/useWindowResize';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { getContextValue } from "../context";
+import { ContextValue } from "../context";
+import { useWindowResize } from "../Effect/useWindowResize";
 
 export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
   // 挂载元素的子元素
@@ -29,7 +28,7 @@ export function Overlay(props: OverlayProps) {
     outside = false,
     centerContent = true,
     fullScreen = true,
-    maskColor = 'rgba(0, 0, 0, .6)',
+    maskColor = "rgba(0, 0, 0, .6)",
     ...extra
   } = props;
 
@@ -37,7 +36,7 @@ export function Overlay(props: OverlayProps) {
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
 
   // 这里是为了修复一个非挂载状态触发resize事件的bug
-  const isUnmount = useRef<boolean | null>(false);
+  const isUnmount = useRef<boolean>(false);
   useEffect(() => {
     return () => {
       isUnmount.current = true;
@@ -46,7 +45,7 @@ export function Overlay(props: OverlayProps) {
 
   useLayoutEffect(() => {
     if (outside) {
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       document.body.appendChild(div);
       setMount(div);
 
@@ -56,7 +55,7 @@ export function Overlay(props: OverlayProps) {
     }
   }, [outside]);
 
-  // 页面大小变化时，innerWidth也会更新
+  // 页面大小变化时，innerWidth 也会更新
   useWindowResize(() => {
     if (!isUnmount.current) {
       setInnerWidth(window.innerWidth);
@@ -64,39 +63,45 @@ export function Overlay(props: OverlayProps) {
   });
 
   const ctx = getContextValue() as ContextValue;
-  const style: ArrayInterpolation<Theme> = [];
 
-  // 如果是全屏，设置全屏样式
-  if (fullScreen) {
-    // 获取宽度
-    let width = innerWidth;
-    if (width >= ctx.maxDocWidth) {
-      width = ctx.maxDocWidth;
-    } else if (width <= ctx.minDocWidth) {
-      width = ctx.minDocWidth;
+  // 使用 useMemo 缓存样式计算，避免每次渲染都重新计算
+  const style = useMemo(() => {
+    const styles: any[] = [];
+
+    // 如果是全屏，设置全屏样式
+    if (fullScreen) {
+      // 获取宽度
+      let width = innerWidth;
+      if (width >= ctx.maxDocWidth) {
+        width = ctx.maxDocWidth;
+      } else if (width <= ctx.minDocWidth) {
+        width = ctx.minDocWidth;
+      }
+      styles.push({
+        zIndex: 9999,
+        position: "fixed",
+        top: 0,
+        left: "50%",
+        marginLeft: `-${width / 2}px`,
+        width: `${width}px`,
+        height: "100%",
+        maxWidth: `${ctx.maxDocWidth}px`,
+        minWidth: `${ctx.minDocWidth}px`,
+        backgroundColor: maskColor,
+      });
     }
-    style.push({
-      zIndex: 9999,
-      position: 'fixed',
-      top: 0,
-      left: '50%',
-      marginLeft: `-${width / 2}px`,
-      width: `${width}px`,
-      height: '100%',
-      maxWidth: `${ctx.maxDocWidth}px`,
-      minWidth: `${ctx.minDocWidth}px`,
-      backgroundColor: maskColor,
-    });
-  }
 
-  // 如果内容居中，设置内容居中有样式
-  if (centerContent) {
-    style.push({
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    });
-  }
+    // 如果内容居中，设置内容居中样式
+    if (centerContent) {
+      styles.push({
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
+    }
+
+    return styles;
+  }, [fullScreen, innerWidth, ctx.maxDocWidth, ctx.minDocWidth, maskColor, centerContent]);
 
   const content = (
     <div css={style} {...extra}>
