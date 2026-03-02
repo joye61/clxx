@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Interpolation, jsx, SerializedStyles, Theme } from "@emotion/react";
 import * as CSS from "csstype";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Indicator } from "../Indicator";
 import { RowCenter } from "../Flex/Row";
 import { style } from "./style";
@@ -74,36 +74,39 @@ export function ScrollView(props: ScrollViewProps) {
 
   // 当前滚动到顶部的距离
   const lastScrollTop = useRef<number>(0);
-  
+
   // 防止重复触发的标记
   const hasReachedTop = useRef<boolean>(false);
   const hasReachedBottom = useRef<boolean>(false);
-  
+
   // 节流控制
   const throttleTimer = useRef<number | undefined>(undefined);
   const lastCallTime = useRef<number>(0);
 
-  // 使用 ref 保存最新的回调函数，避免闭包陈旧
-  const callbacksRef = useRef({
+  // 使用 ref 保存所有滚动处理需要的 props，彻底消除陈旧闭包
+  const propsRef = useRef({
     onScroll,
     onReachTop,
     onReachBottom,
+    reachTopThreshold,
+    reachBottomThreshold,
   });
-
-  // 每次渲染都更新 ref 中的回调
-  callbacksRef.current = {
+  propsRef.current = {
     onScroll,
     onReachTop,
     onReachBottom,
+    reachTopThreshold,
+    reachBottomThreshold,
   };
 
-  // container是否有滚动条
+  // container 是否有滚动条
   const [hasScrollBar, setHasScrollBar] = useState(false);
 
   // 检查是否有滚动条
   const checkScrollBar = useCallback(() => {
     if (container.current) {
-      const hasScroll = container.current.scrollHeight > container.current.clientHeight;
+      const hasScroll =
+        container.current.scrollHeight > container.current.clientHeight;
       setHasScrollBar(hasScroll);
     }
   }, []);
@@ -132,47 +135,35 @@ export function ScrollView(props: ScrollViewProps) {
     };
   }, [checkScrollBar]);
 
-  // 滚动回调（带节流）
-  const scrollCallback = useCallback((rawEvent: React.UIEvent<HTMLDivElement>) => {
-    const now = Date.now();
-    
-    // 节流控制
-    if (scrollThrottle > 0 && now - lastCallTime.current < scrollThrottle) {
-      // 清除之前的定时器
-      if (throttleTimer.current) {
-        clearTimeout(throttleTimer.current);
-      }
-      
-      // 设置新的定时器，确保最后一次调用会被执行
-      throttleTimer.current = window.setTimeout(() => {
-        handleScroll(rawEvent);
-      }, scrollThrottle);
-      
-      return;
-    }
-
-    lastCallTime.current = now;
-    handleScroll(rawEvent);
-  }, [scrollThrottle, reachTopThreshold, reachBottomThreshold]);
-
-  // 实际的滚动处理逻辑
-  const handleScroll = useCallback((rawEvent: React.UIEvent<HTMLDivElement>) => {
+  // 核心滚动处理逻辑
+  // 所有外部值从 ref 读取，deps 为空，引用永远稳定，不存在闭包过期问题
+  const processScroll = useCallback((rawEvent?: React.UIEvent) => {
     const box = container.current;
     if (!box) return;
 
-    // 已经滚动的距离
+    const {
+      onScroll,
+      onReachTop,
+      onReachBottom,
+      reachTopThreshold,
+      reachBottomThreshold,
+    } = propsRef.current;
+
     const scrollTop = box.scrollTop;
-    // 滚动容器的包含滚动内容的高度
     const contentHeight = box.scrollHeight;
-    // 滚动容器的视口高度
-    const containerHeight = Math.min(box.clientHeight, box.offsetHeight);
-    // 最大可滚动距离
+    // clientHeight 即可视区域高度（不含 border），无需 Math.min(clientHeight, offsetHeight)
+    const containerHeight = box.clientHeight;
     const maxScroll = contentHeight - containerHeight;
 
-    // 计算滚动方向
-    const direction: "upward" | "downward" = scrollTop > lastScrollTop.current ? "downward" : "upward";
+    // 防止零位移时误判方向（如内容变化触发的 scroll 事件）
+    if (scrollTop === lastScrollTop.current && lastScrollTop.current !== 0) {
+      return;
+    }
 
-    // 生成滚动事件参数
+    // scrollTop 增大 => 向下滚动；相等（初始 0→0）视为向下
+    const direction: "upward" | "downward" =
+      scrollTop >= lastScrollTop.current ? "downward" : "upward";
+
     const event: ScrollEvent = {
       containerHeight,
       contentHeight,
@@ -182,45 +173,85 @@ export function ScrollView(props: ScrollViewProps) {
       rawEvent,
     };
 
-    // 调用通用滚动事件（使用 ref 中的最新回调）
-    callbacksRef.current.onScroll?.(event);
+    onScroll?.(event);
 
     // 触顶逻辑（防止重复触发）
     if (direction === "upward" && scrollTop <= reachTopThreshold) {
       if (!hasReachedTop.current) {
         hasReachedTop.current = true;
-        hasReachedBottom.current = false; // 重置触底标记
-        callbacksRef.current.onReachTop?.(event);
+        hasReachedBottom.current = false;
+        onReachTop?.(event);
       }
     } else if (scrollTop > reachTopThreshold) {
       hasReachedTop.current = false;
     }
 
     // 触底逻辑（防止重复触发）
-    if (direction === "downward" && scrollTop >= maxScroll - reachBottomThreshold) {
+    if (
+      direction === "downward" &&
+      maxScroll > 0 &&
+      scrollTop >= maxScroll - reachBottomThreshold
+    ) {
       if (!hasReachedBottom.current) {
         hasReachedBottom.current = true;
-        hasReachedTop.current = false; // 重置触顶标记
-        callbacksRef.current.onReachBottom?.(event);
+        hasReachedTop.current = false;
+        onReachBottom?.(event);
       }
     } else if (scrollTop < maxScroll - reachBottomThreshold) {
       hasReachedBottom.current = false;
     }
 
-    // 更新scrollTop上次的值
     lastScrollTop.current = scrollTop;
-  }, [reachTopThreshold, reachBottomThreshold]);
+  }, []);
+
+  // 节流滚动回调（leading + trailing）
+  const scrollCallback = useCallback(
+    (rawEvent: React.UIEvent<HTMLDivElement>) => {
+      // 不节流时直接执行
+      if (scrollThrottle <= 0) {
+        processScroll(rawEvent);
+        return;
+      }
+
+      const now = Date.now();
+      const elapsed = now - lastCallTime.current;
+
+      if (elapsed >= scrollThrottle) {
+        // 前沿立即执行
+        lastCallTime.current = now;
+        processScroll(rawEvent);
+
+        // 消除挂起的尾部定时器
+        if (throttleTimer.current !== undefined) {
+          clearTimeout(throttleTimer.current);
+          throttleTimer.current = undefined;
+        }
+      } else {
+        // 尾部调用：按剩余时间调度，保证滚动停止后最终状态被处理
+        if (throttleTimer.current !== undefined) {
+          clearTimeout(throttleTimer.current);
+        }
+        throttleTimer.current = window.setTimeout(() => {
+          lastCallTime.current = Date.now();
+          throttleTimer.current = undefined;
+          // 尾部调用不传 rawEvent（已过期），processScroll 从 DOM 读取实时位置
+          processScroll();
+        }, scrollThrottle - elapsed);
+      }
+    },
+    [scrollThrottle, processScroll]
+  );
 
   // 清理节流定时器
-  useLayoutEffect(() => {
+  useEffect(() => {
     return () => {
-      if (throttleTimer.current) {
+      if (throttleTimer.current !== undefined) {
         clearTimeout(throttleTimer.current);
       }
     };
   }, []);
 
-  // loading内容
+  // loading 内容
   let showLoadingContent: React.ReactNode = null;
   if (showLoading) {
     if (!loadingContent) {
@@ -236,10 +267,13 @@ export function ScrollView(props: ScrollViewProps) {
   }
 
   return (
-    <div css={[style.container, heightStyle, containerStyle]} onScroll={scrollCallback} ref={container} {...attrs}>
-      <div css={wrapperStyle}>
-        {children}
-      </div>
+    <div
+      css={[style.container, heightStyle, containerStyle]}
+      onScroll={scrollCallback}
+      ref={container}
+      {...attrs}
+    >
+      <div css={wrapperStyle}>{children}</div>
       {hasScrollBar && showLoadingContent}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useLayoutEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { getContextValue } from "../context";
 import { ContextValue } from "../context";
@@ -35,14 +35,6 @@ export function Overlay(props: OverlayProps) {
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
 
-  // 这里是为了修复一个非挂载状态触发resize事件的bug
-  const isUnmount = useRef<boolean>(false);
-  useEffect(() => {
-    return () => {
-      isUnmount.current = true;
-    };
-  }, []);
-
   useLayoutEffect(() => {
     if (outside) {
       const div = document.createElement("div");
@@ -57,9 +49,7 @@ export function Overlay(props: OverlayProps) {
 
   // 页面大小变化时，innerWidth 也会更新
   useWindowResize(() => {
-    if (!isUnmount.current) {
-      setInnerWidth(window.innerWidth);
-    }
+    setInnerWidth(window.innerWidth);
   });
 
   const ctx = getContextValue() as ContextValue;

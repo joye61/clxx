@@ -46,8 +46,8 @@ pnpm add clxx
 
 ```json
 {
-  "react": "^19.2.0",
-  "react-dom": "^19.2.0"
+  "react": "^19.2.4",
+  "react-dom": "^19.2.4"
 }
 ```
 

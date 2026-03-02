@@ -16,85 +16,76 @@ export type AgoValue = {
 export function ago(date: dayjs.ConfigType): AgoValue {
   const now = dayjs();
   const input = dayjs(date);
-  const aYearAgo = now.subtract(1, 'year');
-  const aMonthAgo = now.subtract(1, 'month');
-  const aDayAgo = now.subtract(1, 'day');
-  const aHourAgo = now.subtract(1, 'hour');
-  const aMinuteAgo = now.subtract(1, 'minute');
 
-  // 多少年前
-  if (input.isBefore(aYearAgo)) {
-    const diff = now.year() - input.year();
-    const nYearsAgo = now.subtract(diff, 'year');
-    let showNum = diff;
-    if (input.isAfter(nYearsAgo)) {
-      showNum = diff - 1;
-    }
+  if (!input.isValid()) {
     return {
-      num: showNum,
+      num: 0,
+      unit: 's',
+      format: '刚刚',
+    };
+  }
+
+  const isFuture = input.isAfter(now);
+  const from = isFuture ? now : input;
+  const to = isFuture ? input : now;
+
+  const years = to.diff(from, 'year');
+  if (years >= 1) {
+    return {
+      num: years,
       unit: 'y',
-      format: `${showNum}年前`,
+      format: `${years}年${isFuture ? '后' : '前'}`,
     };
   }
 
-  // 多少月前
-  if (input.isBefore(aMonthAgo)) {
-    let showNum = 1;
-    for (let n = 2; n <= 12; n++) {
-      const nMonthAgo = now.subtract(n, 'month');
-      if (input.isAfter(nMonthAgo)) {
-        showNum = n - 1;
-        break;
-      }
-    }
+  const months = to.diff(from, 'month');
+  if (months >= 1) {
     return {
-      num: showNum,
+      num: months,
       unit: 'm',
-      format: `${showNum}个月前`,
+      format: `${months}个月${isFuture ? '后' : '前'}`,
     };
   }
 
-  // 多少天前
-  if (input.isBefore(aDayAgo)) {
-    const showNum = Math.floor((now.unix() - input.unix()) / 86400);
+  const days = to.diff(from, 'day');
+  if (days >= 1) {
     return {
-      num: showNum,
+      num: days,
       unit: 'd',
-      format: `${showNum}天前`,
+      format: `${days}天${isFuture ? '后' : '前'}`,
     };
   }
 
-  // 多少小时前
-  if (input.isBefore(aHourAgo)) {
-    const showNum = Math.floor((now.unix() - input.unix()) / 3600);
+  const hours = to.diff(from, 'hour');
+  if (hours >= 1) {
     return {
-      num: showNum,
+      num: hours,
       unit: 'h',
-      format: `${showNum}个小时前`,
+      format: `${hours}小时${isFuture ? '后' : '前'}`,
     };
   }
 
-  // 多少分钟前
-  if (input.isBefore(aMinuteAgo)) {
-    const showNum = Math.floor((now.unix() - input.unix()) / 60);
+  const minutes = to.diff(from, 'minute');
+  if (minutes >= 1) {
     return {
-      num: showNum,
+      num: minutes,
       unit: 'i',
-      format: `${showNum}分钟前`,
+      format: `${minutes}分钟${isFuture ? '后' : '前'}`,
     };
   }
 
-  // 多少秒前
-  const showNum = now.unix() - input.unix();
-  let format;
-  if (showNum > 10) {
-    format = `${showNum}秒前`;
-  } else {
-    format = '刚刚';
+  const seconds = to.diff(from, 'second');
+  if (seconds < 10) {
+    return {
+      num: seconds,
+      unit: 's',
+      format: isFuture ? '马上' : '刚刚',
+    };
   }
+
   return {
-    num: showNum,
+    num: seconds,
     unit: 's',
-    format,
+    format: `${seconds}秒${isFuture ? '后' : '前'}`,
   };
 }

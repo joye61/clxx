@@ -47,14 +47,7 @@ export function Clickable(props: Partial<ClickableProps>) {
   const finalActiveStyle = defaultActiveStyle || activeStyle;
 
   const touchable = is('touchable');
-  const [boxClass, setBoxClass] = useState<undefined | string>(className);
-  const [boxStyle, setBoxStyle] = useState<CSSProperties | undefined>(style);
-
-  // 监控属性的更新
-  useEffect(() => {
-    setBoxClass(className);
-    setBoxStyle(style);
-  }, [className, style]);
+  const [isActive, setIsActive] = useState(false);
 
   // 标记是否正处于触摸状态
   const touchRef = useRef<boolean>(false);
@@ -67,32 +60,16 @@ export function Clickable(props: Partial<ClickableProps>) {
       if (!bubble) {
         event.stopPropagation();
       }
-      // 激活目标样式
-      if (typeof activeClassName === 'string') {
-        setBoxClass(
-          typeof boxClass === 'string'
-            ? `${boxClass} ${activeClassName}`
-            : activeClassName
-        );
-      }
-      if (typeof finalActiveStyle === 'object') {
-        setBoxStyle(
-          typeof boxStyle === 'object'
-            ? { ...boxStyle, ...finalActiveStyle }
-            : finalActiveStyle
-        );
-      }
+      setIsActive(true);
     }
   };
 
-  // onEnd返回记忆的版本，防止下一个effect中无意义重复执行
   const onEnd = useCallback<() => void>(() => {
     if (touchRef.current) {
       touchRef.current = false;
-      setBoxClass(className);
-      setBoxStyle(style);
+      setIsActive(false);
     }
-  }, [className, style]);
+  }, []);
 
   // PC环境释放逻辑
   useEffect(() => {
@@ -105,10 +82,19 @@ export function Clickable(props: Partial<ClickableProps>) {
     }
   }, [disable, touchable, onEnd]);
 
+  // 根据激活状态计算最终的 className 和 style
+  const finalClassName = isActive && typeof activeClassName === 'string'
+    ? (typeof className === 'string' ? `${className} ${activeClassName}` : activeClassName)
+    : className;
+
+  const finalStyle = isActive && typeof finalActiveStyle === 'object'
+    ? (typeof style === 'object' ? { ...style, ...finalActiveStyle } : finalActiveStyle)
+    : style;
+
   const fullAttrs: React.HTMLProps<HTMLDivElement> = {
     ...attrs,
-    className: boxClass,
-    style: boxStyle,
+    className: finalClassName,
+    style: finalStyle,
   };
 
   // 非禁用状态有点击态行为

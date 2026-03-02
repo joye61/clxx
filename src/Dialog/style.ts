@@ -130,7 +130,7 @@ export function getAnimation(type: DialogType, status: AnimationStatus) {
   return {
     keyframes,
     animation: css({
-      animation: `${keyframes} 300ms ease`,
+      animation: `${keyframes} 300ms ease forwards`,
     }),
   };
 }
@@ -140,7 +140,7 @@ export const style = {
     animation: `${maskShow} 300ms ease`,
   }),
   maskHide: css({
-    animation: `${maskHide} 300ms ease`,
+    animation: `${maskHide} 300ms ease forwards`,
   }),
   mask: css({
     zIndex: 1,

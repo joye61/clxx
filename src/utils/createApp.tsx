@@ -111,26 +111,38 @@ export async function createApp(option: CreateAppOption) {
 
         // 加载并显示页面
         if (typeof render === "function") {
-          const pageContent = await render(normalizedPath);
+          try {
+            const pageContent = await render(normalizedPath);
 
-          // 如果返回 null/undefined，视为页面未找到
-          if (pageContent === null || pageContent === undefined) {
+            // 如果返回 null/undefined，视为页面未找到
+            if (pageContent === null || pageContent === undefined) {
+              if (typeof notFound === "function") {
+                setPage(await notFound(normalizedPath));
+              } else {
+                // 默认 404 页面
+                setPage(<div>Not Found: {normalizedPath}</div>);
+              }
+              return;
+            }
+
+            setPage(pageContent);
+          } catch {
+            // 动态 import 失败等场景
             if (typeof notFound === "function") {
               setPage(await notFound(normalizedPath));
             } else {
-              // 默认 404 页面
               setPage(<div>Not Found: {normalizedPath}</div>);
             }
             return;
           }
-
-          setPage(pageContent);
         }
 
         // 页面加载后钩子
         await onAfter?.(normalizedPath);
       },
-      [onBefore, onAfter, loading, render, notFound]
+      // 所有外部变量在闭包创建时已捕获，不会变化
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      []
     );
 
     /**
@@ -158,10 +170,14 @@ export async function createApp(option: CreateAppOption) {
     mount = document.querySelector(option.target);
   } else if (option.target instanceof HTMLElement) {
     mount = option.target;
-  } else {
-    throw new Error("No mounted object is specified");
   }
 
-  const root = createRoot(mount!);
+  if (!mount) {
+    throw new Error(
+      `Mount target not found: ${typeof option.target === "string" ? option.target : "invalid element"}`
+    );
+  }
+
+  const root = createRoot(mount);
   root.render(<App />);
 }

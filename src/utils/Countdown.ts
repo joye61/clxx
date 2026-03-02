@@ -41,8 +41,13 @@ export class Countdown {
   _onEnd?: () => void;
 
   constructor(option: CountdownOption) {
-    if (typeof option.remain === 'number' && option.remain >= 0) {
-      this.total = this.remain = option.remain;
+    if (typeof option.remain === 'string') {
+      const parsed = parseFloat(option.remain);
+      if (!isNaN(parsed) && parsed >= 0) {
+        this.total = this.remain = Math.floor(parsed);
+      }
+    } else if (typeof option.remain === 'number' && option.remain >= 0) {
+      this.total = this.remain = Math.floor(option.remain);
     }
 
     // 倒计时需要展示的时间格式
@@ -110,10 +115,11 @@ export class Countdown {
     }, 1000);  // ← 添加 1000ms 间隔
   }
 
-  // 停止倒计时
+  // 停止倒计时（暂停并保留当前剩余时间，可再次 start 恢复）
   stop() {
-    this.total = this.remain;
     this._stopTick?.();
+    this._stopTick = undefined;
+    this.total = this.remain;
   }
 
   /**

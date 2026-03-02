@@ -42,15 +42,22 @@ export function AutoGrid(props: AutoGridOption) {
     // 生成一个能创建表格的二维数组
     let list: Array<React.ReactNode[]> = [];
     React.Children.forEach(children, (child) => {
-      if (child !== null) {
+      if (child !== null && child !== undefined) {
         if (list.length === 0 || list[list.length - 1].length >= cols) {
           list.push([]);
         }
         list[list.length - 1].push(child);
       }
     });
+    // 用空占位符补齐最后一行，避免最后一行元素宽度不一致
+    if (list.length > 0) {
+      const lastRow = list[list.length - 1];
+      while (lastRow.length < cols) {
+        lastRow.push(<div key={`placeholder-${lastRow.length}`} style={{ visibility: 'hidden' }} />);
+      }
+    }
     return list;
-  }, [children]);
+  }, [children, cols]);
 
   // 元素的最终样式
   const finalItemBoxStyle: Interpolation<Theme> = [

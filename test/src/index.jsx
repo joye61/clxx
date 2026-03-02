@@ -7,7 +7,8 @@ createApp({
   target: "#root",
   // maxDocWidth: 10000,
   async render(pathname) {
-    let page = await import(`./${pathname}/index.jsx`);
+    const module = await import(`./${pathname}/index.jsx`);
+    const Page = module.default;
     if (pathname === 'index') {
       return <Home />;
     }
@@ -23,7 +24,7 @@ createApp({
           </button>
         </div>
         <div className="demo">
-          <page.default />
+          <Page />
         </div>
       </>
     );

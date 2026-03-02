@@ -23,21 +23,25 @@ export async function jsonp(
     const urlObject = new URL(url);
     urlObject.searchParams.set(callbackName, funcName);
 
+    // 清理辅助函数
+    const cleanup = () => {
+      delete window[funcName];
+      script.remove();
+    };
+
     // 创建全局script
     const script = document.createElement('script');
     script.src = urlObject.href;
     document.body.appendChild(script);
     script.onerror = (error) => {
+      cleanup();
       reject(error);
     };
 
     // 创建全局函数
     window[funcName] = (result: any) => {
+      cleanup();
       resolve(result);
-      // 删除全局函数
-      delete window[funcName];
-      // 删除临时脚本
-      script.remove();
     };
   });
 }

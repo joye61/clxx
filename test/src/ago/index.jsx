@@ -2,6 +2,8 @@ import React from "react";
 import { Ago } from "@";
 
 export default function Index() {
+  const now = 1583314718595;
+
   return (
     <div>
       <p>2019-11-2</p>
@@ -17,7 +19,7 @@ export default function Index() {
       <Ago date="2018/07/06 12:04:36" style={{ color: "red" }} />
       <hr />
       <p>Date.now()</p>
-      <Ago date={Date.now()} style={{ color: "red" }} />
+      <Ago date={now} style={{ color: "red" }} />
       <hr />
       <p>new Date("2012-07-16 12:30:06")</p>
       <Ago date={new Date("2012-07-16 12:30:06")} style={{ color: "red" }} />

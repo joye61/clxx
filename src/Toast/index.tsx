@@ -25,11 +25,14 @@ export function showToast(option: React.ReactNode | ToastProps) {
  */
 let portalDOM: PortalDOM | null = null;
 export function showUniqToast(option: React.ReactNode | ToastProps) {
-  if (!portalDOM) {
-    portalDOM = createPortalDOM();
+  // 先清理上一个 Toast 的 DOM 容器，避免快速连续调用时旧容器泄漏
+  if (portalDOM) {
+    portalDOM.unmount();
+    portalDOM = null;
   }
+  portalDOM = createPortalDOM();
+
   let props: ToastProps = {};
-  // 默认Toast是唯一的
   if (React.isValidElement(option) || typeof option !== 'object') {
     props.content = option;
   } else {

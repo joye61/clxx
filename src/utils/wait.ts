@@ -28,13 +28,14 @@ export async function waitUntil(
   return new Promise<boolean>((resolve) => {
     const stop = tick(() => {
       const now = Date.now();
-      const result = condition();
       // 超时返回false
       if (now - start >= maxTime!) {
         stop();
         resolve(false);
         return;
       }
+
+      const result = condition();
       // 处理结果
       const handle = (res: boolean) => {
         if (res) {

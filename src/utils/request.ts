@@ -256,43 +256,35 @@ export function parseRequestOption(option: RequestOption) {
 export async function sendRequest<T = StandardAjaxResult>(option: RequestOption) {
   const { url, fetchOption, timeout } = parseRequestOption(option);
   const controller = new AbortController();
-  
-  return Promise.race([
-    // 网络请求
-    fetch(url, { ...fetchOption, signal: controller.signal })
-      .then((response) => {
-        return response.json();
-      })
-      .then((result: T) => {
-        return result;
-      })
-      .catch((error) => {
-        // 如果是主动取消的请求，返回超时错误
-        if (error.name === 'AbortError') {
-          const result: StandardAjaxResult = {
-            code: -10001,
-            message: "Network request timeout",
-          };
-          return result;
-        }
-        const result: StandardAjaxResult = {
-          code: -10000,
-          message: "An exception occurred in the network request",
-        };
-        return result;
-      }),
-    // 超时逻辑
-    new Promise<StandardAjaxResult>((resolve) => {
-      window.setTimeout(() => {
-        controller.abort(); // 取消请求
-        const result: StandardAjaxResult = {
-          code: -10001,
-          message: "Network request timeout",
-        };
-        resolve(result);
-      }, timeout ?? 30000);
-    }),
-  ]);
+
+  // 超时定时器，请求完成后清除以防泄漏
+  const timeoutId = window.setTimeout(() => {
+    controller.abort();
+  }, timeout ?? 30000);
+
+  try {
+    const response = await fetch(url, {
+      ...fetchOption,
+      signal: controller.signal,
+    });
+    const result: T = await response.json();
+    return result;
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      const result: StandardAjaxResult = {
+        code: -10001,
+        message: "Network request timeout",
+      };
+      return result;
+    }
+    const result: StandardAjaxResult = {
+      code: -10000,
+      message: "An exception occurred in the network request",
+    };
+    return result;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 /**

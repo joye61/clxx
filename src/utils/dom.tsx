@@ -29,14 +29,12 @@ export function createPortalDOM(point?: HTMLElement): PortalDOM {
       root.render(component);
     },
     unmount() {
-      root.unmount();
-      if (container instanceof HTMLDivElement) {
-        if (typeof container.remove === 'function') {
-          container.remove();
-        } else {
-          mountPoint.removeChild(container);
-        }
+      // 先从 DOM 移除容器，再卸载 React 树
+      // 避免 React 18+ 在已卸载的根上发出警告
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
       }
+      root.unmount();
     },
   };
 }

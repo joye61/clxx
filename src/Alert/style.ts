@@ -70,7 +70,7 @@ export const style: Record<string, Interpolation<Theme>> = {
       marginLeft: "-.5px",
       width: "1px",
       backgroundColor: "#c0c0c0",
-      transform: `scale(${1 / devicePixelRatio}, 1)`,
+      transform: `scale(${1 / window.devicePixelRatio}, 1)`,
     },
   },
   btn: [

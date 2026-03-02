@@ -1,17 +1,17 @@
 let keyIndex = 0;
-let last = Date.now();
+let lastTimestamp = 0;
 
 /**
  * 生成一个全局唯一的key
  * @returns
  */
 export function uniqKey() {
-  keyIndex += 1;
-  let now = Date.now();
-  if (now !== last && keyIndex > 1e9) {
+  const now = Date.now();
+  // 时间戳变化时重置计数器
+  if (now !== lastTimestamp) {
     keyIndex = 0;
+    lastTimestamp = now;
   }
-  const key = now.toString(36) + keyIndex.toString(36);
-  last = now;
-  return key;
+  keyIndex += 1;
+  return now.toString(36) + keyIndex.toString(36);
 }

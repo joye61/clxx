@@ -1,5 +1,11 @@
 import { Global, Interpolation, Theme } from "@emotion/react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../Effect/useWindowResize";
 import { useViewport } from "../Effect/useViewport";
@@ -23,106 +29,95 @@ export function Container(props: ContainerProps) {
   // 获取环境变量
   const { designWidth = 750, globalStyle, children } = props;
 
-  // 计算根字体尺寸的函数（使用 useCallback 避免重复创建）
+  // 计算理论根字体大小（未经浏览器缩放修正）
   const calculateFontSize = useCallback(
     (width: number): number => {
-      let targetWidth = width;
-      if (width >= maxDocWidth) {
-        targetWidth = maxDocWidth;
-      } else if (width <= minDocWidth) {
-        targetWidth = minDocWidth;
-      }
+      const targetWidth = Math.min(Math.max(width, minDocWidth), maxDocWidth);
       return (targetWidth * 100) / designWidth;
     },
     [designWidth, minDocWidth, maxDocWidth]
   );
 
-  // 基准字体尺寸（初始化时计算一次）
-  const [baseFontSize, setBaseFontSize] = useState<number>(() =>
+  // 理论基准字体大小（跟随窗口尺寸变化）
+  const [rawFontSize, setRawFontSize] = useState<number>(() =>
     calculateFontSize(window.innerWidth)
   );
 
-  // 是否已完成初始化（包括字体缩放修正）
+  // 浏览器字体缩放因子（>1 表示用户放大了系统字体，<1 表示缩小）
+  // 独立存储，使得 resize 后缩放修正依然生效
+  const [scaleFactor, setScaleFactor] = useState(1);
+
+  // 是否已完成字体缩放检测
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // 字体缩放修正逻辑（处理浏览器字体设置影响）
-  // 使用 useLayoutEffect 在 DOM 更新后立即同步执行，避免闪烁
-  useEffect(() => {
-    // 只在未初始化时检查一次
+  // 修正后的字体大小：统一对所有字体计算应用缩放修正
+  const correctedFontSize = useMemo(
+    () =>
+      scaleFactor === 1
+        ? rawFontSize
+        : Math.round((rawFontSize / scaleFactor) * 10) / 10,
+    [rawFontSize, scaleFactor]
+  );
+
+  // 字体缩放检测
+  // Emotion 的 <Global> 通过 useInsertionEffect 注入样式，早于 useLayoutEffect
+  // 因此 useLayoutEffect 内 getComputedStyle 可正确读取已注入的字体大小
+  // 检测和修正均在浏览器绘制前同步完成，避免闪烁
+  useLayoutEffect(() => {
+    // 缩放因子在页面生命周期内不变，只需检测一次
     if (isInitialized) return;
 
-    // 延迟到下一帧检查，确保 DOM 已经应用了 baseFontSize
-    requestAnimationFrame(() => {
-      const computedSize = parseFloat(
-        window.getComputedStyle(document.documentElement).fontSize
-      );
+    const computedSize = parseFloat(
+      window.getComputedStyle(document.documentElement).fontSize
+    );
 
-      // 如果计算出的字体大小与期望不符（说明被浏览器字体设置影响了）
-      // 使用较大的容差值，避免浮点数精度问题导致的无限循环
-      if (
-        typeof computedSize === "number" &&
-        computedSize > 0 &&
-        Math.abs(computedSize - baseFontSize) > 1 // 容差 1px，避免过度敏感
-      ) {
-        // 计算浏览器的字体缩放比例
-        const scaleFactor = computedSize / baseFontSize;
+    // 如果计算出的字体大小与期望不符（说明被浏览器字体设置影响了）
+    // 容差 1px，避免浮点精度导致误判
+    if (computedSize > 0 && Math.abs(computedSize - rawFontSize) > 1) {
+      // 记录缩放因子，后续所有字体计算（包括 resize）都会自动应用
+      setScaleFactor(computedSize / rawFontSize);
+    }
+    setIsInitialized(true);
+  }, [rawFontSize, isInitialized]);
 
-        // 通过反向缩放修正字体大小
-        // 例如：期望 50px，实际 60px（1.2倍），则设置 50/1.2 ≈ 41.67px
-        const correctedSize =
-          Math.round((baseFontSize / scaleFactor) * 10) / 10;
-
-        // 只修正一次，然后标记为已初始化
-        setBaseFontSize(correctedSize);
-        setIsInitialized(true);
-      } else {
-        // 字体大小正确，直接标记为已初始化
-        setIsInitialized(true);
-      }
-    });
-  }, [baseFontSize, isInitialized]);
-
-  // 页面大小变化时，基准字体同步变化
-  // 使用 requestAnimationFrame 批量处理，避免频繁更新
+  // 窗口大小变化时更新理论字体大小
+  // correctedFontSize 通过 useMemo 自动应用 scaleFactor 修正
   useWindowResize(() => {
-    requestAnimationFrame(() => {
-      const newFontSize = calculateFontSize(window.innerWidth);
-      if (newFontSize !== baseFontSize) {
-        setBaseFontSize(newFontSize);
-      }
-    });
+    setRawFontSize(calculateFontSize(window.innerWidth));
   });
 
-  // 设置meta, 确保viewport的合法逻辑
+  // 设置 viewport meta
   useViewport();
 
-  // 页面初始化逻辑
+  // 激活 iOS 上的 :active 伪类
   useEffect(() => {
-    // 激活iOS上的:active伪类
-    const activable = () => {};
-    document.body.addEventListener("touchstart", activable, { passive: true });
-
+    const noop = () => {};
+    document.body.addEventListener("touchstart", noop, { passive: true });
     return () => {
-      document.body.removeEventListener("touchstart", activable);
+      document.body.removeEventListener("touchstart", noop);
     };
   }, []);
 
-  // 使用 useMemo 缓存媒体查询样式，避免每次渲染都重新计算
-  const mediaQueryStyles = useMemo(
-    () => ({
+  // 媒体查询边界样式（同样应用缩放修正，与 JS 计算保持一致）
+  const mediaQueryStyles = useMemo(() => {
+    const correct = (size: number) =>
+      scaleFactor === 1
+        ? size
+        : Math.round((size / scaleFactor) * 10) / 10;
+
+    return {
       [`@media (min-width: ${maxDocWidth}px)`]: {
         html: {
-          fontSize: `${(100 * maxDocWidth) / designWidth}px`,
+          fontSize: `${correct((100 * maxDocWidth) / designWidth)}px`,
         },
       },
       [`@media (max-width: ${minDocWidth}px)`]: {
         html: {
-          fontSize: `${(100 * minDocWidth) / designWidth}px`,
+          fontSize: `${correct((100 * minDocWidth) / designWidth)}px`,
         },
       },
-    }),
-    [designWidth, minDocWidth, maxDocWidth]
-  );
+    };
+  }, [designWidth, minDocWidth, maxDocWidth, scaleFactor]);
 
   return (
     <React.Fragment>
@@ -136,7 +131,7 @@ export function Container(props: ContainerProps) {
               WebkitTapHighlightColor: "transparent",
               WebkitOverflowScrolling: "touch",
               WebkitTextSizeAdjust: "100%",
-              fontSize: `${baseFontSize}px`,
+              fontSize: `${correctedFontSize}px`,
               touchAction: "manipulation",
             },
             body: {
