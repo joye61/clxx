@@ -1,14 +1,8 @@
 export interface ContextValue {
-  // 最大文档尺寸
-  maxDocWidth: number;
-  // 最小文档尺寸
-  minDocWidth: number;
+  [key: string]: any;
 }
 
-let context: ContextValue = {
-  maxDocWidth: 576,
-  minDocWidth: 312,
-};
+let context: ContextValue = {};
 
 /**
  * 设置环境变量的值
@@ -25,7 +19,7 @@ export function setContextValue(value: Partial<ContextValue>) {
  * @param key
  * @returns
  */
-export function getContextValue(key?: keyof ContextValue) {
+export function getContextValue(key?: string) {
   if (key && typeof key === "string") {
     return context[key];
   }

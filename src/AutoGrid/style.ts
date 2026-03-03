@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 
 export const style = {
-  itemBoxStyle: css({
-    float: "left",
+  row: css({
+    display: "flex",
+    width: "100%",
+  }),
+  itemBox: css({
     position: "relative",
-    "&:last-child": {
-      marginRight: 0,
-    },
+    minWidth: 0,
   }),
   itemBoxSquare: css({
     "&:after,&::after": {
@@ -17,25 +18,11 @@ export const style = {
       paddingBottom: "100%",
     },
   }),
-  itemNull: css({
-    visibility: "hidden",
-  }),
-  itemInnerStyle: css({
+  itemInner: css({
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
     top: 0,
   }),
-
-  // 行样式
-  rowStyle: css({
-    width: "100%",
-    "&:after,&::after": {
-      content: "''",
-      display: "table",
-      height: 0,
-      clear: "both"
-    }
-  })
 };

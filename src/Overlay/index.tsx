@@ -1,8 +1,5 @@
 import React, { useLayoutEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { getContextValue } from "../context";
-import { ContextValue } from "../context";
-import { useWindowResize } from "../Effect/useWindowResize";
 
 export interface OverlayProps extends React.HTMLProps<HTMLDivElement> {
   // 挂载元素的子元素
@@ -33,7 +30,6 @@ export function Overlay(props: OverlayProps) {
   } = props;
 
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
-  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
 
   useLayoutEffect(() => {
     if (outside) {
@@ -47,36 +43,19 @@ export function Overlay(props: OverlayProps) {
     }
   }, [outside]);
 
-  // 页面大小变化时，innerWidth 也会更新
-  useWindowResize(() => {
-    setInnerWidth(window.innerWidth);
-  });
-
-  const ctx = getContextValue() as ContextValue;
-
   // 使用 useMemo 缓存样式计算，避免每次渲染都重新计算
   const style = useMemo(() => {
     const styles: any[] = [];
 
     // 如果是全屏，设置全屏样式
     if (fullScreen) {
-      // 获取宽度
-      let width = innerWidth;
-      if (width >= ctx.maxDocWidth) {
-        width = ctx.maxDocWidth;
-      } else if (width <= ctx.minDocWidth) {
-        width = ctx.minDocWidth;
-      }
       styles.push({
         zIndex: 9999,
         position: "fixed",
         top: 0,
-        left: "50%",
-        marginLeft: `-${width / 2}px`,
-        width: `${width}px`,
+        left: 0,
+        width: "100%",
         height: "100%",
-        maxWidth: `${ctx.maxDocWidth}px`,
-        minWidth: `${ctx.minDocWidth}px`,
         backgroundColor: maskColor,
       });
     }
@@ -91,7 +70,7 @@ export function Overlay(props: OverlayProps) {
     }
 
     return styles;
-  }, [fullScreen, innerWidth, ctx.maxDocWidth, ctx.minDocWidth, maskColor, centerContent]);
+  }, [fullScreen, maskColor, centerContent]);
 
   const content = (
     <div css={style} {...extra}>

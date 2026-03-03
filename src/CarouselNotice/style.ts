@@ -1,5 +1,4 @@
 import { Interpolation, keyframes, Theme } from "@emotion/react";
-import { adaptive } from "../utils/cssUtil";
 
 export const Bubble = keyframes`
   from {
@@ -11,16 +10,12 @@ export const Bubble = keyframes`
 `;
 
 export const style: Record<string, Interpolation<Theme>> = {
-  box: [
-    {
-      position: "relative",
-      overflow: "hidden",
-      transition: "all 200ms",
-    },
-    adaptive({
-      height: 80,
-    }),
-  ],
+  box: {
+    position: "relative",
+    overflow: "hidden",
+    transition: "all 200ms",
+    height: '.8rem',
+  },
   wrapper: {
     position: "absolute",
     left: 0,

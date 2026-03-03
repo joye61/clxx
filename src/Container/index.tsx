@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ContextValue, getContextValue } from "../context";
 import { useWindowResize } from "../Effect/useWindowResize";
 import { useViewport } from "../Effect/useViewport";
 
@@ -24,18 +23,14 @@ export interface ContainerProps {
  * @param props
  */
 export function Container(props: ContainerProps) {
-  // 来自全局的环境变量
-  const { minDocWidth, maxDocWidth } = getContextValue() as ContextValue;
-  // 获取环境变量
   const { designWidth = 750, globalStyle, children } = props;
 
   // 计算理论根字体大小（未经浏览器缩放修正）
   const calculateFontSize = useCallback(
     (width: number): number => {
-      const targetWidth = Math.min(Math.max(width, minDocWidth), maxDocWidth);
-      return (targetWidth * 100) / designWidth;
+      return (width * 100) / designWidth;
     },
-    [designWidth, minDocWidth, maxDocWidth]
+    [designWidth]
   );
 
   // 理论基准字体大小（跟随窗口尺寸变化）
@@ -98,27 +93,6 @@ export function Container(props: ContainerProps) {
     };
   }, []);
 
-  // 媒体查询边界样式（同样应用缩放修正，与 JS 计算保持一致）
-  const mediaQueryStyles = useMemo(() => {
-    const correct = (size: number) =>
-      scaleFactor === 1
-        ? size
-        : Math.round((size / scaleFactor) * 10) / 10;
-
-    return {
-      [`@media (min-width: ${maxDocWidth}px)`]: {
-        html: {
-          fontSize: `${correct((100 * maxDocWidth) / designWidth)}px`,
-        },
-      },
-      [`@media (max-width: ${minDocWidth}px)`]: {
-        html: {
-          fontSize: `${correct((100 * minDocWidth) / designWidth)}px`,
-        },
-      },
-    };
-  }, [designWidth, minDocWidth, maxDocWidth, scaleFactor]);
-
   return (
     <React.Fragment>
       <Global
@@ -137,10 +111,7 @@ export function Container(props: ContainerProps) {
             body: {
               fontSize: "16px",
               margin: "0 auto",
-              maxWidth: `${maxDocWidth}px`,
-              minWidth: `${minDocWidth}px`,
             },
-            ...mediaQueryStyles,
           },
           globalStyle,
         ]}

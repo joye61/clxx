@@ -1,5 +1,5 @@
 import { Interpolation, Theme } from '@emotion/react';
-import React, { useCallback } from 'react';
+import React, { useMemo } from 'react';
 import CSS from 'csstype';
 import { style } from './style';
 import { normalizeUnit } from '../utils/cssUtil';
@@ -33,14 +33,13 @@ export function AutoGrid(props: AutoGridOption) {
     ...extra
   } = props;
 
-  // 规范化数字单位
-  const cols = +rawCols;
+  // 规范化，确保 cols >= 1
+  const cols = Math.max(1, Math.floor(+rawCols) || 1);
   const gap = normalizeUnit(rawGap) as string;
 
-  // 获取表格数据
-  const getGridData = useCallback(() => {
-    // 生成一个能创建表格的二维数组
-    let list: Array<React.ReactNode[]> = [];
+  // 将 children 分组为二维数组
+  const gridData = useMemo(() => {
+    const list: Array<React.ReactNode[]> = [];
     React.Children.forEach(children, (child) => {
       if (child !== null && child !== undefined) {
         if (list.length === 0 || list[list.length - 1].length >= cols) {
@@ -53,63 +52,51 @@ export function AutoGrid(props: AutoGridOption) {
     if (list.length > 0) {
       const lastRow = list[list.length - 1];
       while (lastRow.length < cols) {
-        lastRow.push(<div key={`placeholder-${lastRow.length}`} style={{ visibility: 'hidden' }} />);
+        lastRow.push(null);
       }
     }
     return list;
   }, [children, cols]);
 
-  // 元素的最终样式
-  const finalItemBoxStyle: Interpolation<Theme> = [
-    style.itemBoxStyle,
-    {
-      marginRight: gap,
-      width: `calc((100% - ${cols - 1} * ${gap}) / ${cols})`,
-    },
-  ];
-
-  /**
-   * 显示内容
-   */
-  const showContent = () => {
-    const gridData = getGridData();
-    return gridData.map((row, rowIndex) => {
-      // 每行的槽样式，最后一行没有
-      let finalRowStyle: Interpolation<Theme> = [
-        style.rowStyle,
-        rowIndex !== gridData.length - 1 ? { marginBottom: gap } : {}
-      ];
-
-      return (
-        <div key={rowIndex} css={finalRowStyle}>
-          {row.map((item, colIndex) => {
-            let finalCss: Interpolation<Theme> = [
-              ...finalItemBoxStyle,
-              itemStyle
-            ];
-
-            if (isSquare) {
-              return (
-                <div css={[...finalCss, style.itemBoxSquare]} key={colIndex}>
-                  <div css={style.itemInnerStyle}>{item}</div>
-                </div>
-              );
-            } else {
-              return (
-                <div css={finalCss} key={colIndex}>
-                  {item}
-                </div>
-              );
-            }
-          })}
-        </div>
-      );
-    });
-  };
+  // 缓存 item 宽度计算
+  const itemWidth = useMemo(
+    () => `calc((100% - ${cols - 1} * ${gap}) / ${cols})`,
+    [cols, gap]
+  );
 
   return (
-    <div {...extra} css={[containerStyle]}>
-      {showContent()}
+    <div {...extra} css={containerStyle}>
+      {gridData.map((row, rowIndex) => (
+        <div
+          key={rowIndex}
+          css={[
+            style.row,
+            { gap },
+            rowIndex !== gridData.length - 1 ? { marginBottom: gap } : undefined,
+          ]}
+        >
+          {row.map((item, colIndex) => {
+            const isPlaceholder = item === null;
+            const boxCss: Interpolation<Theme> = [
+              style.itemBox,
+              { width: itemWidth },
+              isPlaceholder ? { visibility: 'hidden' as const } : undefined,
+              isSquare ? style.itemBoxSquare : undefined,
+              itemStyle,
+            ];
+
+            return isSquare ? (
+              <div css={boxCss} key={colIndex}>
+                <div css={style.itemInner}>{item}</div>
+              </div>
+            ) : (
+              <div css={boxCss} key={colIndex}>
+                {item}
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }

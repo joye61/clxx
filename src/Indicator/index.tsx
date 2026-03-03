@@ -1,7 +1,7 @@
 import { css, Interpolation, Theme } from '@emotion/react';
 import React from 'react';
 import * as CSS from 'csstype';
-import { adaptive, normalizeUnit } from '../utils/cssUtil';
+import { normalizeUnit } from '../utils/cssUtil';
 import { getBarChangeKeyFrames } from './style';
 
 export interface IndicatorProps
@@ -77,10 +77,10 @@ export function Indicator(props: IndicatorProps) {
     typeof size !== 'undefined' ? {
       width: normalizeUnit(size),
       height: normalizeUnit(size),
-    } : adaptive({
-      width: 60,
-      height: 60,
-    })
+    } : {
+      width: '.6rem',
+      height: '.6rem',
+    }
   ], [size]);
 
   const svgStyle = React.useMemo(() => css({

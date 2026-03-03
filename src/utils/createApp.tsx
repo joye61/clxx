@@ -7,15 +7,13 @@ import {
   History,
 } from "history";
 import { Container, ContainerProps } from "../Container";
-import { ContextValue, setContextValue } from "../context";
 import pick from "lodash/pick";
 
 export type RouterMode = "browser" | "hash" | "memory";
 export type AwaitValue<T> = T | Promise<T>;
 
 export interface CreateAppOption
-  extends Omit<ContainerProps, "children">,
-    ContextValue {
+  extends Omit<ContainerProps, "children"> {
   // 页面组件加载前触发的钩子函数
   onBefore?: (pathname: string) => AwaitValue<void>;
   // 页面组件加载后触发的钩子函数
@@ -70,15 +68,11 @@ export async function createApp(option: CreateAppOption) {
   history = getHistory(option.mode);
 
   // 提取关键数据
-  const context: ContextValue = pick(option, ["minDocWidth", "maxDocWidth"]);
   const containerProps: ContainerProps = pick(option, [
     "designWidth",
     "globalStyle",
   ]);
   const { onBefore, onAfter, loading, render, notFound } = option;
-
-  // 设置上下文属性
-  setContextValue(context);
 
   // 规范化路径：移除首尾斜杠
   const PATH_TRIM_REGEX = /^\/*|\/*$/g;

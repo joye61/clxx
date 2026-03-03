@@ -1,5 +1,4 @@
 import { css, keyframes } from "@emotion/react";
-import { adaptive } from "../utils/cssUtil";
 import { Keyframes } from "@emotion/serialize";
 
 export const middleShowAnimation = keyframes`
@@ -94,47 +93,39 @@ export function getAnimation(position: "top" | "middle" | "bottom", type: "show"
 
 export const style = {
   container() {
-    return css(
-      {
-        position: "fixed",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 9999,
-      },
-      adaptive({
-        maxWidth: 600,
-      })
-    );
+    return css({
+      position: "fixed",
+      left: "50%",
+      transform: "translateX(-50%)",
+      zIndex: 9999,
+      maxWidth: '6rem',
+    });
   },
 
   top(offset: number) {
-    return adaptive({ top: offset });
+    return css({ top: offset / 100 + 'rem' });
   },
   middle: css({ top: "50%" }),
   bottom(offset: number) {
-    return adaptive({ bottom: offset });
+    return css({ bottom: offset / 100 + 'rem' });
   },
   content: (radius?: number) => {
-    return css(
-      {
-        position: "relative",
-        backgroundColor: "rgba(0, 0, 0, .8)",
-        color: "#fff",
-        margin: 0,
-        whiteSpace: "nowrap",
-        textOverflow: "ellipsis",
-        overflow: "hidden",
-        lineHeight: 1,
-      },
-      adaptive({
-        fontSize: 26,
-        paddingLeft: 30,
-        paddingRight: 30,
-        paddingTop: 40,
-        paddingBottom: 40,
-        borderRadius: radius ?? 0,
-      })
-    );
+    return css({
+      position: "relative",
+      backgroundColor: "rgba(0, 0, 0, .8)",
+      color: "#fff",
+      margin: 0,
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
+      overflow: "hidden",
+      lineHeight: 1,
+      fontSize: '.26rem',
+      paddingLeft: '.3rem',
+      paddingRight: '.3rem',
+      paddingTop: '.4rem',
+      paddingBottom: '.4rem',
+      borderRadius: radius ? radius / 100 + 'rem' : 0,
+    });
   },
   contentMiddle: {
     transform: `translateY(-50%)`,

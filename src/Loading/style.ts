@@ -1,5 +1,4 @@
 import { Interpolation, keyframes, Theme } from "@emotion/react";
-import { adaptive } from "../utils/cssUtil";
 
 export const LoadingShow = keyframes`
   from {
@@ -19,14 +18,14 @@ export const LoadingHide = keyframes`
 `;
 
 export const style: Record<string, Interpolation<Theme>> = {
-  boxCommon: adaptive({
+  boxCommon: {
     backgroundColor: `rgba(0, 0, 0, .8)`,
-    borderRadius: 16,
-  }),
-  box: adaptive({
-    width: 160,
-    height: 160,
-  }),
+    borderRadius: '.16rem',
+  },
+  box: {
+    width: '1.6rem',
+    height: '1.6rem',
+  },
   boxShow: {
     animation: `${LoadingShow} 200ms`,
   },
@@ -34,18 +33,18 @@ export const style: Record<string, Interpolation<Theme>> = {
     animation: `${LoadingHide} 200ms`,
   },
   boxWithExtra: [
-    adaptive({ padding: 30 }),
+    { padding: '.3rem' },
     {
-      "> div:first-of-type": adaptive({
-        width: 48,
-        height: 48,
-      }),
+      "> div:first-of-type": {
+        width: '.48rem',
+        height: '.48rem',
+      },
     },
   ],
-  hint: adaptive({
+  hint: {
     color: "#f5f5f5dd",
     whiteSpace: "nowrap",
-    fontSize: 28,
-    marginLeft: 20,
-  }),
+    fontSize: '.28rem',
+    marginLeft: '.2rem',
+  },
 };

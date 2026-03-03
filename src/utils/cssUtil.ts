@@ -1,5 +1,3 @@
-import { Interpolation, Theme, css } from '@emotion/react';
-import { ContextValue, getContextValue } from '../context';
 /**
  * 匹配所有的CSS数值类型的值
  */
@@ -69,43 +67,3 @@ export function splitValue(
   throw new Error('Invalid numeric format');
 }
 
-/**
- * 生成自适应的样式，仅供库内部使用
- * 所有内部组件的默认设计尺寸约定为750
- *
- * @param style
- * @returns
- */
-export function adaptive(style: Record<string, Interpolation<Theme>>) {
-  const ctx = getContextValue() as ContextValue;
-  const max: Interpolation<Theme> = {};
-  const min: Interpolation<Theme> = {};
-  const normal: Interpolation<Theme> = {};
-  for (let name in style) {
-    let value = style[name];
-    if (typeof value !== 'number') {
-      normal[name] = value as any;
-    } else if (
-      [
-        'flex',
-        'flexGrow',
-        'flexShrink',
-        'lineHeight',
-        'fontWeight',
-        'zIndex',
-      ].includes(name) &&
-      typeof value === 'number'
-    ) {
-      normal[name] = value as any;
-    } else {
-      normal[name] = (value * 100) / 750 + 'vw';
-      max[name] = (value * ctx.maxDocWidth) / 750 + 'px';
-      min[name] = (value * ctx.minDocWidth) / 750 + 'px';
-    }
-  }
-  return css({
-    ...normal,
-    [`@media (min-width: ${ctx.maxDocWidth}px)`]: max,
-    [`@media (max-width: ${ctx.minDocWidth}px)`]: min,
-  });
-}
