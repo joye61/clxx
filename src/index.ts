@@ -1,5 +1,4 @@
 export { tick } from './utils/tick';
-export { setContextValue, getContextValue } from './context';
 
 export { jsonp } from './utils/jsonp';
 export { uniqKey } from './utils/uniqKey';
@@ -61,3 +60,4 @@ export { AutoGrid } from './AutoGrid';
 export { showAlert } from './Alert';
 export { ScrollView } from './ScrollView';
 export { CarouselNotice } from './CarouselNotice';
+export { CitySelect, showCitySelect } from './CitySelect';

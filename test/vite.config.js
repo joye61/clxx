@@ -4,10 +4,14 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      jsxImportSource: "@emotion/react",
+    }),
+  ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "../build/index"),
+      "@": path.resolve(__dirname, "../src/index.ts"),
       react: path.resolve(__dirname, "node_modules/react"),
       "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
     },

@@ -432,6 +432,67 @@ import { CarouselNotice } from 'clxx';
 
 ---
 
+#### CitySelect / showCitySelect — 城市选择器
+
+移动端全屏城市选择器，支持字母侧边栏触摸导航、粘滞字母标题、列表与字母双向联动、搜索（含中文 IME 保护）、滑入/滑出动画、外部定位回显等。
+
+```tsx
+import { CitySelect, showCitySelect } from 'clxx';
+
+// 组件方式
+<CitySelect
+  primary="#2f7dff"
+  getLocation={async () => '北京'}
+  onSelect={(city) => console.log(city)}
+  onClose={() => console.log('closed')}
+/>
+
+// 函数式方式（内部使用 Portal 挂载到 body，选中或点击退出后自动卸载）
+showCitySelect({
+  primary: '#2f7dff',
+  // 同步返回
+  getLocation: () => '110100',
+  // 或异步返回
+  // getLocation: async () => fetchCurrentCity(),
+  onSelect: (city) => {
+    console.log(city.name, city.code, city.province);
+  },
+});
+```
+
+**Props：**
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `onSelect` | `(city: SelectedCity) => void` | — | 选中城市时触发 |
+| `onClose` | `() => void` | — | 退出动画结束时触发 |
+| `onLetterChange` | `(letter: string) => void` | — | 侧边栏当前字母变化回调 |
+| `getLocation` | `() => string \| null \| undefined \| Promise<string \| null \| undefined>` | — | 外部定位能力，可同步或异步，返回城市名或城市 code |
+| `primary` | `string` | `'#2f7dff'` | 主题主色，形如 `#rrggbb`；active 态颜色自动派生 |
+
+**SelectedCity：**
+
+```typescript
+interface SelectedCity {
+  name: string;              // 城市名，如 "北京市"
+  code: string;              // 城市 code（直辖市为市辖区 code，如 "110100"）
+  province: {
+    name: string;            // 省级名称
+    code: string;            // 省级 code
+  };
+}
+```
+
+**特性：**
+- **首次挂载调用一次** `getLocation`：结果能匹配 `cityData`（按 code 精确匹配，按 name 允许省略末尾"市"，如"北京"命中"北京市"）才展示「当前定位」快捷块；失败、为空、匹配不到均不显示。
+- **字母侧边栏触摸导航**：非 passive 触摸监听，滑动时实时切换字母并滚动列表；松开显示大字母提示。
+- **双向联动**：手动滚动列表时基于缓存的 `offsetTop` 二分查找激活对应字母；并通过 `ResizeObserver` 重新测量。
+- **搜索**：按拼音全拼、拼音首字母、中文名前缀匹配；中文输入法合成期间不触发搜索，避免中间态干扰。
+- **滑入滑出动画**：首次挂载右侧滑入；选中或点击退出时滑出，动画结束后才触发 `onClose`（首帧立即退出时直接回调，避免卡住）。
+- **纯属性化主题**：无 `containerStyle`，只允许通过 `primary` 控制主题色。
+
+---
+
 ### 🔔 反馈组件
 
 #### showToast / showUniqToast — 轻提示
@@ -1065,6 +1126,7 @@ getContextValue();         // { token: 'xxx', userId: 123 }
 | `Overlay` | 组件 | 覆盖层 |
 | `ScrollView` | 组件 | 滚动视图 |
 | `CarouselNotice` | 组件 | 轮播公告 |
+| `CitySelect` | 组件 | 城市选择器 |
 | `Indicator` | 组件 | 加载指示器 |
 | `Countdowner` | 组件 | 倒计时 |
 | `Ago` | 组件 | 相对时间 |
@@ -1076,6 +1138,7 @@ getContextValue();         // { token: 'xxx', userId: 123 }
 | `showDialog` | 对话框 |
 | `showAlert` | 弹窗提示 |
 | `showLoading` / `showLoadingAtLeast` | 加载指示 |
+| `showCitySelect` | 城市选择器 |
 
 ### Hooks
 | 导出 | 说明 |
