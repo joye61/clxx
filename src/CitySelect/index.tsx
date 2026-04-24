@@ -223,7 +223,7 @@ export function CitySelect(props: CitySelectProps) {
 
     let lastLetter: string | null = null;
 
-    const updateByTouch = (clientY: number) => {
+    const updateByY = (clientY: number) => {
       const list = lettersRef.current;
       if (list.length === 0) return;
       const rect = el.getBoundingClientRect();
@@ -240,30 +240,67 @@ export function CitySelect(props: CitySelectProps) {
       }
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      setTouching(true);
-      updateByTouch(e.touches[0].clientY);
-    };
-    const handleTouchMove = (e: TouchEvent) => {
-      // 阻止滚动，需要非 passive 监听器
+    // 优先使用触摸事件；不支持触摸才回退到鼠标事件，避免两套并存冲突
+    const isTouch =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+    if (isTouch) {
+      const handleTouchStart = (e: TouchEvent) => {
+        setTouching(true);
+        updateByY(e.touches[0].clientY);
+      };
+      const handleTouchMove = (e: TouchEvent) => {
+        // 阻止滚动，需要非 passive 监听器
+        e.preventDefault();
+        updateByY(e.touches[0].clientY);
+      };
+      const handleTouchEnd = () => {
+        setTouching(false);
+        lastLetter = null;
+      };
+
+      el.addEventListener("touchstart", handleTouchStart, { passive: false });
+      el.addEventListener("touchmove", handleTouchMove, { passive: false });
+      el.addEventListener("touchend", handleTouchEnd);
+      el.addEventListener("touchcancel", handleTouchEnd);
+
+      return () => {
+        el.removeEventListener("touchstart", handleTouchStart);
+        el.removeEventListener("touchmove", handleTouchMove);
+        el.removeEventListener("touchend", handleTouchEnd);
+        el.removeEventListener("touchcancel", handleTouchEnd);
+      };
+    }
+
+    // 鼠标端：按下后拖动，move/up 绑在 document 以支持拖出 sidebar
+    let dragging = false;
+    const handleMouseDown = (e: MouseEvent) => {
+      if (e.button !== 0) return;
       e.preventDefault();
-      updateByTouch(e.touches[0].clientY);
+      dragging = true;
+      setTouching(true);
+      updateByY(e.clientY);
     };
-    const handleTouchEnd = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragging) return;
+      updateByY(e.clientY);
+    };
+    const handleMouseUp = () => {
+      if (!dragging) return;
+      dragging = false;
       setTouching(false);
       lastLetter = null;
     };
 
-    el.addEventListener("touchstart", handleTouchStart, { passive: false });
-    el.addEventListener("touchmove", handleTouchMove, { passive: false });
-    el.addEventListener("touchend", handleTouchEnd);
-    el.addEventListener("touchcancel", handleTouchEnd);
+    el.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      el.removeEventListener("touchstart", handleTouchStart);
-      el.removeEventListener("touchmove", handleTouchMove);
-      el.removeEventListener("touchend", handleTouchEnd);
-      el.removeEventListener("touchcancel", handleTouchEnd);
+      el.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isSearching]);
 

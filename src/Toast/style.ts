@@ -1,10 +1,14 @@
 import { css, keyframes } from "@emotion/react";
 import { Keyframes } from "@emotion/serialize";
 
+const fontStack =
+  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+const easing = "cubic-bezier(.22,.61,.36,1)";
+
 export const middleShowAnimation = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-50%) scale(0.9);
+    transform: translateX(-50%) scale(0.92);
   }
   to {
     opacity: 1;
@@ -19,14 +23,14 @@ export const middleHideAnimation = keyframes`
   }
   to {
     opacity: 0;
-    transform: translateX(-50%) scale(0.9);
+    transform: translateX(-50%) scale(0.92);
   }
 `;
 
 export const topShowAnimation = keyframes`
   from {
     opacity: 0;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -120%);
   }
   to {
     opacity: 1;
@@ -40,13 +44,13 @@ export const topHideAnimation = keyframes`
   }
   to {
     opacity: 0;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -120%);
   }
 `;
 export const bottomShowAnimation = keyframes`
   from {
     opacity: 0;
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, 120%);
   }
   to {
     opacity: 1;
@@ -60,17 +64,17 @@ export const bottomHideAnimation = keyframes`
   }
   to {
     opacity: 0;
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, 120%);
   }
 `;
 
 /**
  * 根据位置和类型获取动画
- * @param position
- * @param type
- * @returns
  */
-export function getAnimation(position: "top" | "middle" | "bottom", type: "show" | "hide") {
+export function getAnimation(
+  position: "top" | "middle" | "bottom",
+  type: "show" | "hide",
+) {
   const animation = {
     top: [topShowAnimation, topHideAnimation],
     middle: [middleShowAnimation, middleHideAnimation],
@@ -86,7 +90,7 @@ export function getAnimation(position: "top" | "middle" | "bottom", type: "show"
   return {
     keyframes,
     animation: css({
-      animation: `${keyframes} 300ms ease`,
+      animation: `${keyframes} 260ms ${easing}`,
     }),
   };
 }
@@ -98,33 +102,38 @@ export const style = {
       left: "50%",
       transform: "translateX(-50%)",
       zIndex: 9999,
-      maxWidth: '6rem',
+      maxWidth: "6rem",
+      pointerEvents: "none",
+      fontFamily: fontStack,
+      WebkitFontSmoothing: "antialiased",
+      MozOsxFontSmoothing: "grayscale",
     });
   },
 
   top(offset: number) {
-    return css({ top: offset / 100 + 'rem' });
+    return css({ top: offset / 100 + "rem" });
   },
   middle: css({ top: "50%" }),
   bottom(offset: number) {
-    return css({ bottom: offset / 100 + 'rem' });
+    return css({ bottom: offset / 100 + "rem" });
   },
   content: (radius?: number) => {
     return css({
       position: "relative",
-      backgroundColor: "rgba(0, 0, 0, .8)",
-      color: "#fff",
+      backgroundColor: "rgba(17,24,39,.88)",
+      color: "#ffffff",
       margin: 0,
-      whiteSpace: "nowrap",
-      textOverflow: "ellipsis",
-      overflow: "hidden",
-      lineHeight: 1,
-      fontSize: '.26rem',
-      paddingLeft: '.3rem',
-      paddingRight: '.3rem',
-      paddingTop: '.4rem',
-      paddingBottom: '.4rem',
-      borderRadius: radius ? radius / 100 + 'rem' : 0,
+      // 允许多行，超过 maxWidth 时自然换行
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+      lineHeight: 1.5,
+      fontSize: ".28rem",
+      fontWeight: 400,
+      letterSpacing: ".01rem",
+      textAlign: "center",
+      padding: ".2rem .32rem",
+      borderRadius: radius ? radius / 100 + "rem" : 0,
+      boxShadow: "0 .12rem .32rem rgba(0,0,0,.25)",
     });
   },
   contentMiddle: {

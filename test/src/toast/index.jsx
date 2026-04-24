@@ -44,6 +44,7 @@ export default function Index () {
           showToast({
             content: "一个简单的Toast轻提示Toast轻提示Toast轻提示Toast轻提示",
             position: "bottom",
+            // duration: 500000,
           });
         }}
       >
