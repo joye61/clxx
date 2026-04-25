@@ -10,16 +10,6 @@ export interface FlexProps extends React.HTMLProps<HTMLDivElement> {
   flexDirection?: CSS.Property.FlexDirection;
 }
 
-export interface FlexItemProps extends React.HTMLProps<HTMLDivElement> {
-  children?: React.ReactNode;
-  alignSelf?: CSS.Property.AlignSelf;
-  order?: CSS.Property.Order;
-  flex?: CSS.Property.BoxFlex;
-  flexGrow?: CSS.Property.FlexGrow;
-  flexShrink?: CSS.Property.FlexShrink;
-  flexBasis?: CSS.Property.FlexBasis;
-}
-
 export function Flex(props: FlexProps) {
   const {
     children,
@@ -29,50 +19,27 @@ export function Flex(props: FlexProps) {
     flexFlow,
     flexWrap,
     flexDirection,
+    style,
     ...extra
   } = props;
+  // 布局属性走原生 inline style：避免 emotion 在每次 render 哈希对象字面量
+  const inlineStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems,
+    alignContent,
+    justifyContent,
+    flexFlow,
+    flexWrap,
+    flexDirection,
+    ...style,
+  };
   return (
-    <div
-      css={{
-        display: 'flex',
-        alignItems,
-        alignContent,
-        justifyContent,
-        flexFlow,
-        flexWrap,
-        flexDirection,
-      }}
-      {...extra}
-    >
+    <div style={inlineStyle} {...extra}>
       {children}
     </div>
   );
 }
 
-export function FlexItem(props: FlexItemProps) {
-  const {
-    children,
-    alignSelf,
-    order,
-    flex,
-    flexGrow,
-    flexShrink,
-    flexBasis,
-    ...extra
-  } = props;
-  return (
-    <div
-      css={{
-        alignSelf,
-        order,
-        flex,
-        flexGrow,
-        flexShrink,
-        flexBasis,
-      }}
-      {...extra}
-    >
-      {children}
-    </div>
-  );
-}
+export type { FlexItemProps } from './FlexItem';
+export { FlexItem } from './FlexItem';
+

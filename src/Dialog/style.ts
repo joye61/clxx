@@ -137,7 +137,7 @@ export function getAnimation(type: DialogType, status: AnimationStatus) {
 
 export const style = {
   maskShow: css({
-    animation: `${maskShow} 300ms ease`,
+    animation: `${maskShow} 300ms ease forwards`,
   }),
   maskHide: css({
     animation: `${maskHide} 300ms ease forwards`,
@@ -149,10 +149,14 @@ export const style = {
     bottom: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    // 提升为合成层，opacity 动画走 GPU，避免触发重绘
+    willChange: "opacity",
   }),
   boxCss: css({
     zIndex: 2,
+    // transform 动画走 GPU 合成
+    willChange: "transform, opacity",
   }),
   pullUp: css({
     position: "absolute",

@@ -1,105 +1,108 @@
-import { css, Interpolation, Theme } from '@emotion/react';
-import React from 'react';
-import * as CSS from 'csstype';
-import { normalizeUnit } from '../utils/cssUtil';
-import { getBarChangeKeyFrames } from './style';
+import { css, Interpolation, Theme } from "@emotion/react";
+import { HTMLAttributes, useMemo } from "react";
+import * as CSS from "csstype";
+import { normalizeUnit } from "../utils/cssUtil";
+import { barFadeKeyframes } from "./style";
 
-export interface IndicatorProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+export interface IndicatorProps extends HTMLAttributes<HTMLDivElement> {
   // 容器的尺寸
   size?: CSS.Property.Width | number;
-  // bar是否圆角，默认：true
+  // bar 是否圆角，默认：true
   rounded?: boolean;
-  // bar宽度，默认：7
+  // bar 宽度（100x100 viewBox 下的相对单位），默认：8
   barWidth?: number;
-  // bar高度，默认：26
+  // bar 高度（100x100 viewBox 下的相对单位），默认：26
   barHeight?: number;
-  // bar颜色，默认：#fff
+  // bar 颜色，默认：#8e8e93（iOS systemGray）
   barColor?: string;
-  // bar个数，默认：12
+  // bar 个数，默认：12（iOS 标准）
   barCount?: number;
-  // 每转一圈的持续时间，单位毫秒，默认：500ms
+  // 每转一圈的持续时间，单位毫秒，默认：1000ms
   duration?: number;
   // 容器样式
   containerStyle?: Interpolation<Theme>;
 }
 
 /**
- * SVG转圈指示器，一般用作loading效果
- * @param props
+ * iOS 风菊花转圈指示器（仿 UIActivityIndicatorView 节奏）。
+ * 性能要点：
+ *  - 用 opacity 动画替代 fill 动画，触发 GPU 合成而非 SVG paint
+ *  - keyframes 全局单例，颜色/时长变化不会污染样式表
+ *  - animation-delay 走 inline style，emotion 不再为每条 bar 生成独立类名
  */
 export function Indicator(props: IndicatorProps) {
   const {
     size,
     rounded = true,
-    barWidth = 7,
-    barHeight = 28,
-    barColor = '#fff',
+    barWidth = 8,
+    barHeight = 26,
+    barColor = "#ffffff",
     barCount = 12,
-    duration = 600,
+    duration = 1000,
     containerStyle,
     ...attributes
   } = props;
 
   const radius = rounded ? barWidth / 2 : 0;
 
-  // 使用 useMemo 缓存 barList，避免每次渲染都重新生成
-  const barList = React.useMemo(() => {
-    const bars = [];
+  const containerCss = useMemo<Interpolation<Theme>>(
+    () => [
+      { fontSize: 0, display: "inline-block", lineHeight: 0 },
+      size !== undefined
+        ? { width: normalizeUnit(size), height: normalizeUnit(size) }
+        : { width: ".4rem", height: ".4rem" },
+    ],
+    [size],
+  );
+
+  const svgCss = useMemo(
+    () =>
+      css({
+        width: "100%",
+        height: "100%",
+        display: "block",
+        rect: {
+          fill: barColor,
+          animationName: `${barFadeKeyframes}`,
+          animationDuration: `${duration}ms`,
+          animationTimingFunction: "linear",
+          animationIterationCount: "infinite",
+          willChange: "opacity",
+        },
+      }),
+    [barColor, duration],
+  );
+
+  const bars = useMemo(() => {
+    const list = [];
+    const x = (100 - barWidth) / 2;
     for (let i = 0; i < barCount; i++) {
-      bars.push(
+      list.push(
         <rect
           key={i}
-          x={(100 - barWidth) / 2}
-          y="0"
+          x={x}
+          y={0}
           rx={radius}
           ry={radius}
           width={barWidth}
           height={barHeight}
-          transform={`rotate(${(360 / barCount) * i}, 50, 50)`}
-          css={{
+          transform={`rotate(${(360 / barCount) * i} 50 50)`}
+          // 负 delay：组件挂载即处于稳态动画中，不会先停后转
+          style={{
             animationDelay: `${-(duration * (barCount - i)) / barCount}ms`,
           }}
-        />
+        />,
       );
     }
-    return bars;
+    return list;
   }, [barCount, barWidth, barHeight, radius, duration]);
 
-  // 使用 useMemo 缓存样式，避免每次都重新计算
-  const style = React.useMemo<Interpolation<Theme>>(() => [
-    {
-      fontSize: 0,
-    },
-    typeof size !== 'undefined' ? {
-      width: normalizeUnit(size),
-      height: normalizeUnit(size),
-    } : {
-      width: '.6rem',
-      height: '.6rem',
-    }
-  ], [size]);
-
-  const svgStyle = React.useMemo(() => css({
-    width: '100%',
-    height: '100%',
-    rect: {
-      fill: 'transparent',
-      animationName: getBarChangeKeyFrames(barColor),
-      animationDuration: `${duration}ms`,
-      animationTimingFunction: 'linear',
-      animationIterationCount: 'infinite',
-    },
-  }), [barColor, duration]);
-
   return (
-    <div css={[style, containerStyle]} {...attributes}>
-      <svg viewBox="0 0 100 100" css={svgStyle}>
-        {barList}
+    <div css={[containerCss, containerStyle]} {...attributes}>
+      <svg viewBox="0 0 100 100" css={svgCss} aria-hidden="true">
+        {bars}
       </svg>
     </div>
   );
 }
+

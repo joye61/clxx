@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Interpolation, SerializedStyles, Theme } from "@emotion/react";
 import React, { useState, useEffect } from "react";
 import { style, getAnimation } from "./style";
@@ -62,7 +61,12 @@ export function Toast(props: ToastProps) {
     showContent = <div css={[middleStyle, contentStyle]}>{content}</div>;
   } else {
     showContent = (
-      <p css={[style.content(radius), middleStyle, contentStyle]}>{content}</p>
+      <p
+        css={[style.content, middleStyle, contentStyle]}
+        style={{ borderRadius: radius ? radius / 100 + "rem" : 0 }}
+      >
+        {content}
+      </p>
     );
   }
 
@@ -74,20 +78,23 @@ export function Toast(props: ToastProps) {
     }
   };
 
-  let positionStyle: SerializedStyles;
+  // 位置偏移：所以 top/bottom 作为 inline style、middle 走常量 css
+  let positionStyle: SerializedStyles | undefined;
+  let positionInline: React.CSSProperties | undefined;
   if (position === "top") {
-    positionStyle = style.top(offsetTop);
+    positionInline = { top: offsetTop / 100 + "rem" };
   } else if (position === "bottom") {
-    positionStyle = style.bottom(offsetBottom);
+    positionInline = { bottom: offsetBottom / 100 + "rem" };
   } else {
     positionStyle = style.middle;
   }
 
   return (
     <div
-      css={[style.container(), positionStyle, animation, containerStyle]}
-      onAnimationEnd={animationEnd}
       {...attributes}
+      css={[style.container, positionStyle, animation, containerStyle]}
+      style={positionInline}
+      onAnimationEnd={animationEnd}
     >
       {showContent}
     </div>

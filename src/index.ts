@@ -59,5 +59,8 @@ export { SafeArea } from './SafeArea';
 export { AutoGrid } from './AutoGrid';
 export { showAlert } from './Alert';
 export { ScrollView } from './ScrollView';
+export type { ScrollViewHandle, ScrollViewProps, ScrollEvent } from './ScrollView';
 export { CarouselNotice } from './CarouselNotice';
 export { CitySelect, showCitySelect } from './CitySelect';
+export { DatePicker, showDatePicker } from './DatePicker';
+export { RegionPicker, showRegionPicker } from './RegionPicker';

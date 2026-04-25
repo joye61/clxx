@@ -1,9 +1,11 @@
 import { Global, Interpolation, Theme } from "@emotion/react";
-import React, {
-  useCallback,
+import {
+  Fragment,
+  ReactNode,
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useWindowResize } from "../Effect/useWindowResize";
@@ -13,79 +15,114 @@ export interface ContainerProps {
   // 用户自定义的全局样式
   globalStyle?: Interpolation<Theme>;
   // 容器包裹的子元素
-  children?: React.ReactNode;
-  // 设计尺寸
+  children?: ReactNode;
+  // 设计尺寸（设计稿宽度），默认 750
   designWidth?: number;
+  // 视口最大宽度（px），默认 750；超出后 fontSize 锁定、body 居中
+  // 保证 H5 页面在 PC 端打开时 rem 尺寸不会被大视口放大，呈现与手机一致的布局
+  // 如需全隐制高度（复价响应式）传入 0 或 Infinity 即可
+  maxWidth?: number;
+}
+
+const isBrowser = typeof window !== "undefined";
+// SSR 时 useLayoutEffect 会 warn，统一降级
+const useIsomorphicLayoutEffect = isBrowser ? useLayoutEffect : useEffect;
+
+// 取当前视口宽度，可选 maxWidth 兑底（0 / Infinity 表示不限制）
+function getViewportWidth(maxWidth?: number): number {
+  if (!isBrowser) return 0;
+  const w = window.innerWidth || document.documentElement.clientWidth || 0;
+  if (!maxWidth || !isFinite(maxWidth)) return w;
+  return Math.min(w, maxWidth);
 }
 
 /**
- * 自适应容器
- * @param props
+ * 自适应容器：所有使用本库的工程都需在根节点放置该组件，
+ * 否则各组件中的 rem 单位将无法自动跟随设备宽度缩放。
+ *
+ * 实现要点：
+ *  - <Global> 通过 useInsertionEffect 早于 useLayoutEffect 注入样式，
+ *    所以首次 layout 阶段所有 rem 已使用正确 fontSize，无需阻塞 children
+ *  - 浏览器字体缩放（用户系统调大字号）首挂载同步检测一次，scaleFactor 修正
+ *  - resize 走 rAF 节流，桌面拖拽 / 模拟器切设备不会反复 setState
+ *  - SSR 安全：所有 window 访问加 isBrowser 守卫
  */
 export function Container(props: ContainerProps) {
-  const { designWidth = 750, globalStyle, children } = props;
+  const { designWidth = 750, maxWidth = 750, globalStyle, children } = props;
 
-  // 计算理论根字体大小（未经浏览器缩放修正）
-  const calculateFontSize = useCallback(
-    (width: number): number => {
-      return (width * 100) / designWidth;
-    },
-    [designWidth]
+  // 当前视口宽度
+  const [viewportWidth, setViewportWidth] = useState<number>(() =>
+    getViewportWidth(maxWidth),
   );
 
-  // 理论基准字体大小（跟随窗口尺寸变化）
-  const [rawFontSize, setRawFontSize] = useState<number>(() =>
-    calculateFontSize(window.innerWidth)
-  );
-
-  // 浏览器字体缩放因子（>1 表示用户放大了系统字体，<1 表示缩小）
-  // 独立存储，使得 resize 后缩放修正依然生效
+  // 浏览器字体缩放因子（>1 用户放大系统字体），首挂载探测一次
   const [scaleFactor, setScaleFactor] = useState(1);
 
-  // 是否已完成字体缩放检测
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // 修正后的字体大小：统一对所有字体计算应用缩放修正
-  const correctedFontSize = useMemo(
-    () =>
-      scaleFactor === 1
-        ? rawFontSize
-        : Math.round((rawFontSize / scaleFactor) * 10) / 10,
-    [rawFontSize, scaleFactor]
+  // 理论 fontSize（未修正）
+  const rawFontSize = useMemo(
+    () => (viewportWidth * 100) / designWidth,
+    [viewportWidth, designWidth],
   );
 
-  // 字体缩放检测
-  // Emotion 的 <Global> 通过 useInsertionEffect 注入样式，早于 useLayoutEffect
-  // 因此 useLayoutEffect 内 getComputedStyle 可正确读取已注入的字体大小
-  // 检测和修正均在浏览器绘制前同步完成，避免闪烁
-  useLayoutEffect(() => {
-    // 缩放因子在页面生命周期内不变，只需检测一次
-    if (isInitialized) return;
+  // 最终 fontSize：缩放修正 + 1 位小数，避免浮点抖动
+  const fontSize = useMemo(
+    () =>
+      Math.round(
+        (scaleFactor === 1 ? rawFontSize : rawFontSize / scaleFactor) * 10,
+      ) / 10,
+    [rawFontSize, scaleFactor],
+  );
 
-    const computedSize = parseFloat(
-      window.getComputedStyle(document.documentElement).fontSize
+  // 浏览器字体缩放检测：仅首挂载执行一次，避免 setState 触发循环
+  const detectedRef = useRef(false);
+  useIsomorphicLayoutEffect(() => {
+    if (detectedRef.current || !isBrowser) return;
+    detectedRef.current = true;
+    const computed = parseFloat(
+      window.getComputedStyle(document.documentElement).fontSize,
     );
-
-    // 如果计算出的字体大小与期望不符（说明被浏览器字体设置影响了）
-    // 容差 1px，避免浮点精度导致误判
-    if (computedSize > 0 && Math.abs(computedSize - rawFontSize) > 1) {
-      // 记录缩放因子，后续所有字体计算（包括 resize）都会自动应用
-      setScaleFactor(computedSize / rawFontSize);
+    // 容差 1px 屏蔽浮点误差
+    if (computed > 0 && Math.abs(computed - rawFontSize) > 1) {
+      setScaleFactor(computed / rawFontSize);
     }
-    setIsInitialized(true);
-  }, [rawFontSize, isInitialized]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // 窗口大小变化时更新理论字体大小
-  // correctedFontSize 通过 useMemo 自动应用 scaleFactor 修正
+  // maxWidth 变更时重算 viewportWidth
+  useEffect(() => {
+    setViewportWidth((prev) => {
+      const next = getViewportWidth(maxWidth);
+      return prev === next ? prev : next;
+    });
+  }, [maxWidth]);
+
+  // resize：rAF 节流；桌面拖动窗口、DevTools 切换设备模拟时也只每帧一次
+  const rafRef = useRef<number | null>(null);
   useWindowResize(() => {
-    setRawFontSize(calculateFontSize(window.innerWidth));
+    if (!isBrowser || rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const next = getViewportWidth(maxWidth);
+      setViewportWidth((prev) => (prev === next ? prev : next));
+    });
   });
 
-  // 设置 viewport meta
+  // 组件卸载清理 pending rAF
+  useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, []);
+
+  // viewport meta
   useViewport();
 
   // 激活 iOS 上的 :active 伪类
   useEffect(() => {
+    if (!isBrowser) return;
     const noop = () => {};
     document.body.addEventListener("touchstart", noop, { passive: true });
     return () => {
@@ -93,30 +130,43 @@ export function Container(props: ContainerProps) {
     };
   }, []);
 
+  // 全局样式：fontSize 写入 html，rem 自动跟随
+  // body 以 maxWidth 居中，保证 PC 端上页面不超过设计宽度，两侧留白
+  // CSS 变量 --clxx-max-width 供 Overlay/Fixed 等使用 fixed 定位的组件读取
+  // 从而把弹窗 / 遮罩限制在视口内（fixed 默认参考浏览器窗口，无法继承 body 宽度）
+  const hasMaxWidth = !!maxWidth && isFinite(maxWidth);
+  const globalStyles = useMemo<Interpolation<Theme>>(
+    () => [
+      {
+        ":root": {
+          "--clxx-max-width": hasMaxWidth ? `${maxWidth}px` : "100%",
+        },
+        "*": {
+          boxSizing: "border-box" as const,
+        },
+        html: {
+          WebkitTapHighlightColor: "transparent",
+          WebkitOverflowScrolling: "touch",
+          WebkitTextSizeAdjust: "100%",
+          fontSize: `${fontSize}px`,
+          touchAction: "manipulation",
+        },
+        body: {
+          fontSize: "16px",
+          margin: "0 auto",
+          ...(hasMaxWidth ? { maxWidth: `${maxWidth}px` } : null),
+        },
+      },
+      globalStyle,
+    ],
+    [fontSize, maxWidth, hasMaxWidth, globalStyle],
+  );
+
   return (
-    <React.Fragment>
-      <Global
-        styles={[
-          {
-            "*": {
-              boxSizing: "border-box",
-            },
-            html: {
-              WebkitTapHighlightColor: "transparent",
-              WebkitOverflowScrolling: "touch",
-              WebkitTextSizeAdjust: "100%",
-              fontSize: `${correctedFontSize}px`,
-              touchAction: "manipulation",
-            },
-            body: {
-              fontSize: "16px",
-              margin: "0 auto",
-            },
-          },
-          globalStyle,
-        ]}
-      />
-      {isInitialized ? children : null}
-    </React.Fragment>
+    <Fragment>
+      <Global styles={globalStyles} />
+      {children}
+    </Fragment>
   );
 }
+

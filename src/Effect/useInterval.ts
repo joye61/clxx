@@ -5,9 +5,12 @@ export function useInterval(callback: () => void, delay?: number | null) {
   savedCallback.current = callback;
 
   useEffect(() => {
-    if (delay !== null) {
-      const interval = setInterval(() => savedCallback.current(), delay || 0);
-      return () => clearInterval(interval);
+    // 仅当 delay 为有限的非负数时才启动定时器；
+    // null/undefined/NaN 等都视为暂停
+    if (typeof delay !== "number" || !isFinite(delay) || delay < 0) {
+      return;
     }
+    const interval = setInterval(() => savedCallback.current(), delay);
+    return () => clearInterval(interval);
   }, [delay]);
 }

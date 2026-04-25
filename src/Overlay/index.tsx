@@ -48,13 +48,18 @@ export function Overlay(props: OverlayProps) {
     const styles: any[] = [];
 
     // 如果是全屏，设置全屏样式
+    // 通过 CSS 变量 --clxx-max-width 与 Container 的 maxWidth 联动；
+    // PC 端 fixed 默认参照浏览器窗口，这里用 left:50% + translateX(-50%) + maxWidth
+    // 让遮罩 / 弹窗水平居中并限制在 Container 视口范围内
     if (fullScreen) {
       styles.push({
         zIndex: 9999,
         position: "fixed",
         top: 0,
-        left: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
         width: "100%",
+        maxWidth: "var(--clxx-max-width, 100%)",
         height: "100%",
         backgroundColor: maskColor,
       });

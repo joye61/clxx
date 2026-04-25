@@ -8,7 +8,7 @@ export default function Index () {
       <button
         onClick={async () => {
           const close = await showLoading();
-          window.setTimeout(close, 5000);
+          window.setTimeout(close, 500000);
         }}
       >
         显示Loading
@@ -17,7 +17,7 @@ export default function Index () {
       <button
         onClick={async () => {
           const close = await showLoading("数据加载中...");
-          window.setTimeout(close, 5000);
+          window.setTimeout(close, 500000);
         }}
       >
         显示Loading

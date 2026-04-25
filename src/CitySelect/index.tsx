@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { createPortalDOM } from "../utils/dom";
+import { showDialog } from "../Dialog";
 import type { CityItem } from "./type";
 import { cityData, provinceData } from "./data";
 import { searchCity } from "./search";
@@ -52,7 +52,7 @@ function findCity(key?: string): CityItem | null {
   return null;
 }
 
-// 滑入/滑出动画在 style.inner 的 transition 中定义
+// 弹出与滑入/滑出动画由 showDialog (pullLeft) 接管
 export function CitySelect(props: CitySelectProps) {
   const {
     onClose,
@@ -103,10 +103,6 @@ export function CitySelect(props: CitySelectProps) {
   const [touching, setTouching] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [composing, setComposing] = useState(false);
-  // 动画状态：entering 刚挂载还未滑入；active 已滑入到位；exiting 正在滑出
-  const [phase, setPhase] = useState<"entering" | "active" | "exiting">(
-    "entering",
-  );
   // IME 合成期间不触发搜索，避免中文输入时的拼音中间态干扰结果
   const searchResult = useMemo(() => {
     if (composing) return null;
@@ -120,36 +116,7 @@ export function CitySelect(props: CitySelectProps) {
   const onLetterChangeRef = useRef(onLetterChange);
   onLetterChangeRef.current = onLetterChange;
 
-  // 进入动画：下一帧切换到 active，触发 CSS transition
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      // 再套一层，确保初始 transform 已被浏览器应用
-      requestAnimationFrame(() => setPhase("active"));
-    });
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  // 触发退出动画，真正的 onClose 在 transitionend 中触发
-  const triggerClose = () => {
-    if (phase === "exiting") return;
-    // 进入动画未完成前退出：进入态和退出态 transform 相同，
-    // 切到 exiting 不会产生 transform 变化，transitionend 不会触发；
-    // 此时面板尚未滑入，直接调用 onClose 即可
-    if (phase === "entering") {
-      onClose?.();
-      return;
-    }
-    setPhase("exiting");
-  };
-
-  // 监听 inner 的 transform 过渡结束，退出阶段调用 onClose
-  const handleTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
-    if (e.propertyName !== "transform") return;
-    if (phase === "exiting") onClose?.();
-  };
-
-  // 选中城市：回调后触发退出动画
+  // 选中城市：回调后请求关闭（动画与卸载交由 Dialog 处理）
   const handleSelect = (city: CityItem) => {
     const province = provinceData[city.pcode];
     onSelect?.({
@@ -160,7 +127,7 @@ export function CitySelect(props: CitySelectProps) {
         code: city.pcode,
       },
     });
-    triggerClose();
+    onClose?.();
   };
   const measureSections = () => {
     const listEl = listRef.current;
@@ -334,17 +301,8 @@ export function CitySelect(props: CitySelectProps) {
   }, [isSearching]);
 
   return (
-    <div css={[style.container]}>
-      <div
-        css={[
-          style.inner,
-          phase === "entering" && style.innerEnter,
-          phase === "active" && style.innerActive,
-          phase === "exiting" && style.innerExit,
-        ]}
-        onTransitionEnd={handleTransitionEnd}
-      >
-        <ColStart css={style.original} alignItems="stretch">
+    <div css={style.inner}>
+      <ColStart css={style.original} alignItems="stretch">
           {/* 搜索框，退出等逻辑 */}
           <div css={style.top}>
             <RowStart>
@@ -362,7 +320,7 @@ export function CitySelect(props: CitySelectProps) {
                   setKeyword(e.currentTarget.value);
                 }}
               />
-              <Clickable css={style.exit} onClick={triggerClose}>
+              <Clickable css={style.exit} onClick={() => onClose?.()}>
                 退出
               </Clickable>
             </RowStart>
@@ -445,7 +403,6 @@ export function CitySelect(props: CitySelectProps) {
         {touching && activeLetter && !isSearching && (
           <div css={style.bigLetter}>{activeLetter.toUpperCase()}</div>
         )}
-      </div>
     </div>
   );
 }
@@ -456,13 +413,20 @@ export function showCitySelect(
     "onSelect" | "onLetterChange" | "getLocation" | "primary"
   > = {},
 ) {
-  const container = createPortalDOM();
-  container.mount(
-    <CitySelect
-      {...options}
-      onClose={() => {
-        container.unmount();
-      }}
-    />,
-  );
+  let closing = false;
+  let close: (() => Promise<void>) | undefined;
+  const requestClose = () => {
+    if (closing) return;
+    closing = true;
+    close?.();
+  };
+
+  close = showDialog({
+    type: "pullLeft",
+    // 全屏不透明面板，无需遮罩
+    showMask: false,
+    // 给 Dialog 的 pullLeft 容器拉满宽度（默认仅 right:0/height:100%）
+    boxStyle: { left: 0, width: "100%" },
+    content: <CitySelect {...options} onClose={requestClose} />,
+  });
 }

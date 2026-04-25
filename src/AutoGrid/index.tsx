@@ -66,37 +66,39 @@ export function AutoGrid(props: AutoGridOption) {
 
   return (
     <div {...extra} css={containerStyle}>
-      {gridData.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          css={[
-            style.row,
-            { gap },
-            rowIndex !== gridData.length - 1 ? { marginBottom: gap } : undefined,
-          ]}
-        >
-          {row.map((item, colIndex) => {
-            const isPlaceholder = item === null;
-            const boxCss: Interpolation<Theme> = [
-              style.itemBox,
-              { width: itemWidth },
-              isPlaceholder ? { visibility: 'hidden' as const } : undefined,
-              isSquare ? style.itemBoxSquare : undefined,
-              itemStyle,
-            ];
-
-            return isSquare ? (
-              <div css={boxCss} key={colIndex}>
-                <div css={style.itemInner}>{item}</div>
-              </div>
-            ) : (
-              <div css={boxCss} key={colIndex}>
-                {item}
-              </div>
-            );
-          })}
-        </div>
-      ))}
+      {gridData.map((row, rowIndex) => {
+        // 行级布局属性走 inline style：纯属性赋值，无伪类/嵌套，避免 emotion 序列化
+        const rowInlineStyle: React.CSSProperties = {
+          gap,
+          marginBottom: rowIndex !== gridData.length - 1 ? gap : undefined,
+        };
+        return (
+          <div key={rowIndex} css={style.row} style={rowInlineStyle}>
+            {row.map((item, colIndex) => {
+              const isPlaceholder = item === null;
+              // cell 宽度 / 占位可见性走 inline style
+              const cellInlineStyle: React.CSSProperties = {
+                width: itemWidth,
+                visibility: isPlaceholder ? "hidden" : undefined,
+              };
+              const cellCss: Interpolation<Theme> = [
+                style.itemBox,
+                isSquare ? style.itemBoxSquare : null,
+                itemStyle,
+              ];
+              return isSquare ? (
+                <div css={cellCss} style={cellInlineStyle} key={colIndex}>
+                  <div css={style.itemInner}>{item}</div>
+                </div>
+              ) : (
+                <div css={cellCss} style={cellInlineStyle} key={colIndex}>
+                  {item}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }

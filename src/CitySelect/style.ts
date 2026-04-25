@@ -1,27 +1,14 @@
 import { css, Interpolation, Theme } from "@emotion/react";
+import { darken } from "../utils/color";
+import { fontStack } from "../utils/theme";
 
-// 设计变量（除 primary 外集中管理）
-const textPrimary = "#1f2328";
-const textSecondary = "#6b7280";
-const textTertiary = "#9ca3af";
+// iOS 风格设计变量
+const textPrimary = "#000000";
+const textSecondary = "#3c3c43"; // iOS secondaryLabel
+const textTertiary = "#8e8e93"; // iOS tertiaryLabel / placeholder
 const bgPage = "#ffffff";
-const bgSubtle = "#f5f6f8";
-const border = "#e5e7eb";
-const fontStack =
-  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
-
-// 将 #rrggbb 颜色按比例变暗，用于派生 primaryActive
-function darken(hex: string, amount: number): string {
-  const m = hex.replace("#", "");
-  if (m.length !== 6) return hex;
-  const r = parseInt(m.slice(0, 2), 16);
-  const g = parseInt(m.slice(2, 4), 16);
-  const b = parseInt(m.slice(4, 6), 16);
-  const f = (v: number) =>
-    Math.max(0, Math.min(255, Math.round(v * (1 - amount))));
-  const toHex = (v: number) => f(v).toString(16).padStart(2, "0");
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
+const bgSubtle = "rgba(120,120,128,.12)"; // iOS quaternary fill
+const bgGrouped = "#f2f2f7"; // iOS systemGroupedBackground
 
 export type CitySelectStyle = Record<string, Interpolation<Theme>>;
 
@@ -29,38 +16,18 @@ export type CitySelectStyle = Record<string, Interpolation<Theme>>;
 export function createStyle(primary: string): CitySelectStyle {
   const primaryActive = darken(primary, 0.15);
   return {
-    container: css({
-      position: "fixed",
-      top: 0,
-      left: 0,
+    // 内容容器：动画/全屏由 Dialog (pullLeft) 提供，这里只保留视觉与排版。
+    // 内部 sidebar / bigLetter 使用 absolute 时，以此为定位上下文。
+    inner: css({
+      position: "relative",
       width: "100%",
       height: "100%",
-      zIndex: 9999,
-      overflow: "hidden",
+      backgroundColor: bgPage,
       userSelect: "none",
       color: textPrimary,
       fontFamily: fontStack,
       WebkitFontSmoothing: "antialiased",
       MozOsxFontSmoothing: "grayscale",
-    }),
-    inner: css({
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: bgPage,
-      transition: "transform .3s cubic-bezier(.22,.61,.36,1)",
-      willChange: "transform",
-    }),
-    innerEnter: css({
-      transform: "translateX(100%)",
-    }),
-    innerActive: css({
-      transform: "translateX(0)",
-    }),
-    innerExit: css({
-      transform: "translateX(100%)",
     }),
     sidebar: css({
       position: "absolute",
@@ -99,7 +66,7 @@ export function createStyle(primary: string): CitySelectStyle {
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      backgroundColor: "rgba(17,24,39,0.6)",
+      backgroundColor: "rgba(0,0,0,0.55)",
       color: "#fff",
       fontSize: ".6rem",
       width: "1.4rem",
@@ -114,8 +81,7 @@ export function createStyle(primary: string): CitySelectStyle {
       backgroundColor: bgPage,
     }),
     top: css({
-      padding: ".24rem .3rem",
-      borderBottom: `1px solid ${border}`,
+      padding: ".3rem",
       "& > div": {
         height: ".72rem",
         backgroundColor: bgSubtle,
@@ -171,8 +137,7 @@ export function createStyle(primary: string): CitySelectStyle {
     locate: css({
       display: "flex",
       alignItems: "center",
-      padding: ".2rem .23rem",
-      borderBottom: `1px solid ${border}`,
+      padding: "0 .3rem .3rem",
       backgroundColor: bgPage,
       transition: "background-color .12s",
       "&:active": {
@@ -197,13 +162,13 @@ export function createStyle(primary: string): CitySelectStyle {
       color: primary,
     }),
     title: css({
-      padding: ".08rem .3rem",
+      padding: ".12rem .3rem .06rem",
       fontSize: ".22rem",
-      fontWeight: 600,
-      color: textSecondary,
+      fontWeight: 500,
+      color: textTertiary,
       letterSpacing: ".02rem",
       textTransform: "uppercase",
-      backgroundColor: bgSubtle,
+      backgroundColor: bgGrouped,
       position: "sticky",
       top: 0,
       zIndex: 1,
@@ -212,7 +177,6 @@ export function createStyle(primary: string): CitySelectStyle {
       padding: ".24rem .3rem",
       fontSize: ".3rem",
       color: textPrimary,
-      borderBottom: `1px solid ${border}`,
       backgroundColor: bgPage,
       transition: "background-color .12s",
       "&:active": {

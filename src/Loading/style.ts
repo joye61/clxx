@@ -19,8 +19,10 @@ export const LoadingHide = keyframes`
 
 export const style: Record<string, Interpolation<Theme>> = {
   boxCommon: {
-    backgroundColor: `rgba(0, 0, 0, .8)`,
-    borderRadius: '.16rem',
+    backgroundColor: `rgba(0, 0, 0, .72)`,
+    borderRadius: '.2rem',
+    backdropFilter: 'blur(20px) saturate(160%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(160%)',
   },
   box: {
     width: '1.6rem',
@@ -32,19 +34,14 @@ export const style: Record<string, Interpolation<Theme>> = {
   boxHide: {
     animation: `${LoadingHide} 200ms`,
   },
-  boxWithExtra: [
-    { padding: '.3rem' },
-    {
-      "> div:first-of-type": {
-        width: '.48rem',
-        height: '.48rem',
-      },
-    },
-  ],
+  boxWithExtra: {
+    padding: '.3rem',
+  },
   hint: {
-    color: "#f5f5f5dd",
+    color: "#ffffff",
     whiteSpace: "nowrap",
     fontSize: '.28rem',
     marginLeft: '.2rem',
+    fontWeight: 500,
   },
 };

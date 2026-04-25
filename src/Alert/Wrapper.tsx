@@ -4,6 +4,9 @@ import { Row } from '../Flex/Row';
 import { style } from './style';
 import * as CSS from 'csstype';
 
+// 按下态底色：模块级常量，Dialog 可能多次重提交（onConfirm 后重新 render）时避免重复分配
+const activeBg: React.CSSProperties = { backgroundColor: 'rgba(0,0,0,.04)' };
+
 export interface AlertWrapperProps {
   // 标题
   title?: React.ReactNode;
@@ -39,7 +42,7 @@ export function AlertWrapper(props: AlertWrapperProps) {
     confirm = '确定',
     confirmColor = '#007aff',
     cancel = '取消',
-    cancelColor = '#6b7280',
+    cancelColor = '#3c3c43',
     showCancel = false,
     onConfirm,
     onCancel,
@@ -55,10 +58,8 @@ export function AlertWrapper(props: AlertWrapperProps) {
   // 展示按钮组
   const btnBoxCss: Interpolation<Theme> = [
     style.btnBox,
-    showCancel ? style.btnBoxWithCancel : {}
+    showCancel ? style.btnBoxWithCancel : null,
   ];
-
-  const activeBg = { backgroundColor: 'rgba(0,0,0,.04)' };
 
   return (
     <div css={style.container}>

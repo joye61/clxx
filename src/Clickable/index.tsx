@@ -140,6 +140,14 @@ export function Clickable(props: Partial<ClickableProps>) {
     }
   }, [disable, touchable, onMouseUp]);
 
+  // 切换到 disable 时，立即清掉激活态，避免视觉上停留在按下样式
+  useEffect(() => {
+    if (disable) {
+      touchRef.current = false;
+      deactivate();
+    }
+  }, [disable, deactivate]);
+
   // 根据激活状态计算最终的 className 和 style
   const finalClassName = isActive && typeof activeClassName === 'string'
     ? (typeof className === 'string' ? `${className} ${activeClassName}` : activeClassName)

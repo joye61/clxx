@@ -6,6 +6,7 @@ import Home from './index/index';
 createApp({
   target: "#root",
   // maxDocWidth: 10000,
+  maxWidth: 750,
   async render(pathname) {
     const module = await import(`./${pathname}/index.jsx`);
     const Page = module.default;

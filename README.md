@@ -22,9 +22,21 @@
 - 📱 **响应式布局** — 基于 rem 的自适应方案，自动处理浏览器字体缩放
 - 🎨 **CSS-in-JS** — 使用 Emotion 实现样式隔离和动态样式
 - 🔧 **TypeScript** — 完整的类型定义，提供更好的开发体验
-- 🎪 **函数式调用** — Toast、Dialog、Loading、Alert 等支持命令式调用
+- 🎪 **函数式调用** — Toast、Dialog、Loading、Alert、Picker 等支持命令式调用
 - 🚀 **现代化** — 基于 React 19，使用最新的 Hooks API
 - 📦 **轻量级** — tree-shaking 友好，按需引入
+
+---
+
+## 🆕 What's New (v3.0)
+
+- **新增 `DatePicker` / `showDatePicker`**：iOS 风格滚轮日期选择器，支持 day / hour / minute / second 多档精度，含 min/max 范围联动夹取。
+- **新增 `RegionPicker` / `showRegionPicker`**：iOS 风格三级（省/市/区）地区选择器，内置中国行政区数据。
+- **`Dialog` 健壮化**：关闭操作幂等（多次调用 close / 并发遮罩点击只触发一次动画）；用户 `onBlankClick` 改为同步触发，事件对象不再失效；动画走 `transform/opacity` GPU 合成；`onAnimationEnd` 严格匹配自身关键帧防止子元素动画冒泡误触。
+- **`CitySelect` 重构**：复用 `Dialog`（`pullLeft`）完成弹出/收起动画，删除组件内自管动画代码。
+- **性能优化**：`Toast` / `Flex` / `FlexItem` / `Fixed` / `SafeArea` / `AutoGrid` 中纯 CSS 属性赋值改走原生 inline `style`，省去 emotion 哈希；模块级常量替代 render 内对象字面量。
+
+> 公共 API 完全兼容，旧版 `showCitySelect` 等签名保持不变。
 
 ---
 
@@ -434,20 +446,20 @@ import { CarouselNotice } from 'clxx';
 
 #### CitySelect / showCitySelect — 城市选择器
 
-移动端全屏城市选择器，支持字母侧边栏触摸导航、粘滞字母标题、列表与字母双向联动、搜索（含中文 IME 保护）、滑入/滑出动画、外部定位回显等。
+移动端全屏城市选择器，支持字母侧边栏触摸导航、粘滞字母标题、列表与字母双向联动、搜索（含中文 IME 保护）、外部定位回显等。弹出 / 收起动画由 `showDialog`（`pullLeft`）统一接管，与其它弹出组件行为一致。
 
 ```tsx
 import { CitySelect, showCitySelect } from 'clxx';
 
-// 组件方式
+// 组件方式（作为 showDialog 的内容渲染；弹出动画由 Dialog 提供）
 <CitySelect
   primary="#2f7dff"
   getLocation={async () => '北京'}
   onSelect={(city) => console.log(city)}
-  onClose={() => console.log('closed')}
+  onClose={() => console.log('请关闭')}
 />
 
-// 函数式方式（内部使用 Portal 挂载到 body，选中或点击退出后自动卸载）
+// 函数式方式（推荐）：内部用 showDialog 挂到 body，选中或退出时自动卸载
 showCitySelect({
   primary: '#2f7dff',
   // 同步返回
@@ -465,7 +477,7 @@ showCitySelect({
 | 属性 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `onSelect` | `(city: SelectedCity) => void` | — | 选中城市时触发 |
-| `onClose` | `() => void` | — | 退出动画结束时触发 |
+| `onClose` | `() => void` | — | 请求关闭（由外部 `showCitySelect` 处理动画与卸载） |
 | `onLetterChange` | `(letter: string) => void` | — | 侧边栏当前字母变化回调 |
 | `getLocation` | `() => string \| null \| undefined \| Promise<string \| null \| undefined>` | — | 外部定位能力，可同步或异步，返回城市名或城市 code |
 | `primary` | `string` | `'#2f7dff'` | 主题主色，形如 `#rrggbb`；active 态颜色自动派生 |
@@ -488,8 +500,131 @@ interface SelectedCity {
 - **字母侧边栏触摸导航**：非 passive 触摸监听，滑动时实时切换字母并滚动列表；松开显示大字母提示。
 - **双向联动**：手动滚动列表时基于缓存的 `offsetTop` 二分查找激活对应字母；并通过 `ResizeObserver` 重新测量。
 - **搜索**：按拼音全拼、拼音首字母、中文名前缀匹配；中文输入法合成期间不触发搜索，避免中间态干扰。
-- **滑入滑出动画**：首次挂载右侧滑入；选中或点击退出时滑出，动画结束后才触发 `onClose`（首帧立即退出时直接回调，避免卡住）。
+- **弹出 / 收起动画**：由 `showDialog` 统一接管（`type: 'pullLeft'`，`showMask: false`，全宽覆盖）；不再在组件内自管动画。
 - **纯属性化主题**：无 `containerStyle`，只允许通过 `primary` 控制主题色。
+
+---
+
+#### DatePicker / showDatePicker — 日期 / 时间选择器
+
+iOS 风格滚轮式日期选择器，支持年 / 月 / 日 / 时 / 分 / 秒 多档精度，自动夹取到 `[minDate, maxDate]` 范围内。弹出动画由 `showDialog`（`pullUp`）接管。
+
+```tsx
+import { DatePicker, showDatePicker } from 'clxx';
+
+// 函数式方式（推荐）
+showDatePicker({
+  title: '选择日期',
+  value: '2026-01-01',
+  precision: 'minute',         // 'day' | 'hour' | 'minute' | 'second'
+  minDate: '2024-01-01',
+  maxDate: '2030-12-31',
+  primary: '#2f7dff',
+  onConfirm: (d) => {
+    console.log(d.format('YYYY-MM-DD HH:mm'));   // dayjs 实例
+  },
+  onCancel: () => {},
+});
+
+// 组件方式：作为 Dialog 内容嵌入自定义弹出场景
+<DatePicker
+  precision="day"
+  showUnit
+  units={{ year: '年', month: '月', day: '日' }}
+  onConfirm={(d) => {}}
+  onClose={() => {}}
+/>
+```
+
+**Props：**
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `value` | `Date \| string \| number \| Dayjs` | `dayjs()` | 初始值；超出 min/max 自动夹取 |
+| `precision` | `'day' \| 'hour' \| 'minute' \| 'second'` | `'day'` | 精度档位 |
+| `title` | `ReactNode` | `'请选择'` | 头部标题 |
+| `cancelText` | `ReactNode` | `'取消'` | 取消按钮文案 |
+| `confirmText` | `ReactNode` | `'确定'` | 确认按钮文案 |
+| `maskClosable` | `boolean` | `true` | 点击遮罩是否可关闭（仅 `showDatePicker` 路径生效） |
+| `primary` | `string` | `'#2f7dff'` | 主题主色 |
+| `rounded` | `boolean` | `true` | 顶部圆角与中间选中条圆角 |
+| `showUnit` | `boolean` | `true` | 是否在数字后显示单位（年/月/日 等） |
+| `units` | `DatePickerUnits` | `{ year: '年', ... }` | 单位文案，可部分覆盖 |
+| `minDate` | `DateInput` | `'1900-01-01'` | 最小可选日期 |
+| `maxDate` | `DateInput` | `'2100-12-31 23:59:59'` | 最大可选日期 |
+| `onConfirm` | `(date: Dayjs) => void` | — | 确认回调，参数为 dayjs 对象 |
+| `onCancel` | `() => void` | — | 取消回调 |
+| `onClose` | `() => void` | — | 请求关闭（由外部处理动画与卸载） |
+
+**特性：**
+- **联动夹取**：上级列变化时下级自动重算范围（如年→月→日→时→分→秒），当前值越界自动夹到最近边界。
+- **月份溢出兜底**：使用 ISO 字符串构造日期，避免 `dayjs().set()` 链式赋值时的月末日溢出问题。
+- **滚轮列复用**：拆出 `Column` 子组件，items / value 变化时按需重渲染。
+
+---
+
+#### RegionPicker / showRegionPicker — 三级地区选择器
+
+iOS 风格的省 / 市 / 区三级联动选择器，内置中国行政区划数据。弹出动画由 `showDialog`（`pullUp`）接管。
+
+```tsx
+import { RegionPicker, showRegionPicker } from 'clxx';
+
+// 函数式方式（推荐）
+showRegionPicker({
+  title: '请选择地区',
+  value: ['110000', '110100', '110101'],   // 省/市/区 value
+  primary: '#2f7dff',
+  onConfirm: ({ province, city, district }) => {
+    console.log(province.label, city.label, district.label);
+    console.log(province.value, city.value, district.value);
+  },
+});
+
+// 组件方式
+<RegionPicker
+  data={customRegionData}   // 自定义数据源
+  labels={{ province: '省', city: '市', district: '区' }}
+  onConfirm={(selection) => {}}
+  onClose={() => {}}
+/>
+```
+
+**Props：**
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `value` | `[string?, string?, string?]` | — | 初始三级 value |
+| `data` | `TreeRegionItem[]` | 内置中国行政区 | 数据源 |
+| `title` | `ReactNode` | `'请选择地区'` | 头部标题 |
+| `cancelText` | `ReactNode` | `'取消'` | 取消按钮文案 |
+| `confirmText` | `ReactNode` | `'确定'` | 确认按钮文案 |
+| `labels` | `RegionLabels` | `{ province: '省', city: '市', district: '区' }` | tabs 未选占位文案 |
+| `maskClosable` | `boolean` | `true` | 点击遮罩是否可关闭（仅 `showRegionPicker` 路径生效） |
+| `primary` | `string` | `'#2f7dff'` | 主题主色 |
+| `rounded` | `boolean` | `true` | 顶部圆角 |
+| `onConfirm` | `(selection: RegionSelection) => void` | — | 确认回调，仅在三级齐全时可点击 |
+| `onCancel` | `() => void` | — | 取消回调 |
+| `onClose` | `() => void` | — | 请求关闭（由外部处理动画与卸载） |
+
+**RegionSelection：**
+
+```typescript
+interface RegionNode {
+  value: string;   // 行政区 code
+  label: string;   // 行政区名称
+}
+interface RegionSelection {
+  province: RegionNode;
+  city: RegionNode;
+  district: RegionNode;
+}
+```
+
+**特性：**
+- **tabs 联动**：选中后自动跳到下一级；切换上级会清空所有下级。
+- **滚动定位**：切 tab 时把当前选中项对齐到列表顶部（用 `getBoundingClientRect` 差分计算偏移，不依赖 offsetParent）。
+- **三级未齐时**：确认按钮置灰禁用，避免半选确认。
 
 ---
 
@@ -1097,20 +1232,6 @@ unmount();                // 卸载并移除 DOM
 
 ---
 
-#### setContextValue / getContextValue — 全局上下文
-
-简单的全局键值存储，用于跨组件共享数据。
-
-```typescript
-import { setContextValue, getContextValue } from 'clxx';
-
-setContextValue({ token: 'xxx', userId: 123 });
-getContextValue('token');  // 'xxx'
-getContextValue();         // { token: 'xxx', userId: 123 }
-```
-
----
-
 ## 📋 完整导出列表
 
 ### 组件
@@ -1122,11 +1243,14 @@ getContextValue();         // { token: 'xxx', userId: 123 }
 | `Col` / `ColStart` ~ `ColEvenly` | 组件 | 垂直布局快捷组件 |
 | `AutoGrid` | 组件 | 自动网格 |
 | `SafeArea` | 组件 | 安全区域 |
+| `Fixed` | 组件 | 固定定位 |
 | `Clickable` | 组件 | 点击态 |
 | `Overlay` | 组件 | 覆盖层 |
 | `ScrollView` | 组件 | 滚动视图 |
 | `CarouselNotice` | 组件 | 轮播公告 |
 | `CitySelect` | 组件 | 城市选择器 |
+| `DatePicker` | 组件 | 日期 / 时间选择器 |
+| `RegionPicker` | 组件 | 三级地区选择器 |
 | `Indicator` | 组件 | 加载指示器 |
 | `Countdowner` | 组件 | 倒计时 |
 | `Ago` | 组件 | 相对时间 |
@@ -1139,6 +1263,8 @@ getContextValue();         // { token: 'xxx', userId: 123 }
 | `showAlert` | 弹窗提示 |
 | `showLoading` / `showLoadingAtLeast` | 加载指示 |
 | `showCitySelect` | 城市选择器 |
+| `showDatePicker` | 日期 / 时间选择器 |
+| `showRegionPicker` | 三级地区选择器 |
 
 ### Hooks
 | 导出 | 说明 |
@@ -1166,7 +1292,6 @@ getContextValue();         // { token: 'xxx', userId: 123 }
 | `defaultScroll` | 滚动控制 |
 | `uniqKey` | 唯一键 |
 | `createPortalDOM` | Portal 容器 |
-| `setContextValue` / `getContextValue` | 全局上下文 |
 
 ---
 

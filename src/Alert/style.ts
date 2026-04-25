@@ -1,9 +1,13 @@
 import { Interpolation, Theme } from "@emotion/react";
+import { fontStack } from "../utils/theme";
 
 // 1px 硬边框（高清屏 hairline）
 const hairline = 1 / (typeof window !== "undefined" ? window.devicePixelRatio : 1);
-const fontStack =
-  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+
+// iOS 风色板
+const textPrimary = "#000000";
+const textSecondary = "#3c3c43";
+const separator = "rgba(60,60,67,.29)"; // iOS opaqueSeparator
 
 export const style: Record<string, Interpolation<Theme>> = {
   container: {
@@ -13,7 +17,7 @@ export const style: Record<string, Interpolation<Theme>> = {
     borderRadius: ".28rem",
     width: (750 * 0.78) / 100 + "rem",
     fontFamily: fontStack,
-    color: "#1f2328",
+    color: textPrimary,
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
     boxShadow: "0 .2rem .6rem rgba(0,0,0,.18)",
@@ -32,7 +36,7 @@ export const style: Record<string, Interpolation<Theme>> = {
       left: 0,
       right: 0,
       height: "1px",
-      backgroundColor: "#e5e7eb",
+      backgroundColor: separator,
       transform: `scale(1, ${hairline})`,
       transformOrigin: "0 100%",
     },
@@ -40,7 +44,7 @@ export const style: Record<string, Interpolation<Theme>> = {
   title: {
     textAlign: "center",
     lineHeight: 1.45,
-    color: "#1f2328",
+    color: textPrimary,
     fontSize: ".34rem",
     fontWeight: 600,
     letterSpacing: ".01rem",
@@ -48,7 +52,7 @@ export const style: Record<string, Interpolation<Theme>> = {
   desc: {
     textAlign: "center",
     lineHeight: 1.55,
-    color: "#6b7280",
+    color: textSecondary,
     fontSize: ".28rem",
     marginTop: ".18rem",
     wordBreak: "break-word",
@@ -66,7 +70,7 @@ export const style: Record<string, Interpolation<Theme>> = {
       left: "50%",
       marginLeft: "-.5px",
       width: "1px",
-      backgroundColor: "#e5e7eb",
+      backgroundColor: separator,
       transform: `scale(${hairline}, 1)`,
       transformOrigin: "0 0",
     },

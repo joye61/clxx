@@ -1,10 +1,94 @@
-.ScrollView {
-  height: 400px;
-  background-color: #f4f5f6;
+.scrollview-demo {
+  padding: 0.2rem;
+  font-size: 0.28rem;
+  color: #1d1d1f;
+}
+
+.scrollview-demo .section {
+  margin-bottom: 0.32rem;
+  border-radius: 0.16rem;
+  background: #fff;
+  box-shadow: 0 0.04rem 0.16rem rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.scrollview-demo .section-title {
+  padding: 0.18rem 0.24rem;
+  font-size: 0.26rem;
+  font-weight: 600;
+  color: #3c3c43;
+  background: #f2f2f7;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.18);
+}
+
+.scrollview-demo .section-body {
+  position: relative;
+}
+
+.scrollview-demo .section-body .ScrollView {
+  background: #f9f9fb;
+}
+
+.scrollview-demo .item {
+  padding: 0.24rem 0.3rem;
+  font-size: 0.28rem;
+  color: #1d1d1f;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.12);
+}
+
+.scrollview-demo .item.target {
+  background: rgba(47, 125, 255, 0.12);
+  color: #2f7dff;
+  font-weight: 600;
+}
+
+.scrollview-demo .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.12rem;
+  padding: 0.16rem 0.24rem;
+  background: #fff;
+  border-top: 1px solid rgba(60, 60, 67, 0.12);
+}
+
+.scrollview-demo .toolbar button {
+  flex: 1 1 auto;
+  min-width: 1.4rem;
+  height: 0.64rem;
+  font-size: 0.24rem;
+  border: 1px solid rgba(60, 60, 67, 0.18);
+  border-radius: 0.32rem;
+  background: #fff;
+  color: #2f7dff;
+  cursor: pointer;
+}
+
+.scrollview-demo .toolbar button:active {
+  opacity: 0.6;
+}
+
+.scrollview-demo .stat {
+  padding: 0.12rem 0.24rem;
+  font-size: 0.22rem;
+  font-family: "SF Mono", "Menlo", monospace;
+  color: #6b7280;
+  background: #f2f2f7;
+  border-bottom: 1px solid rgba(60, 60, 67, 0.12);
+}
+
+.scrollview-demo .badge {
+  display: inline-block;
   padding: 0 0.1rem;
-  border: 1px solid #000;
-  .content {
-    height: 500px;
-    background-image: linear-gradient(to top, #fff, green);
-  }
+  margin-left: 0.08rem;
+  font-size: 0.22rem;
+  border-radius: 0.08rem;
+  background: rgba(47, 125, 255, 0.12);
+  color: #2f7dff;
+}
+
+.scrollview-demo .empty {
+  padding: 0.6rem;
+  text-align: center;
+  color: #8e8e93;
+  font-size: 0.26rem;
 }

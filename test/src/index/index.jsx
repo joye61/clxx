@@ -17,6 +17,8 @@ const pageConfig = [
   // { path: 'privacy', title: 'Privacy去标识化', enable: true },
   { path: "autogrid", title: "AutoGrid生成自动对齐的表格", enable: true },
   { path: "city-select", title: "CitySelect城市选择器", enable: true },
+  { path: "date-picker", title: "DatePicker日期时间选择器", enable: true },
+  { path: "region-picker", title: "RegionPicker省市区选择器", enable: true },
 ];
 
 export default function Index() {

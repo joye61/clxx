@@ -40,8 +40,9 @@ export function Wrapper(props: LoadingWrapperProps) {
     overlayProps = { ...overlayProps, ...overlay };
   }
 
-  // 指示器样式
+  // 指示器样式：默认 size .48rem，保证带文字 / 不带文字两态指示器大小一致
   let indicatorProps: IndicatorProps = {
+    size: '.48rem',
     barWidth: 5,
     barHeight: 25,
     barCount: 14,

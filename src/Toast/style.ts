@@ -1,8 +1,7 @@
 import { css, keyframes } from "@emotion/react";
 import { Keyframes } from "@emotion/serialize";
+import { fontStack } from "../utils/theme";
 
-const fontStack =
-  '-apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
 const easing = "cubic-bezier(.22,.61,.36,1)";
 
 export const middleShowAnimation = keyframes`
@@ -96,47 +95,41 @@ export function getAnimation(
 }
 
 export const style = {
-  container() {
-    return css({
-      position: "fixed",
-      left: "50%",
-      transform: "translateX(-50%)",
-      zIndex: 9999,
-      maxWidth: "6rem",
-      pointerEvents: "none",
-      fontFamily: fontStack,
-      WebkitFontSmoothing: "antialiased",
-      MozOsxFontSmoothing: "grayscale",
-    });
-  },
+  // 容器静态样式：位置偏移由 container 提供，具体 top/bottom 偏移走 inline style。
+  container: css({
+    position: "fixed",
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 9999,
+    maxWidth: "6rem",
+    pointerEvents: "none",
+    fontFamily: fontStack,
+    WebkitFontSmoothing: "antialiased",
+    MozOsxFontSmoothing: "grayscale",
+  }),
 
-  top(offset: number) {
-    return css({ top: offset / 100 + "rem" });
-  },
   middle: css({ top: "50%" }),
-  bottom(offset: number) {
-    return css({ bottom: offset / 100 + "rem" });
-  },
-  content: (radius?: number) => {
-    return css({
-      position: "relative",
-      backgroundColor: "rgba(17,24,39,.88)",
-      color: "#ffffff",
-      margin: 0,
-      // 允许多行，超过 maxWidth 时自然换行
-      whiteSpace: "pre-wrap",
-      wordBreak: "break-word",
-      lineHeight: 1.5,
-      fontSize: ".28rem",
-      fontWeight: 400,
-      letterSpacing: ".01rem",
-      textAlign: "center",
-      padding: ".2rem .32rem",
-      borderRadius: radius ? radius / 100 + "rem" : 0,
-      boxShadow: "0 .12rem .32rem rgba(0,0,0,.25)",
-    });
-  },
-  contentMiddle: {
+
+  // content 中与 radius 无关的部分作为常量，radius 走 inline style
+  content: css({
+    position: "relative",
+    backgroundColor: "rgba(0,0,0,.78)",
+    color: "#ffffff",
+    margin: 0,
+    whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
+    lineHeight: 1.5,
+    fontSize: ".28rem",
+    fontWeight: 400,
+    letterSpacing: ".01rem",
+    textAlign: "center",
+    padding: ".2rem .32rem",
+    boxShadow: "0 .12rem .32rem rgba(0,0,0,.18)",
+    backdropFilter: "blur(20px) saturate(160%)",
+    WebkitBackdropFilter: "blur(20px) saturate(160%)",
+  }),
+
+  contentMiddle: css({
     transform: `translateY(-50%)`,
-  },
+  }),
 };

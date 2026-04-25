@@ -1,5 +1,5 @@
-/** @jsx jsx */
-import { jsx, Theme, Interpolation } from "@emotion/react";
+import { useMemo } from "react";
+import { Theme, Interpolation } from "@emotion/react";
 import { Overlay } from "../Overlay";
 import { style, DialogType, AnimationStatus, getAnimation } from "./style";
 
@@ -24,6 +24,17 @@ export interface WrapperProps {
   maskStyle?: Interpolation<Theme>;
 }
 
+// 常量：Overlay 顶层容器 css
+const overlayCss = { overflow: "hidden" };
+
+// 仅这几种类型需要附加位置样式；center 由 Overlay 的 centerContent 居中
+const POSITIONED_TYPES = new Set<DialogType>([
+  "pullUp",
+  "pullDown",
+  "pullLeft",
+  "pullRight",
+]);
+
 export function Wrapper(props: WrapperProps) {
   const {
     type = "center",
@@ -38,21 +49,24 @@ export function Wrapper(props: WrapperProps) {
   } = props;
   const { animation, keyframes } = getAnimation(type, status);
 
-  // 选取特定的类型对应的样式
-  let boxCss: any[] = [
-    style.boxCss,
-    ["pullUp", "pullDown", "pullLeft", "pullRight"].includes(type) ? style[type as keyof typeof style] : {}
-  ];
+  // 缓存：仅当 type 变化时重建
+  const positionStyle = useMemo(
+    () => (POSITIONED_TYPES.has(type) ? style[type as keyof typeof style] : null),
+    [type],
+  );
 
-  // 遮罩的样式
-  let maskCss: any[] = [
-    style.mask,
-    status === "show" ? style.maskShow : style.maskHide,
-    maskStyle,
-    maskColor ? { backgroundColor: maskColor } : {}
-  ];
+  // 缓存：仅当 status / 外部 maskStyle / maskColor 变化时重建
+  const maskCss = useMemo(
+    () => [
+      style.mask,
+      status === "show" ? style.maskShow : style.maskHide,
+      maskStyle,
+      maskColor ? { backgroundColor: maskColor } : null,
+    ],
+    [status, maskStyle, maskColor],
+  );
 
-  // 空白处点击
+  // 空白处点击：仅在事件 target 与 currentTarget 一致时触发，避免冒泡误关闭
   const blankClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (event.target === event.currentTarget) {
       event.stopPropagation();
@@ -62,7 +76,7 @@ export function Wrapper(props: WrapperProps) {
 
   return (
     <Overlay
-      css={{ overflow: "hidden" }}
+      css={overlayCss}
       centerContent={type === "center"}
       maskColor="transparent"
       fullScreen
@@ -70,9 +84,14 @@ export function Wrapper(props: WrapperProps) {
     >
       {showMask && <div css={maskCss} onClick={blankClick} />}
       <div
-        css={[boxCss, boxStyle, animation]}
+        css={[style.boxCss, positionStyle, boxStyle, animation]}
         onAnimationEnd={(event) => {
-          if (status === "hide" && event.animationName === keyframes.name) {
+          // 仅响应隐藏动画结束，且必须是 box 自身的动画（避免子元素同名动画事件冒泡误触发）
+          if (
+            status === "hide" &&
+            event.target === event.currentTarget &&
+            event.animationName === keyframes.name
+          ) {
             onHide?.();
           }
         }}

@@ -26,7 +26,7 @@ export interface CountdownerOption
 }
 
 export function Countdowner(props: CountdownerOption) {
-  let {
+  const {
     remain = 0,
     separator = ':',
     format = 'his',
@@ -46,7 +46,9 @@ export function Countdowner(props: CountdownerOption) {
   const callbacksRef = React.useRef({ onUpdate, onEnd });
   callbacksRef.current = { onUpdate, onEnd };
 
-  let content: Array<React.ReactNode> = [];
+  // content 每秒因 value 变化必然重建；这里没有 emotion 序列化负担：
+  // numberStyle / separatorStyle 仅做引用透传，emotion 对相同引用有 cache
+  const content: Array<React.ReactNode> = [];
   if (value && typeof value === 'object') {
     for (let i = 0; i < format.length; i++) {
       // 渲染数字进组件
