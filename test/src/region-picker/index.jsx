@@ -1,6 +1,12 @@
 import { showRegionPicker } from "@";
 import { useState } from "react";
 
+// 部分城市无区级，district 可能为 null
+const formatSelection = (sel) =>
+  sel.district
+    ? `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`
+    : `${sel.province.label} / ${sel.city.label}`;
+
 export default function RegionPickerDemo() {
   const [result, setResult] = useState("");
   const [initial, setInitial] = useState(null);
@@ -9,9 +15,12 @@ export default function RegionPickerDemo() {
     showRegionPicker({
       value: initial || undefined,
       onConfirm: (sel) => {
-        const text = `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`;
-        setResult(text);
-        setInitial([sel.province.value, sel.city.value, sel.district.value]);
+        setResult(formatSelection(sel));
+        setInitial([
+          sel.province.value,
+          sel.city.value,
+          sel.district?.value,
+        ]);
       },
       onCancel: () => {
         console.log("取消选择");
@@ -25,9 +34,7 @@ export default function RegionPickerDemo() {
       value: ["440000", "440100", "440106"],
       title: "带初始值",
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -37,9 +44,7 @@ export default function RegionPickerDemo() {
       primary: "#e53935",
       title: "京东红主题",
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -49,9 +54,7 @@ export default function RegionPickerDemo() {
       rounded: false,
       title: "无圆角",
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -63,9 +66,7 @@ export default function RegionPickerDemo() {
       confirmText: "选好了",
       title: "自定义文案",
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -75,9 +76,7 @@ export default function RegionPickerDemo() {
       maskClosable: false,
       title: "点击遮罩不关闭",
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -93,9 +92,17 @@ export default function RegionPickerDemo() {
       cancelText: <span style={{ color: "#ef4444" }}>✕ 关</span>,
       confirmText: <strong>OK ✓</strong>,
       onConfirm: (sel) => {
-        setResult(
-          `${sel.province.label} / ${sel.city.label} / ${sel.district.label}`,
-        );
+        setResult(formatSelection(sel));
+      },
+    });
+  };
+
+  const openWithHKMOTW = () => {
+    showRegionPicker({
+      taiwanHKMacau: true,
+      title: "含港澳台",
+      onConfirm: (sel) => {
+        setResult(formatSelection(sel));
       },
     });
   };
@@ -110,6 +117,7 @@ export default function RegionPickerDemo() {
         <button onClick={openCustomLabels}>自定义 tab 占位 / 按钮文案</button>
         <button onClick={openNoMaskClose}>点击遮罩不关闭</button>
         <button onClick={openReactNodeTitle}>ReactNode 标题/按钮</button>
+        <button onClick={openWithHKMOTW}>含港澳台</button>
       </div>
       <div style={{ marginTop: "0.4rem", fontSize: "0.3rem" }}>
         选择结果：

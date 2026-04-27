@@ -2,12 +2,13 @@ import { css, Interpolation, Theme } from "@emotion/react";
 import { darken } from "../utils/color";
 import { fontStack, numberFontStack } from "../utils/theme";
 
-// iOS 风格设计变量
-const textPrimary = "#000000";
-const textSecondary = "#3c3c43"; // iOS secondaryLabel
-const textTertiary = "#8e8e93"; // iOS tertiaryLabel
+// 与 CitySelect 一致的设计变量（带线条风格）
+const textPrimary = "#1f2328";
+const textSecondary = "#6b7280";
+const textTertiary = "#9ca3af";
 const bgPage = "#ffffff";
-const bgSubtle = "rgba(120,120,128,.12)"; // iOS quaternary fill
+const bgSubtle = "#f5f6f8";
+const border = "#e5e7eb";
 
 // 可见行数 = 5，单元高度 = .8rem
 export const ITEM_HEIGHT_REM = 0.8;
@@ -20,7 +21,7 @@ export function createStyle(
   rounded: boolean = true,
 ): DatePickerStyle {
   const primaryActive = darken(primary, 0.15);
-  const sheetRadius = rounded ? ".28rem" : "0";
+  const sheetRadius = rounded ? ".24rem" : "0";
   const indicatorRadius = rounded ? ".12rem" : "0";
   return {
     // 内容容器：动画/全屏/居中由 Dialog 提供，这里只保留视觉与排版
@@ -36,19 +37,19 @@ export function createStyle(
       WebkitFontSmoothing: "antialiased",
       MozOsxFontSmoothing: "grayscale",
     }),
-    // iOS 风标题栏：底部 hairline 与下方 body 做轻量区块分隔
+    // 标题栏：底部 hairline 与 body 区分
     header: css({
       height: ".92rem",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
       padding: "0 .16rem",
-      borderBottom: "1px solid rgba(60,60,67,.18)",
+      borderBottom: `1px solid ${border}`,
     }),
     title: css({
       flex: 1,
       textAlign: "center",
-      fontSize: ".32rem",
+      fontSize: ".3rem",
       fontWeight: 600,
       color: textPrimary,
       letterSpacing: ".01rem",
@@ -56,7 +57,7 @@ export function createStyle(
     btn: css({
       minWidth: "1.1rem",
       padding: "0 .08rem",
-      fontSize: ".3rem",
+      fontSize: ".28rem",
       fontWeight: 400,
       lineHeight: ".92rem",
       cursor: "pointer",
@@ -69,7 +70,7 @@ export function createStyle(
     }),
     btnConfirm: css({
       textAlign: "right",
-      fontWeight: 600,
+      fontWeight: 500,
       color: primary,
       "&:active": { color: primaryActive, opacity: 0.65 },
     }),
@@ -79,7 +80,7 @@ export function createStyle(
       height: `${ITEM_HEIGHT_REM * VISIBLE_ROWS}rem`,
       padding: "0 .16rem .12rem",
     }),
-    // iOS 风选中背景：柔和的 quaternary fill、充足圆角
+    // 选中条：浅灰底 + 上下 hairline，与 CitySelect 列表观感一致
     indicator: css({
       position: "absolute",
       left: ".16rem",
@@ -88,6 +89,8 @@ export function createStyle(
       height: `${ITEM_HEIGHT_REM}rem`,
       pointerEvents: "none",
       backgroundColor: bgSubtle,
+      borderTop: `1px solid ${border}`,
+      borderBottom: `1px solid ${border}`,
       borderRadius: indicatorRadius,
     }),
     column: css({
@@ -122,8 +125,8 @@ export function createStyle(
       transition: "color .18s ease",
     }),
     itemActive: css({
-      color: textPrimary,
-      fontWeight: 500,
+      color: primary,
+      fontWeight: 600,
     }),
     spacer: css({
       height: `${ITEM_HEIGHT_REM * 2}rem`,

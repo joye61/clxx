@@ -31,17 +31,29 @@ export interface CitySelectProps {
     | Promise<string | null | undefined>;
   // 主题主色，形如 #rrggbb；primaryActive 会基于此自动派生
   primary?: string;
+  // 是否含港澳台（香港/澳门/台湾），默认 false；false 时这些区域不会出现在列表/搜索/定位结果中
+  taiwanHKMacau?: boolean;
 }
+
+// 港澳台对应的省份 code（台湾、香港、澳门）
+const HK_MO_TW_PCODES: ReadonlySet<string> = new Set([
+  "710000",
+  "810000",
+  "820000",
+]);
 
 // 在 cityData 中按 code 或 name 查找城市
 // name 匹配时允许省略末尾的"市"，如"北京" 匹配 "北京市"
-function findCity(key?: string): CityItem | null {
+function findCity(
+  source: Record<string, CityItem[]>,
+  key?: string,
+): CityItem | null {
   if (!key) return null;
   const k = key.trim();
   if (!k) return null;
   const kNoCity = k.endsWith("市") ? k.slice(0, -1) : k;
-  for (const letter of Object.keys(cityData)) {
-    for (const item of cityData[letter]) {
+  for (const letter of Object.keys(source)) {
+    for (const item of source[letter]) {
       if (item.code === k) return item;
       const nameNoCity = item.name.endsWith("市")
         ? item.name.slice(0, -1)
@@ -60,15 +72,34 @@ export function CitySelect(props: CitySelectProps) {
     onLetterChange,
     getLocation,
     primary = DEFAULT_PRIMARY,
+    taiwanHKMacau = false,
   } = props;
   const style = useMemo(() => createStyle(primary), [primary]);
-  const letters = useMemo(() => Object.keys(cityData), []);
+  // 过滤后的城市数据：当 taiwanHKMacau=false 时排除港澳台；
+  // 过滤后为空的字母档位会从指引中移除。仅在 taiwanHKMacau 变化时重建。
+  const filteredCityData = useMemo<Record<string, CityItem[]>>(() => {
+    if (taiwanHKMacau) return cityData;
+    const out: Record<string, CityItem[]> = {};
+    for (const letter of Object.keys(cityData)) {
+      const arr = cityData[letter].filter(
+        (it) => !HK_MO_TW_PCODES.has(it.pcode),
+      );
+      if (arr.length > 0) out[letter] = arr;
+    }
+    return out;
+  }, [taiwanHKMacau]);
+  const letters = useMemo(
+    () => Object.keys(filteredCityData),
+    [filteredCityData],
+  );
   // 定位解析结果：null 表示尚未解析或失败/未匹配；非空时展示快捷入口
   const [locatedCity, setLocatedCity] = useState<CityItem | null>(null);
 
   // 首次挂载时调用一次外部定位；异步失败或匹配不到均保持不展示
   const getLocationRef = useRef(getLocation);
   getLocationRef.current = getLocation;
+  const filteredCityDataRef = useRef(filteredCityData);
+  filteredCityDataRef.current = filteredCityData;
   useEffect(() => {
     const fn = getLocationRef.current;
     if (!fn) return;
@@ -77,7 +108,7 @@ export function CitySelect(props: CitySelectProps) {
       Promise.resolve(fn())
         .then((key) => {
           if (cancelled) return;
-          const city = findCity(key ?? undefined);
+          const city = findCity(filteredCityDataRef.current, key ?? undefined);
           if (city) setLocatedCity(city);
         })
         .catch(() => {
@@ -106,8 +137,11 @@ export function CitySelect(props: CitySelectProps) {
   // IME 合成期间不触发搜索，避免中文输入时的拼音中间态干扰结果
   const searchResult = useMemo(() => {
     if (composing) return null;
-    return keyword.trim() ? searchCity(keyword) : null;
-  }, [keyword, composing]);
+    if (!keyword.trim()) return null;
+    const list = searchCity(keyword);
+    if (taiwanHKMacau) return list;
+    return list.filter((it) => !HK_MO_TW_PCODES.has(it.pcode));
+  }, [keyword, composing, taiwanHKMacau]);
   const isSearching = searchResult !== null;
 
   // 用 ref 保存最新值，避免 effect 依赖变化而反复解绑/绑定
@@ -370,7 +404,7 @@ export function CitySelect(props: CitySelectProps) {
                     }}
                   >
                     <div css={style.title}>{k.toUpperCase()}</div>
-                    {cityData[k].map((item) => (
+                    {filteredCityData[k].map((item) => (
                       <Clickable
                         css={style.item}
                         key={item.code}
@@ -410,7 +444,11 @@ export function CitySelect(props: CitySelectProps) {
 export function showCitySelect(
   options: Pick<
     CitySelectProps,
-    "onSelect" | "onLetterChange" | "getLocation" | "primary"
+    | "onSelect"
+    | "onLetterChange"
+    | "getLocation"
+    | "primary"
+    | "taiwanHKMacau"
   > = {},
 ) {
   let closing = false;

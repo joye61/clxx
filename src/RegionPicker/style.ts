@@ -2,12 +2,13 @@ import { css, Interpolation, Theme } from "@emotion/react";
 import { darken } from "../utils/color";
 import { fontStack } from "../utils/theme";
 
-// iOS 风格设计变量
-const textPrimary = "#000000";
-const textSecondary = "#3c3c43"; // iOS secondaryLabel
-const textTertiary = "#8e8e93"; // iOS tertiaryLabel / placeholder
+// 与 CitySelect 一致的设计变量（带线条风格）
+const textPrimary = "#1f2328";
+const textSecondary = "#6b7280";
+const textTertiary = "#9ca3af";
 const bgPage = "#ffffff";
-const bgSubtle = "rgba(0,0,0,.04)"; // 按下态浅灰
+const bgSubtle = "#f5f6f8";
+const border = "#e5e7eb";
 
 export const DEFAULT_PRIMARY = "#2f7dff";
 
@@ -18,7 +19,7 @@ export function createStyle(
   rounded: boolean = true,
 ): RegionPickerStyle {
   const primaryActive = darken(primary, 0.15);
-  const sheetRadius = rounded ? ".28rem" : "0";
+  const sheetRadius = rounded ? ".24rem" : "0";
   return {
     // 内容容器：动画/遮罩/全屏由 Dialog 提供，这里只保留视觉与排版
     sheet: css({
@@ -36,7 +37,7 @@ export function createStyle(
       WebkitFontSmoothing: "antialiased",
       MozOsxFontSmoothing: "grayscale",
     }),
-    // iOS 风标题栏：无底边框，标题加粗居中，左右按钮都用主色
+    // 标题栏：底部 hairline 与列表区分；按钮中等字重
     header: css({
       flexShrink: 0,
       height: ".92rem",
@@ -44,11 +45,12 @@ export function createStyle(
       alignItems: "center",
       justifyContent: "space-between",
       padding: "0 .16rem",
+      borderBottom: `1px solid ${border}`,
     }),
     title: css({
       flex: 1,
       textAlign: "center",
-      fontSize: ".32rem",
+      fontSize: ".3rem",
       fontWeight: 600,
       color: textPrimary,
       letterSpacing: ".01rem",
@@ -56,7 +58,7 @@ export function createStyle(
     btn: css({
       minWidth: "1.1rem",
       padding: "0 .08rem",
-      fontSize: ".3rem",
+      fontSize: ".28rem",
       fontWeight: 400,
       lineHeight: ".92rem",
       cursor: "pointer",
@@ -69,7 +71,7 @@ export function createStyle(
     }),
     btnConfirm: css({
       textAlign: "right",
-      fontWeight: 600,
+      fontWeight: 500,
       color: primary,
       "&:active": { color: primaryActive, opacity: 0.65 },
     }),
@@ -77,17 +79,18 @@ export function createStyle(
       color: textTertiary,
       cursor: "not-allowed",
       pointerEvents: "none",
-      fontWeight: 600,
+      fontWeight: 500,
       "&:active": { opacity: 1, color: textTertiary },
     }),
-    // tabs 行：轻量化，激活态用细下划线提示；底部加 hairline 分隔下方列表
+    // tabs 行：浅灰底色（与 CitySelect 字母分组标题色一致），激活态细下划线
     tabs: css({
       flexShrink: 0,
       display: "flex",
       alignItems: "stretch",
       height: ".8rem",
       padding: "0 .16rem",
-      borderBottom: "1px solid rgba(60,60,67,.18)",
+      backgroundColor: bgSubtle,
+      borderBottom: `1px solid ${border}`,
     }),
     tab: css({
       flex: 1,
@@ -96,7 +99,7 @@ export function createStyle(
       alignItems: "center",
       justifyContent: "center",
       padding: "0 .08rem",
-      fontSize: ".28rem",
+      fontSize: ".26rem",
       color: textSecondary,
       position: "relative",
       cursor: "pointer",
@@ -111,7 +114,7 @@ export function createStyle(
     }),
     tabActive: css({
       color: primary,
-      fontWeight: 500,
+      fontWeight: 600,
       "&::after": {
         content: '""',
         position: "absolute",
@@ -124,7 +127,7 @@ export function createStyle(
         borderRadius: ".02rem",
       },
     }),
-    // 选项列表（固定高度，避免跳变；6 行 × .88rem = 5.28rem，整体更紧凑）
+    // 选项列表：固定高度避免跳变
     list: css({
       flexShrink: 0,
       height: "5.28rem",
@@ -133,18 +136,19 @@ export function createStyle(
       WebkitOverflowScrolling: "touch",
       overscrollBehavior: "contain",
       backgroundColor: bgPage,
-      paddingBottom: ".12rem",
     }),
-    // iOS 风列表项：无分隔线，仅按下态浅灰底
+    // 列表项：底部 hairline 分隔（CitySelect 风），按下浅灰底
     listItem: css({
       position: "relative",
       height: ".88rem",
       display: "flex",
       alignItems: "center",
-      padding: "0 .32rem",
+      padding: "0 .3rem",
       fontSize: ".3rem",
       color: textPrimary,
-      transition: "background-color .15s",
+      backgroundColor: bgPage,
+      borderBottom: `1px solid ${border}`,
+      transition: "background-color .12s",
       "&:active": {
         backgroundColor: bgSubtle,
       },
@@ -161,7 +165,7 @@ export function createStyle(
       color: primary,
       fontWeight: 500,
     }),
-    // iOS 风对勾（SF Symbol checkmark 风格）
+    // 对勾
     checkIcon: css({
       width: ".32rem",
       height: ".32rem",

@@ -13,17 +13,24 @@ import { treeRegionData, TreeRegionItem } from "./data";
 
 export type { TreeRegionItem } from "./data";
 
+// 港澳台对应的顶层省级 value（台湾、香港、澳门）
+const HK_MO_TW_VALUES: ReadonlySet<string> = new Set([
+  "710000",
+  "810000",
+  "820000",
+]);
+
 // 已选项（单级）
 export interface RegionNode {
   value: string;
   label: string;
 }
 
-// 完整选择结果（三级全选）
+// 完整选择结果（三级，部分城市无区级时 district 为空）
 export interface RegionSelection {
   province: RegionNode;
   city: RegionNode;
-  district: RegionNode;
+  district: RegionNode | null;
 }
 
 // 级别标签文案
@@ -56,6 +63,8 @@ export interface RegionPickerProps {
   primary?: string;
   // 是否圆角，默认 true
   rounded?: boolean;
+  // 是否含港澳台（香港/澳门/台湾），默认 false；false 时这些顶层省份不会出现在列表中
+  taiwanHKMacau?: boolean;
   // 弹出动画结束后调用，实际卸载交由外部（showRegionPicker）处理
   onClose?: () => void;
   onCancel?: () => void;
@@ -75,6 +84,7 @@ export function RegionPicker(props: RegionPickerProps) {
     labels,
     primary = DEFAULT_PRIMARY,
     rounded = true,
+    taiwanHKMacau = false,
     onClose,
     onCancel,
     onConfirm,
@@ -83,6 +93,15 @@ export function RegionPicker(props: RegionPickerProps) {
   const style = useMemo(
     () => createStyle(primary, rounded),
     [primary, rounded],
+  );
+
+  // 过滤后的顶层数据：仅在 data / taiwanHKMacau 变化时重建
+  const effectiveData = useMemo<TreeRegionItem[]>(
+    () =>
+      taiwanHKMacau
+        ? data
+        : data.filter((x) => !HK_MO_TW_VALUES.has(x.value)),
+    [data, taiwanHKMacau],
   );
 
   const lab = useMemo(
@@ -98,29 +117,31 @@ export function RegionPicker(props: RegionPickerProps) {
   // 当前激活 tab
   const [activeTab, setActiveTab] = useState<TabKey>("province");
 
-  // 根据 value 初始化（只在首次 & data 变化时）
+  // 初始化 / data 恢复选中里允许 city 无 children（部分地区没有区级）
   useEffect(() => {
     if (!value) return;
     const [pv, cv, dv] = value;
-    const p = data.find((x) => x.value === pv) ?? null;
+    const p = effectiveData.find((x) => x.value === pv) ?? null;
     const c = p?.children?.find((x) => x.value === cv) ?? null;
     const d = c?.children?.find((x) => x.value === dv) ?? null;
     setProvinceNode(p);
     setCityNode(c);
     setDistrictNode(d);
-    // 定位 activeTab 到「最深的未选层」，全部选好时停在 district
+    // 定位 activeTab 到「最深的未选层」；
+    // 如果选中的市无 children，则停在 city
     if (!p) setActiveTab("province");
     else if (!c) setActiveTab("city");
+    else if (!c.children || c.children.length === 0) setActiveTab("city");
     else setActiveTab("district");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 当前 tab 对应的待选列表
   const currentList: TreeRegionItem[] = useMemo(() => {
-    if (activeTab === "province") return data;
+    if (activeTab === "province") return effectiveData;
     if (activeTab === "city") return provinceNode?.children ?? [];
     return cityNode?.children ?? [];
-  }, [activeTab, data, provinceNode, cityNode]);
+  }, [activeTab, effectiveData, provinceNode, cityNode]);
 
   const selectedValueOfTab = (tab: TabKey): string | null => {
     if (tab === "province") return provinceNode?.value ?? null;
@@ -128,11 +149,11 @@ export function RegionPicker(props: RegionPickerProps) {
     return districtNode?.value ?? null;
   };
 
-  // tab 是否可点击：只有已有对应级数据时才可点（即上级已选）
+  // tab 是否可点击：上级已选；district 额外要求 city 有子级
   const tabEnabled = (tab: TabKey): boolean => {
     if (tab === "province") return true;
     if (tab === "city") return !!provinceNode;
-    return !!cityNode;
+    return !!(cityNode && cityNode.children && cityNode.children.length > 0);
   };
 
   // 点击列表项
@@ -203,14 +224,21 @@ export function RegionPicker(props: RegionPickerProps) {
     onClose?.();
   };
 
-  const canConfirm = !!(provinceNode && cityNode && districtNode);
+  const canConfirm = !!(
+    provinceNode &&
+    cityNode &&
+    (!cityNode.children || cityNode.children.length === 0 || districtNode)
+  );
 
   const handleConfirm = () => {
     if (!canConfirm) return;
+    if (!provinceNode || !cityNode) return;
     onConfirm?.({
       province: { value: provinceNode.value, label: provinceNode.label },
       city: { value: cityNode.value, label: cityNode.label },
-      district: { value: districtNode.value, label: districtNode.label },
+      district: districtNode
+        ? { value: districtNode.value, label: districtNode.label }
+        : null,
     });
     onClose?.();
   };
@@ -297,6 +325,7 @@ export function showRegionPicker(
     | "maskClosable"
     | "primary"
     | "rounded"
+    | "taiwanHKMacau"
     | "onCancel"
     | "onConfirm"
   > = {},

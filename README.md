@@ -481,6 +481,7 @@ showCitySelect({
 | `onLetterChange` | `(letter: string) => void` | — | 侧边栏当前字母变化回调 |
 | `getLocation` | `() => string \| null \| undefined \| Promise<string \| null \| undefined>` | — | 外部定位能力，可同步或异步，返回城市名或城市 code |
 | `primary` | `string` | `'#2f7dff'` | 主题主色，形如 `#rrggbb`；active 态颜色自动派生 |
+| `taiwanHKMacau` | `boolean` | `false` | 是否包含香港/澳门/台湾；false 时在列表、搜索与定位结果中均不出现 |
 
 **SelectedCity：**
 
@@ -603,7 +604,8 @@ showRegionPicker({
 | `maskClosable` | `boolean` | `true` | 点击遮罩是否可关闭（仅 `showRegionPicker` 路径生效） |
 | `primary` | `string` | `'#2f7dff'` | 主题主色 |
 | `rounded` | `boolean` | `true` | 顶部圆角 |
-| `onConfirm` | `(selection: RegionSelection) => void` | — | 确认回调，仅在三级齐全时可点击 |
+| `taiwanHKMacau` | `boolean` | `false` | 是否包含香港/澳门/台湾；false 时这三个顶层省份不会出现在列表中 |
+| `onConfirm` | `(selection: RegionSelection) => void` | — | 确认回调；选中的市无区级时选到市即可提交 |
 | `onCancel` | `() => void` | — | 取消回调 |
 | `onClose` | `() => void` | — | 请求关闭（由外部处理动画与卸载） |
 
@@ -617,14 +619,15 @@ interface RegionNode {
 interface RegionSelection {
   province: RegionNode;
   city: RegionNode;
-  district: RegionNode;
+  // 部分城市无区级时为 null
+  district: RegionNode | null;
 }
 ```
 
 **特性：**
 - **tabs 联动**：选中后自动跳到下一级；切换上级会清空所有下级。
 - **滚动定位**：切 tab 时把当前选中项对齐到列表顶部（用 `getBoundingClientRect` 差分计算偏移，不依赖 offsetParent）。
-- **三级未齐时**：确认按钮置灰禁用，避免半选确认。
+- **选择未完成时**：确认按钮置灰禁用；选中的市无区级时，选到市使可提交。
 
 ---
 

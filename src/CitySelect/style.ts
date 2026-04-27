@@ -2,13 +2,13 @@ import { css, Interpolation, Theme } from "@emotion/react";
 import { darken } from "../utils/color";
 import { fontStack } from "../utils/theme";
 
-// iOS 风格设计变量
-const textPrimary = "#000000";
-const textSecondary = "#3c3c43"; // iOS secondaryLabel
-const textTertiary = "#8e8e93"; // iOS tertiaryLabel / placeholder
+// 设计变量
+const textPrimary = "#1f2328";
+const textSecondary = "#6b7280";
+const textTertiary = "#9ca3af";
 const bgPage = "#ffffff";
-const bgSubtle = "rgba(120,120,128,.12)"; // iOS quaternary fill
-const bgGrouped = "#f2f2f7"; // iOS systemGroupedBackground
+const bgSubtle = "#f5f6f8";
+const border = "#e5e7eb";
 
 export type CitySelectStyle = Record<string, Interpolation<Theme>>;
 
@@ -81,7 +81,8 @@ export function createStyle(primary: string): CitySelectStyle {
       backgroundColor: bgPage,
     }),
     top: css({
-      padding: ".3rem",
+      padding: ".24rem .3rem",
+      borderBottom: `1px solid ${border}`,
       "& > div": {
         height: ".72rem",
         backgroundColor: bgSubtle,
@@ -137,7 +138,8 @@ export function createStyle(primary: string): CitySelectStyle {
     locate: css({
       display: "flex",
       alignItems: "center",
-      padding: "0 .3rem .3rem",
+      padding: ".2rem .23rem",
+      borderBottom: `1px solid ${border}`,
       backgroundColor: bgPage,
       transition: "background-color .12s",
       "&:active": {
@@ -162,13 +164,13 @@ export function createStyle(primary: string): CitySelectStyle {
       color: primary,
     }),
     title: css({
-      padding: ".12rem .3rem .06rem",
+      padding: ".08rem .3rem",
       fontSize: ".22rem",
-      fontWeight: 500,
-      color: textTertiary,
+      fontWeight: 600,
+      color: textSecondary,
       letterSpacing: ".02rem",
       textTransform: "uppercase",
-      backgroundColor: bgGrouped,
+      backgroundColor: bgSubtle,
       position: "sticky",
       top: 0,
       zIndex: 1,
@@ -177,6 +179,7 @@ export function createStyle(primary: string): CitySelectStyle {
       padding: ".24rem .3rem",
       fontSize: ".3rem",
       color: textPrimary,
+      borderBottom: `1px solid ${border}`,
       backgroundColor: bgPage,
       transition: "background-color .12s",
       "&:active": {

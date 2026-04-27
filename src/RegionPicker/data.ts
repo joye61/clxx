@@ -12,7 +12,7 @@ export const treeRegionData: TreeRegionItem[] = [
     children: [
       {
         value: "110100",
-        label: "市辖区",
+        label: "北京市",
         children: [
           {
             value: "110101",
@@ -88,7 +88,7 @@ export const treeRegionData: TreeRegionItem[] = [
     children: [
       {
         value: "120100",
-        label: "市辖区",
+        label: "天津市",
         children: [
           {
             value: "120101",
@@ -243,14 +243,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "赵县",
           },
           {
-            value: "130171",
-            label: "石家庄高新技术产业开发区",
-          },
-          {
-            value: "130172",
-            label: "石家庄循环化工园区",
-          },
-          {
             value: "130181",
             label: "辛集市",
           },
@@ -313,22 +305,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "玉田县",
           },
           {
-            value: "130271",
-            label: "河北唐山芦台经济开发区",
-          },
-          {
-            value: "130272",
-            label: "唐山市汉沽管理区",
-          },
-          {
-            value: "130273",
-            label: "唐山高新技术产业开发区",
-          },
-          {
-            value: "130274",
-            label: "河北唐山海港经济开发区",
-          },
-          {
             value: "130281",
             label: "遵化市",
           },
@@ -373,14 +349,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "130324",
             label: "卢龙县",
-          },
-          {
-            value: "130371",
-            label: "秦皇岛市经济技术开发区",
-          },
-          {
-            value: "130372",
-            label: "北戴河新区",
           },
         ],
       },
@@ -457,14 +425,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "曲周县",
           },
           {
-            value: "130471",
-            label: "邯郸经济技术开发区",
-          },
-          {
-            value: "130473",
-            label: "邯郸冀南新区",
-          },
-          {
             value: "130481",
             label: "武安市",
           },
@@ -537,10 +497,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "130535",
             label: "临西县",
-          },
-          {
-            value: "130571",
-            label: "河北邢台经济开发区",
           },
           {
             value: "130581",
@@ -637,14 +593,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "雄县",
           },
           {
-            value: "130671",
-            label: "保定高新技术产业开发区",
-          },
-          {
-            value: "130672",
-            label: "保定白沟新城",
-          },
-          {
             value: "130681",
             label: "涿州市",
           },
@@ -730,18 +678,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "130732",
             label: "赤城县",
           },
-          {
-            value: "130771",
-            label: "张家口经济开发区",
-          },
-          {
-            value: "130772",
-            label: "张家口市察北管理区",
-          },
-          {
-            value: "130773",
-            label: "张家口市塞北管理区",
-          },
         ],
       },
       {
@@ -787,10 +723,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "130828",
             label: "围场满族蒙古族自治县",
-          },
-          {
-            value: "130871",
-            label: "承德高新技术产业开发区",
           },
           {
             value: "130881",
@@ -851,18 +783,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "孟村回族自治县",
           },
           {
-            value: "130971",
-            label: "河北沧州经济开发区",
-          },
-          {
-            value: "130972",
-            label: "沧州高新技术产业开发区",
-          },
-          {
-            value: "130973",
-            label: "沧州渤海新区",
-          },
-          {
             value: "130981",
             label: "泊头市",
           },
@@ -915,10 +835,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "131028",
             label: "大厂回族自治县",
-          },
-          {
-            value: "131071",
-            label: "廊坊经济技术开发区",
           },
           {
             value: "131081",
@@ -975,34 +891,8 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "阜城县",
           },
           {
-            value: "131171",
-            label: "河北衡水高新技术产业开发区",
-          },
-          {
-            value: "131172",
-            label: "衡水滨湖新区",
-          },
-          {
             value: "131182",
             label: "深州市",
-          },
-        ],
-      },
-      {
-        value: "133100",
-        label: "雄安新区",
-        children: [
-          {
-            value: "133101",
-            label: "容城县",
-          },
-          {
-            value: "133102",
-            label: "安新县",
-          },
-          {
-            value: "133103",
-            label: "雄县",
           },
         ],
       },
@@ -1053,10 +943,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "娄烦县",
           },
           {
-            value: "140171",
-            label: "山西转型综合改革示范区",
-          },
-          {
             value: "140181",
             label: "古交市",
           },
@@ -1105,10 +991,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "140226",
             label: "左云县",
-          },
-          {
-            value: "140271",
-            label: "山西大同经济开发区",
           },
         ],
       },
@@ -1245,10 +1127,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "140623",
             label: "右玉县",
-          },
-          {
-            value: "140671",
-            label: "山西朔州经济开发区",
           },
           {
             value: "140681",
@@ -1419,10 +1297,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "140932",
             label: "偏关县",
-          },
-          {
-            value: "140971",
-            label: "五台山风景名胜区",
           },
           {
             value: "140981",
@@ -1608,10 +1482,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "150125",
             label: "武川县",
           },
-          {
-            value: "150172",
-            label: "呼和浩特经济技术开发区",
-          },
         ],
       },
       {
@@ -1653,10 +1523,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "150223",
             label: "达尔罕茂明安联合旗",
-          },
-          {
-            value: "150271",
-            label: "包头稀土高新技术产业开发区",
           },
         ],
       },
@@ -1763,10 +1629,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "150526",
             label: "扎鲁特旗",
-          },
-          {
-            value: "150571",
-            label: "通辽经济技术开发区",
           },
           {
             value: "150581",
@@ -2044,10 +1906,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "152531",
             label: "多伦县",
           },
-          {
-            value: "152571",
-            label: "乌拉盖管理区管委会",
-          },
         ],
       },
       {
@@ -2065,10 +1923,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "152923",
             label: "额济纳旗",
-          },
-          {
-            value: "152971",
-            label: "内蒙古阿拉善高新技术产业开发区",
           },
         ],
       },
@@ -2605,22 +2459,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "农安县",
           },
           {
-            value: "220171",
-            label: "长春经济技术开发区",
-          },
-          {
-            value: "220172",
-            label: "长春净月高新技术产业开发区",
-          },
-          {
-            value: "220173",
-            label: "长春高新技术产业开发区",
-          },
-          {
-            value: "220174",
-            label: "长春汽车经济技术开发区",
-          },
-          {
             value: "220182",
             label: "榆树市",
           },
@@ -2657,18 +2495,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "220221",
             label: "永吉县",
-          },
-          {
-            value: "220271",
-            label: "吉林经济开发区",
-          },
-          {
-            value: "220272",
-            label: "吉林高新技术产业开发区",
-          },
-          {
-            value: "220273",
-            label: "吉林中国新加坡食品区",
           },
           {
             value: "220281",
@@ -2821,10 +2647,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "乾安县",
           },
           {
-            value: "220771",
-            label: "吉林松原经济开发区",
-          },
-          {
             value: "220781",
             label: "扶余市",
           },
@@ -2845,10 +2667,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "220822",
             label: "通榆县",
-          },
-          {
-            value: "220871",
-            label: "吉林白城经济开发区",
           },
           {
             value: "220881",
@@ -3210,10 +3028,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "230624",
             label: "杜尔伯特蒙古族自治县",
           },
-          {
-            value: "230671",
-            label: "大庆高新技术产业开发区",
-          },
         ],
       },
       {
@@ -3494,7 +3308,7 @@ export const treeRegionData: TreeRegionItem[] = [
     children: [
       {
         value: "310100",
-        label: "市辖区",
+        label: "上海市",
         children: [
           {
             value: "310101",
@@ -3689,10 +3503,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "睢宁县",
           },
           {
-            value: "320371",
-            label: "徐州经济技术开发区",
-          },
-          {
             value: "320381",
             label: "新沂市",
           },
@@ -3799,10 +3609,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "如东县",
           },
           {
-            value: "320671",
-            label: "南通经济技术开发区",
-          },
-          {
             value: "320681",
             label: "启东市",
           },
@@ -3844,10 +3650,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "320724",
             label: "灌南县",
           },
-          {
-            value: "320771",
-            label: "连云港经济技术开发区",
-          },
         ],
       },
       {
@@ -3881,10 +3683,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "320831",
             label: "金湖县",
-          },
-          {
-            value: "320871",
-            label: "淮安经济技术开发区",
           },
         ],
       },
@@ -3925,10 +3723,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "建湖县",
           },
           {
-            value: "320971",
-            label: "盐城经济技术开发区",
-          },
-          {
             value: "320981",
             label: "东台市",
           },
@@ -3955,10 +3749,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "宝应县",
           },
           {
-            value: "321071",
-            label: "扬州经济技术开发区",
-          },
-          {
             value: "321081",
             label: "仪征市",
           },
@@ -3983,10 +3773,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "321112",
             label: "丹徒区",
-          },
-          {
-            value: "321171",
-            label: "镇江新区",
           },
           {
             value: "321181",
@@ -4055,10 +3841,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "321324",
             label: "泗洪县",
-          },
-          {
-            value: "321371",
-            label: "宿迁经济技术开发区",
           },
         ],
       },
@@ -4537,18 +4319,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "庐江县",
           },
           {
-            value: "340176",
-            label: "合肥高新技术产业开发区",
-          },
-          {
-            value: "340177",
-            label: "合肥经济技术开发区",
-          },
-          {
-            value: "340178",
-            label: "合肥新站高新技术产业开发区",
-          },
-          {
             value: "340181",
             label: "巢湖市",
           },
@@ -4581,14 +4351,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "340223",
             label: "南陵县",
-          },
-          {
-            value: "340271",
-            label: "芜湖经济技术开发区",
-          },
-          {
-            value: "340272",
-            label: "安徽芜湖三山经济开发区",
           },
           {
             value: "340281",
@@ -4627,14 +4389,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "340323",
             label: "固镇县",
-          },
-          {
-            value: "340371",
-            label: "蚌埠市高新技术开发区",
-          },
-          {
-            value: "340372",
-            label: "蚌埠市经济开发区",
           },
         ],
       },
@@ -4783,10 +4537,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "岳西县",
           },
           {
-            value: "340871",
-            label: "安徽安庆经济开发区",
-          },
-          {
             value: "340881",
             label: "桐城市",
           },
@@ -4859,14 +4609,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "凤阳县",
           },
           {
-            value: "341171",
-            label: "中新苏滁高新技术产业开发区",
-          },
-          {
-            value: "341172",
-            label: "滁州经济技术开发区",
-          },
-          {
             value: "341181",
             label: "天长市",
           },
@@ -4909,14 +4651,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "颍上县",
           },
           {
-            value: "341271",
-            label: "阜阳合肥现代产业园区",
-          },
-          {
-            value: "341272",
-            label: "阜阳经济技术开发区",
-          },
-          {
             value: "341282",
             label: "界首市",
           },
@@ -4945,14 +4679,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "341324",
             label: "泗县",
-          },
-          {
-            value: "341371",
-            label: "宿州马鞍山现代产业园区",
-          },
-          {
-            value: "341372",
-            label: "宿州经济技术开发区",
           },
         ],
       },
@@ -5057,10 +4783,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "341825",
             label: "旌德县",
-          },
-          {
-            value: "341871",
-            label: "宣城市经济开发区",
           },
           {
             value: "341881",
@@ -5998,10 +5720,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "370126",
             label: "商河县",
           },
-          {
-            value: "370176",
-            label: "济南高新技术产业开发区",
-          },
         ],
       },
       {
@@ -6142,14 +5860,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "370523",
             label: "广饶县",
           },
-          {
-            value: "370571",
-            label: "东营经济技术开发区",
-          },
-          {
-            value: "370572",
-            label: "东营港经济开发区",
-          },
         ],
       },
       {
@@ -6175,14 +5885,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "370614",
             label: "蓬莱区",
-          },
-          {
-            value: "370671",
-            label: "烟台高新技术产业开发区",
-          },
-          {
-            value: "370676",
-            label: "烟台经济技术开发区",
           },
           {
             value: "370681",
@@ -6237,10 +5939,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "370725",
             label: "昌乐县",
-          },
-          {
-            value: "370772",
-            label: "潍坊滨海经济技术开发区",
           },
           {
             value: "370781",
@@ -6309,10 +6007,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "梁山县",
           },
           {
-            value: "370871",
-            label: "济宁高新技术产业开发区",
-          },
-          {
             value: "370881",
             label: "曲阜市",
           },
@@ -6365,18 +6059,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "文登区",
           },
           {
-            value: "371071",
-            label: "威海火炬高技术产业开发区",
-          },
-          {
-            value: "371072",
-            label: "威海经济技术开发区",
-          },
-          {
-            value: "371073",
-            label: "威海临港经济技术开发区",
-          },
-          {
             value: "371082",
             label: "荣成市",
           },
@@ -6405,10 +6087,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "371122",
             label: "莒县",
-          },
-          {
-            value: "371171",
-            label: "日照经济技术开发区",
           },
         ],
       },
@@ -6464,10 +6142,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "371329",
             label: "临沭县",
           },
-          {
-            value: "371371",
-            label: "临沂高新技术产业开发区",
-          },
         ],
       },
       {
@@ -6509,10 +6183,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "371428",
             label: "武城县",
-          },
-          {
-            value: "371471",
-            label: "德州天衢新区",
           },
           {
             value: "371481",
@@ -6636,14 +6306,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "371728",
             label: "东明县",
           },
-          {
-            value: "371771",
-            label: "菏泽经济技术开发区",
-          },
-          {
-            value: "371772",
-            label: "菏泽高新技术开发区",
-          },
         ],
       },
     ],
@@ -6683,18 +6345,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "410122",
             label: "中牟县",
-          },
-          {
-            value: "410171",
-            label: "郑州经济技术开发区",
-          },
-          {
-            value: "410172",
-            label: "郑州高新技术产业开发区",
-          },
-          {
-            value: "410173",
-            label: "郑州航空港经济综合实验区",
           },
           {
             value: "410181",
@@ -6820,10 +6470,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "410329",
             label: "伊川县",
           },
-          {
-            value: "410371",
-            label: "洛阳高新技术产业开发区",
-          },
         ],
       },
       {
@@ -6861,14 +6507,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "410425",
             label: "郏县",
-          },
-          {
-            value: "410471",
-            label: "平顶山高新技术产业开发区",
-          },
-          {
-            value: "410472",
-            label: "平顶山市城乡一体化示范区",
           },
           {
             value: "410481",
@@ -6917,10 +6555,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "内黄县",
           },
           {
-            value: "410571",
-            label: "安阳高新技术产业开发区",
-          },
-          {
             value: "410581",
             label: "林州市",
           },
@@ -6949,10 +6583,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "410622",
             label: "淇县",
-          },
-          {
-            value: "410671",
-            label: "鹤壁经济技术开发区",
           },
         ],
       },
@@ -6995,18 +6625,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "410727",
             label: "封丘县",
-          },
-          {
-            value: "410771",
-            label: "新乡高新技术产业开发区",
-          },
-          {
-            value: "410772",
-            label: "新乡经济技术开发区",
-          },
-          {
-            value: "410773",
-            label: "新乡市平原城乡一体化示范区",
           },
           {
             value: "410781",
@@ -7059,10 +6677,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "温县",
           },
           {
-            value: "410871",
-            label: "焦作城乡一体化示范区",
-          },
-          {
             value: "410882",
             label: "沁阳市",
           },
@@ -7100,14 +6714,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "410928",
             label: "濮阳县",
           },
-          {
-            value: "410971",
-            label: "河南濮阳工业园区",
-          },
-          {
-            value: "410972",
-            label: "濮阳经济技术开发区",
-          },
         ],
       },
       {
@@ -7129,10 +6735,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "411025",
             label: "襄城县",
-          },
-          {
-            value: "411071",
-            label: "许昌经济技术开发区",
           },
           {
             value: "411081",
@@ -7168,10 +6770,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "411122",
             label: "临颍县",
           },
-          {
-            value: "411171",
-            label: "漯河经济技术开发区",
-          },
         ],
       },
       {
@@ -7193,10 +6791,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "411224",
             label: "卢氏县",
-          },
-          {
-            value: "411271",
-            label: "河南三门峡经济开发区",
           },
           {
             value: "411281",
@@ -7261,14 +6855,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "桐柏县",
           },
           {
-            value: "411371",
-            label: "南阳高新技术产业开发区",
-          },
-          {
-            value: "411372",
-            label: "南阳市城乡一体化示范区",
-          },
-          {
             value: "411381",
             label: "邓州市",
           },
@@ -7309,14 +6895,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "411426",
             label: "夏邑县",
-          },
-          {
-            value: "411471",
-            label: "豫东综合物流产业聚集区",
-          },
-          {
-            value: "411472",
-            label: "河南商丘经济开发区",
           },
           {
             value: "411481",
@@ -7368,10 +6946,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "411528",
             label: "息县",
           },
-          {
-            value: "411571",
-            label: "信阳高新技术产业开发区",
-          },
         ],
       },
       {
@@ -7413,10 +6987,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "411628",
             label: "鹿邑县",
-          },
-          {
-            value: "411671",
-            label: "周口临港开发区",
           },
           {
             value: "411681",
@@ -7468,21 +7038,11 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "411729",
             label: "新蔡县",
           },
-          {
-            value: "411771",
-            label: "河南驻马店经济开发区",
-          },
         ],
       },
       {
-        value: "419000",
-        label: "直辖县",
-        children: [
-          {
-            value: "419001",
-            label: "济源市",
-          },
-        ],
+        value: "419001",
+        label: "济源市",
       },
     ],
   },
@@ -7815,10 +7375,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "江陵县",
           },
           {
-            value: "421071",
-            label: "荆州经济技术开发区",
-          },
-          {
             value: "421081",
             label: "石首市",
           },
@@ -7871,10 +7427,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "421127",
             label: "黄梅县",
-          },
-          {
-            value: "421171",
-            label: "龙感湖管理区",
           },
           {
             value: "421181",
@@ -7973,26 +7525,20 @@ export const treeRegionData: TreeRegionItem[] = [
         ],
       },
       {
-        value: "429000",
-        label: "直辖县",
-        children: [
-          {
-            value: "429004",
-            label: "仙桃市",
-          },
-          {
-            value: "429005",
-            label: "潜江市",
-          },
-          {
-            value: "429006",
-            label: "天门市",
-          },
-          {
-            value: "429021",
-            label: "神农架林区",
-          },
-        ],
+        value: "429004",
+        label: "仙桃市",
+      },
+      {
+        value: "429005",
+        label: "潜江市",
+      },
+      {
+        value: "429006",
+        label: "天门市",
+      },
+      {
+        value: "429021",
+        label: "神农架林区",
       },
     ],
   },
@@ -8101,18 +7647,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "湘潭县",
           },
           {
-            value: "430371",
-            label: "湖南湘潭高新技术产业园区",
-          },
-          {
-            value: "430372",
-            label: "湘潭昭山示范区",
-          },
-          {
-            value: "430373",
-            label: "湘潭九华示范区",
-          },
-          {
             value: "430381",
             label: "湘乡市",
           },
@@ -8165,14 +7699,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "430426",
             label: "祁东县",
-          },
-          {
-            value: "430473",
-            label: "湖南衡阳松木经济开发区",
-          },
-          {
-            value: "430476",
-            label: "湖南衡阳高新技术产业园区",
           },
           {
             value: "430481",
@@ -8271,10 +7797,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "平江县",
           },
           {
-            value: "430671",
-            label: "岳阳市屈原管理区",
-          },
-          {
             value: "430681",
             label: "汨罗市",
           },
@@ -8319,10 +7841,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "430726",
             label: "石门县",
-          },
-          {
-            value: "430771",
-            label: "常德市西洞庭管理区",
           },
           {
             value: "430781",
@@ -8375,14 +7893,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "430923",
             label: "安化县",
-          },
-          {
-            value: "430971",
-            label: "益阳市大通湖管理区",
-          },
-          {
-            value: "430972",
-            label: "湖南益阳高新技术产业园区",
           },
           {
             value: "430981",
@@ -8485,14 +7995,6 @@ export const treeRegionData: TreeRegionItem[] = [
             label: "江华瑶族自治县",
           },
           {
-            value: "431171",
-            label: "永州经济技术开发区",
-          },
-          {
-            value: "431173",
-            label: "永州市回龙圩管理区",
-          },
-          {
             value: "431181",
             label: "祁阳市",
           },
@@ -8545,10 +8047,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "431230",
             label: "通道侗族自治县",
-          },
-          {
-            value: "431271",
-            label: "怀化市洪江管理区",
           },
           {
             value: "431281",
@@ -9161,250 +8659,10 @@ export const treeRegionData: TreeRegionItem[] = [
       {
         value: "441900",
         label: "东莞市",
-        children: [
-          {
-            value: "441900003",
-            label: "东城街道",
-          },
-          {
-            value: "441900004",
-            label: "南城街道",
-          },
-          {
-            value: "441900005",
-            label: "万江街道",
-          },
-          {
-            value: "441900006",
-            label: "莞城街道",
-          },
-          {
-            value: "441900101",
-            label: "石碣镇",
-          },
-          {
-            value: "441900102",
-            label: "石龙镇",
-          },
-          {
-            value: "441900103",
-            label: "茶山镇",
-          },
-          {
-            value: "441900104",
-            label: "石排镇",
-          },
-          {
-            value: "441900105",
-            label: "企石镇",
-          },
-          {
-            value: "441900106",
-            label: "横沥镇",
-          },
-          {
-            value: "441900107",
-            label: "桥头镇",
-          },
-          {
-            value: "441900108",
-            label: "谢岗镇",
-          },
-          {
-            value: "441900109",
-            label: "东坑镇",
-          },
-          {
-            value: "441900110",
-            label: "常平镇",
-          },
-          {
-            value: "441900111",
-            label: "寮步镇",
-          },
-          {
-            value: "441900112",
-            label: "樟木头镇",
-          },
-          {
-            value: "441900113",
-            label: "大朗镇",
-          },
-          {
-            value: "441900114",
-            label: "黄江镇",
-          },
-          {
-            value: "441900115",
-            label: "清溪镇",
-          },
-          {
-            value: "441900116",
-            label: "塘厦镇",
-          },
-          {
-            value: "441900117",
-            label: "凤岗镇",
-          },
-          {
-            value: "441900118",
-            label: "大岭山镇",
-          },
-          {
-            value: "441900119",
-            label: "长安镇",
-          },
-          {
-            value: "441900121",
-            label: "虎门镇",
-          },
-          {
-            value: "441900122",
-            label: "厚街镇",
-          },
-          {
-            value: "441900123",
-            label: "沙田镇",
-          },
-          {
-            value: "441900124",
-            label: "道滘镇",
-          },
-          {
-            value: "441900125",
-            label: "洪梅镇",
-          },
-          {
-            value: "441900126",
-            label: "麻涌镇",
-          },
-          {
-            value: "441900127",
-            label: "望牛墩镇",
-          },
-          {
-            value: "441900128",
-            label: "中堂镇",
-          },
-          {
-            value: "441900129",
-            label: "高埗镇",
-          },
-          {
-            value: "441900401",
-            label: "松山湖",
-          },
-          {
-            value: "441900402",
-            label: "东莞港",
-          },
-          {
-            value: "441900403",
-            label: "东莞生态园",
-          },
-          {
-            value: "441900404",
-            label: "东莞滨海湾新区",
-          },
-        ],
       },
       {
         value: "442000",
         label: "中山市",
-        children: [
-          {
-            value: "442000001",
-            label: "石岐街道",
-          },
-          {
-            value: "442000002",
-            label: "东区街道",
-          },
-          {
-            value: "442000003",
-            label: "中山港街道",
-          },
-          {
-            value: "442000004",
-            label: "西区街道",
-          },
-          {
-            value: "442000005",
-            label: "南区街道",
-          },
-          {
-            value: "442000006",
-            label: "五桂山街道",
-          },
-          {
-            value: "442000007",
-            label: "民众街道",
-          },
-          {
-            value: "442000008",
-            label: "南朗街道",
-          },
-          {
-            value: "442000101",
-            label: "黄圃镇",
-          },
-          {
-            value: "442000103",
-            label: "东凤镇",
-          },
-          {
-            value: "442000105",
-            label: "古镇镇",
-          },
-          {
-            value: "442000106",
-            label: "沙溪镇",
-          },
-          {
-            value: "442000107",
-            label: "坦洲镇",
-          },
-          {
-            value: "442000108",
-            label: "港口镇",
-          },
-          {
-            value: "442000109",
-            label: "三角镇",
-          },
-          {
-            value: "442000110",
-            label: "横栏镇",
-          },
-          {
-            value: "442000111",
-            label: "南头镇",
-          },
-          {
-            value: "442000112",
-            label: "阜沙镇",
-          },
-          {
-            value: "442000114",
-            label: "三乡镇",
-          },
-          {
-            value: "442000115",
-            label: "板芙镇",
-          },
-          {
-            value: "442000116",
-            label: "大涌镇",
-          },
-          {
-            value: "442000117",
-            label: "神湾镇",
-          },
-          {
-            value: "442000118",
-            label: "小榄镇",
-          },
-        ],
       },
       {
         value: "445100",
@@ -10063,164 +9321,70 @@ export const treeRegionData: TreeRegionItem[] = [
       {
         value: "460300",
         label: "三沙市",
-        children: [
-          {
-            value: "460321",
-            label: "西沙群岛",
-          },
-          {
-            value: "460322",
-            label: "南沙群岛",
-          },
-          {
-            value: "460323",
-            label: "中沙群岛的岛礁及其海域",
-          },
-        ],
       },
       {
         value: "460400",
         label: "儋州市",
-        children: [
-          {
-            value: "460400100",
-            label: "那大镇",
-          },
-          {
-            value: "460400101",
-            label: "和庆镇",
-          },
-          {
-            value: "460400102",
-            label: "南丰镇",
-          },
-          {
-            value: "460400103",
-            label: "大成镇",
-          },
-          {
-            value: "460400104",
-            label: "雅星镇",
-          },
-          {
-            value: "460400105",
-            label: "兰洋镇",
-          },
-          {
-            value: "460400106",
-            label: "光村镇",
-          },
-          {
-            value: "460400107",
-            label: "木棠镇",
-          },
-          {
-            value: "460400108",
-            label: "海头镇",
-          },
-          {
-            value: "460400109",
-            label: "峨蔓镇",
-          },
-          {
-            value: "460400111",
-            label: "王五镇",
-          },
-          {
-            value: "460400112",
-            label: "白马井镇",
-          },
-          {
-            value: "460400113",
-            label: "中和镇",
-          },
-          {
-            value: "460400114",
-            label: "排浦镇",
-          },
-          {
-            value: "460400115",
-            label: "东成镇",
-          },
-          {
-            value: "460400116",
-            label: "新州镇",
-          },
-          {
-            value: "460400499",
-            label: "洋浦经济开发区",
-          },
-          {
-            value: "460400500",
-            label: "华南热作学院",
-          },
-        ],
       },
       {
-        value: "469000",
-        label: "直辖县",
-        children: [
-          {
-            value: "469001",
-            label: "五指山市",
-          },
-          {
-            value: "469002",
-            label: "琼海市",
-          },
-          {
-            value: "469005",
-            label: "文昌市",
-          },
-          {
-            value: "469006",
-            label: "万宁市",
-          },
-          {
-            value: "469007",
-            label: "东方市",
-          },
-          {
-            value: "469021",
-            label: "定安县",
-          },
-          {
-            value: "469022",
-            label: "屯昌县",
-          },
-          {
-            value: "469023",
-            label: "澄迈县",
-          },
-          {
-            value: "469024",
-            label: "临高县",
-          },
-          {
-            value: "469025",
-            label: "白沙黎族自治县",
-          },
-          {
-            value: "469026",
-            label: "昌江黎族自治县",
-          },
-          {
-            value: "469027",
-            label: "乐东黎族自治县",
-          },
-          {
-            value: "469028",
-            label: "陵水黎族自治县",
-          },
-          {
-            value: "469029",
-            label: "保亭黎族苗族自治县",
-          },
-          {
-            value: "469030",
-            label: "琼中黎族苗族自治县",
-          },
-        ],
+        value: "469001",
+        label: "五指山市",
+      },
+      {
+        value: "469002",
+        label: "琼海市",
+      },
+      {
+        value: "469005",
+        label: "文昌市",
+      },
+      {
+        value: "469006",
+        label: "万宁市",
+      },
+      {
+        value: "469007",
+        label: "东方市",
+      },
+      {
+        value: "469021",
+        label: "定安县",
+      },
+      {
+        value: "469022",
+        label: "屯昌县",
+      },
+      {
+        value: "469023",
+        label: "澄迈县",
+      },
+      {
+        value: "469024",
+        label: "临高县",
+      },
+      {
+        value: "469025",
+        label: "白沙黎族自治县",
+      },
+      {
+        value: "469026",
+        label: "昌江黎族自治县",
+      },
+      {
+        value: "469027",
+        label: "乐东黎族自治县",
+      },
+      {
+        value: "469028",
+        label: "陵水黎族自治县",
+      },
+      {
+        value: "469029",
+        label: "保亭黎族苗族自治县",
+      },
+      {
+        value: "469030",
+        label: "琼中黎族苗族自治县",
       },
     ],
   },
@@ -10230,7 +9394,7 @@ export const treeRegionData: TreeRegionItem[] = [
     children: [
       {
         value: "500100",
-        label: "市辖区",
+        label: "重庆市",
         children: [
           {
             value: "500101",
@@ -10247,10 +9411,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "500104",
             label: "大渡口区",
-          },
-          {
-            value: "500105",
-            label: "江北区",
           },
           {
             value: "500106",
@@ -10275,10 +9435,6 @@ export const treeRegionData: TreeRegionItem[] = [
           {
             value: "500111",
             label: "大足区",
-          },
-          {
-            value: "500112",
-            label: "渝北区",
           },
           {
             value: "500113",
@@ -10336,11 +9492,15 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "500156",
             label: "武隆区",
           },
+          {
+            value: "500157",
+            label: "两江新区",
+          },
         ],
       },
       {
         value: "500200",
-        label: "直辖县",
+        label: "重庆市",
         children: [
           {
             value: "500229",
@@ -12328,22 +11488,6 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "540127",
             label: "墨竹工卡县",
           },
-          {
-            value: "540171",
-            label: "格尔木藏青工业园区",
-          },
-          {
-            value: "540172",
-            label: "拉萨经济技术开发区",
-          },
-          {
-            value: "540173",
-            label: "西藏文化旅游创意园区",
-          },
-          {
-            value: "540174",
-            label: "达孜工业园区",
-          },
         ],
       },
       {
@@ -13182,37 +12326,11 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "620123",
             label: "榆中县",
           },
-          {
-            value: "620171",
-            label: "兰州新区",
-          },
         ],
       },
       {
         value: "620200",
         label: "嘉峪关市",
-        children: [
-          {
-            value: "620201001",
-            label: "雄关街道",
-          },
-          {
-            value: "620201002",
-            label: "钢城街道",
-          },
-          {
-            value: "620201100",
-            label: "新城镇",
-          },
-          {
-            value: "620201101",
-            label: "峪泉镇",
-          },
-          {
-            value: "620201102",
-            label: "文殊镇",
-          },
-        ],
       },
       {
         value: "620300",
@@ -13828,7 +12946,7 @@ export const treeRegionData: TreeRegionItem[] = [
           },
           {
             value: "632857",
-            label: "大柴旦行政委员会",
+            label: "大柴旦行政区",
           },
         ],
       },
@@ -14310,6 +13428,14 @@ export const treeRegionData: TreeRegionItem[] = [
             value: "653227",
             label: "民丰县",
           },
+          {
+            value: "653228",
+            label: "和康县",
+          },
+          {
+            value: "653229",
+            label: "和安县",
+          },
         ],
       },
       {
@@ -14431,56 +13557,912 @@ export const treeRegionData: TreeRegionItem[] = [
         ],
       },
       {
-        value: "659000",
-        label: "直辖县",
+        value: "659001",
+        label: "石河子市",
+      },
+      {
+        value: "659002",
+        label: "阿拉尔市",
+      },
+      {
+        value: "659003",
+        label: "图木舒克市",
+      },
+      {
+        value: "659004",
+        label: "五家渠市",
+      },
+      {
+        value: "659005",
+        label: "北屯市",
+      },
+      {
+        value: "659006",
+        label: "铁门关市",
+      },
+      {
+        value: "659007",
+        label: "双河市",
+      },
+      {
+        value: "659008",
+        label: "可克达拉市",
+      },
+      {
+        value: "659009",
+        label: "昆玉市",
+      },
+      {
+        value: "659010",
+        label: "胡杨河市",
+      },
+      {
+        value: "659011",
+        label: "新星市",
+      },
+      {
+        value: "659012",
+        label: "白杨市",
+      },
+    ],
+  },
+  {
+    value: "710000",
+    label: "台湾省",
+    children: [
+      {
+        value: "710100",
+        label: "台北市",
         children: [
           {
-            value: "659001",
-            label: "石河子市",
+            value: "710101",
+            label: "北投区",
           },
           {
-            value: "659002",
-            label: "阿拉尔市",
+            value: "710102",
+            label: "松山区",
           },
           {
-            value: "659003",
-            label: "图木舒克市",
+            value: "710103",
+            label: "大同区",
           },
           {
-            value: "659004",
-            label: "五家渠市",
+            value: "710104",
+            label: "文山区",
           },
           {
-            value: "659005",
-            label: "北屯市",
+            value: "710105",
+            label: "信义区",
           },
           {
-            value: "659006",
-            label: "铁门关市",
+            value: "710106",
+            label: "内湖区",
           },
           {
-            value: "659007",
-            label: "双河市",
+            value: "710107",
+            label: "中正区",
           },
           {
-            value: "659008",
-            label: "可克达拉市",
+            value: "710108",
+            label: "万华区",
           },
           {
-            value: "659009",
-            label: "昆玉市",
+            value: "710109",
+            label: "中山区",
           },
           {
-            value: "659010",
-            label: "胡杨河市",
+            value: "710110",
+            label: "士林区",
           },
           {
-            value: "659011",
-            label: "新星市",
+            value: "710111",
+            label: "南港区",
           },
           {
-            value: "659012",
-            label: "白杨市",
+            value: "710112",
+            label: "大安区",
+          },
+        ],
+      },
+      {
+        value: "710200",
+        label: "高雄市",
+        children: [
+          {
+            value: "710201",
+            label: "小港区",
+          },
+          {
+            value: "710202",
+            label: "左营区",
+          },
+          {
+            value: "710203",
+            label: "大寮区",
+          },
+          {
+            value: "710204",
+            label: "那玛夏区",
+          },
+          {
+            value: "710205",
+            label: "旗津区",
+          },
+          {
+            value: "710206",
+            label: "弥陀区",
+          },
+          {
+            value: "710207",
+            label: "燕巢区",
+          },
+          {
+            value: "710208",
+            label: "大树区",
+          },
+          {
+            value: "710209",
+            label: "阿莲区",
+          },
+          {
+            value: "710210",
+            label: "楠梓区",
+          },
+          {
+            value: "710211",
+            label: "鸟松区",
+          },
+          {
+            value: "710212",
+            label: "苓雅区",
+          },
+          {
+            value: "710213",
+            label: "桥头区",
+          },
+          {
+            value: "710214",
+            label: "梓官区",
+          },
+          {
+            value: "710215",
+            label: "美浓区",
+          },
+          {
+            value: "710216",
+            label: "仁武区",
+          },
+          {
+            value: "710217",
+            label: "凤山区",
+          },
+          {
+            value: "710218",
+            label: "甲仙区",
+          },
+          {
+            value: "710219",
+            label: "茄萣区",
+          },
+          {
+            value: "710220",
+            label: "大社区",
+          },
+          {
+            value: "710221",
+            label: "前镇区",
+          },
+          {
+            value: "710222",
+            label: "茂林区",
+          },
+          {
+            value: "710223",
+            label: "湖内区",
+          },
+          {
+            value: "710224",
+            label: "六龟区",
+          },
+          {
+            value: "710225",
+            label: "林园区",
+          },
+          {
+            value: "710226",
+            label: "内门区",
+          },
+          {
+            value: "710227",
+            label: "鼓山区",
+          },
+          {
+            value: "710228",
+            label: "杉林区",
+          },
+          {
+            value: "710229",
+            label: "三民区",
+          },
+          {
+            value: "710230",
+            label: "前金区",
+          },
+          {
+            value: "710231",
+            label: "冈山区",
+          },
+          {
+            value: "710232",
+            label: "田寮区",
+          },
+          {
+            value: "710233",
+            label: "桃源区",
+          },
+          {
+            value: "710234",
+            label: "盐埕区",
+          },
+          {
+            value: "710235",
+            label: "旗山区",
+          },
+          {
+            value: "710236",
+            label: "永安区",
+          },
+          {
+            value: "710237",
+            label: "路竹区",
+          },
+          {
+            value: "710238",
+            label: "新兴区",
+          },
+        ],
+      },
+      {
+        value: "710300",
+        label: "新北市",
+        children: [
+          {
+            value: "710301",
+            label: "八里区",
+          },
+          {
+            value: "710302",
+            label: "三峡区",
+          },
+          {
+            value: "710303",
+            label: "新庄区",
+          },
+          {
+            value: "710304",
+            label: "坪林区",
+          },
+          {
+            value: "710305",
+            label: "莺歌区",
+          },
+          {
+            value: "710306",
+            label: "汐止区",
+          },
+          {
+            value: "710307",
+            label: "深坑区",
+          },
+          {
+            value: "710308",
+            label: "芦洲区",
+          },
+          {
+            value: "710309",
+            label: "三芝区",
+          },
+          {
+            value: "710310",
+            label: "三重区",
+          },
+          {
+            value: "710311",
+            label: "平溪区",
+          },
+          {
+            value: "710312",
+            label: "中和区",
+          },
+          {
+            value: "710313",
+            label: "永和区",
+          },
+          {
+            value: "710314",
+            label: "泰山区",
+          },
+          {
+            value: "710315",
+            label: "土城区",
+          },
+          {
+            value: "710316",
+            label: "石碇区",
+          },
+          {
+            value: "710317",
+            label: "五股区",
+          },
+          {
+            value: "710318",
+            label: "林口区",
+          },
+          {
+            value: "710319",
+            label: "双溪区",
+          },
+          {
+            value: "710320",
+            label: "树林区",
+          },
+          {
+            value: "710321",
+            label: "板桥区",
+          },
+          {
+            value: "710322",
+            label: "新店区",
+          },
+          {
+            value: "710323",
+            label: "乌来区",
+          },
+          {
+            value: "710324",
+            label: "贡寮区",
+          },
+          {
+            value: "710325",
+            label: "金山区",
+          },
+          {
+            value: "710326",
+            label: "万里区",
+          },
+          {
+            value: "710327",
+            label: "淡水区",
+          },
+          {
+            value: "710328",
+            label: "瑞芳区",
+          },
+          {
+            value: "710329",
+            label: "石门区",
+          },
+        ],
+      },
+      {
+        value: "710400",
+        label: "台中市",
+        children: [
+          {
+            value: "710401",
+            label: "东区",
+          },
+          {
+            value: "710402",
+            label: "新社区",
+          },
+          {
+            value: "710403",
+            label: "中区",
+          },
+          {
+            value: "710404",
+            label: "南屯区",
+          },
+          {
+            value: "710405",
+            label: "神冈区",
+          },
+          {
+            value: "710406",
+            label: "沙鹿区",
+          },
+          {
+            value: "710407",
+            label: "丰原区",
+          },
+          {
+            value: "710408",
+            label: "大里区",
+          },
+          {
+            value: "710409",
+            label: "龙井区",
+          },
+          {
+            value: "710410",
+            label: "西区",
+          },
+          {
+            value: "710411",
+            label: "南区",
+          },
+          {
+            value: "710412",
+            label: "西屯区",
+          },
+          {
+            value: "710413",
+            label: "太平区",
+          },
+          {
+            value: "710414",
+            label: "北屯区",
+          },
+          {
+            value: "710415",
+            label: "大雅区",
+          },
+          {
+            value: "710416",
+            label: "石冈区",
+          },
+          {
+            value: "710417",
+            label: "北区",
+          },
+          {
+            value: "710418",
+            label: "大甲区",
+          },
+          {
+            value: "710419",
+            label: "梧栖区",
+          },
+          {
+            value: "710420",
+            label: "东势区",
+          },
+          {
+            value: "710421",
+            label: "和平区",
+          },
+          {
+            value: "710422",
+            label: "雾峰区",
+          },
+          {
+            value: "710423",
+            label: "乌日区",
+          },
+          {
+            value: "710424",
+            label: "后里区",
+          },
+          {
+            value: "710425",
+            label: "潭子区",
+          },
+          {
+            value: "710426",
+            label: "大肚区",
+          },
+          {
+            value: "710427",
+            label: "外埔区",
+          },
+          {
+            value: "710428",
+            label: "清水区",
+          },
+          {
+            value: "710429",
+            label: "大安区",
+          },
+        ],
+      },
+      {
+        value: "710500",
+        label: "台南市",
+        children: [
+          {
+            value: "710501",
+            label: "安定区",
+          },
+          {
+            value: "710502",
+            label: "大内区",
+          },
+          {
+            value: "710503",
+            label: "东山区",
+          },
+          {
+            value: "710504",
+            label: "下营区",
+          },
+          {
+            value: "710505",
+            label: "山上区",
+          },
+          {
+            value: "710506",
+            label: "永康区",
+          },
+          {
+            value: "710507",
+            label: "新营区",
+          },
+          {
+            value: "710508",
+            label: "白河区",
+          },
+          {
+            value: "710509",
+            label: "盐水区",
+          },
+          {
+            value: "710510",
+            label: "归仁区",
+          },
+          {
+            value: "710511",
+            label: "龙崎区",
+          },
+          {
+            value: "710512",
+            label: "关庙区",
+          },
+          {
+            value: "710513",
+            label: "仁德区",
+          },
+          {
+            value: "710514",
+            label: "学甲区",
+          },
+          {
+            value: "710515",
+            label: "善化区",
+          },
+          {
+            value: "710516",
+            label: "新市区",
+          },
+          {
+            value: "710517",
+            label: "佳里区",
+          },
+          {
+            value: "710518",
+            label: "新化区",
+          },
+          {
+            value: "710519",
+            label: "西港区",
+          },
+          {
+            value: "710520",
+            label: "麻豆区",
+          },
+          {
+            value: "710521",
+            label: "安南区",
+          },
+          {
+            value: "710522",
+            label: "后壁区",
+          },
+          {
+            value: "710523",
+            label: "柳营区",
+          },
+          {
+            value: "710524",
+            label: "玉井区",
+          },
+          {
+            value: "710525",
+            label: "官田区",
+          },
+          {
+            value: "710526",
+            label: "东区",
+          },
+          {
+            value: "710527",
+            label: "六甲区",
+          },
+          {
+            value: "710528",
+            label: "中西区",
+          },
+          {
+            value: "710529",
+            label: "北区",
+          },
+          {
+            value: "710530",
+            label: "楠西区",
+          },
+          {
+            value: "710531",
+            label: "南化区",
+          },
+          {
+            value: "710532",
+            label: "左镇区",
+          },
+          {
+            value: "710533",
+            label: "南区",
+          },
+          {
+            value: "710534",
+            label: "安平区",
+          },
+          {
+            value: "710535",
+            label: "北门区",
+          },
+          {
+            value: "710536",
+            label: "七股区",
+          },
+          {
+            value: "710537",
+            label: "将军区",
+          },
+        ],
+      },
+      {
+        value: "710600",
+        label: "桃园市",
+        children: [
+          {
+            value: "710601",
+            label: "平镇市",
+          },
+          {
+            value: "710602",
+            label: "杨梅市",
+          },
+          {
+            value: "710603",
+            label: "八德市",
+          },
+          {
+            value: "710604",
+            label: "桃园区",
+          },
+          {
+            value: "710605",
+            label: "龟山乡",
+          },
+          {
+            value: "710606",
+            label: "复兴乡",
+          },
+          {
+            value: "710607",
+            label: "芦竹乡",
+          },
+          {
+            value: "710608",
+            label: "观音乡",
+          },
+          {
+            value: "710609",
+            label: "龙潭乡",
+          },
+          {
+            value: "710610",
+            label: "大溪镇",
+          },
+          {
+            value: "710611",
+            label: "大园乡",
+          },
+          {
+            value: "710612",
+            label: "新屋乡",
+          },
+          {
+            value: "710613",
+            label: "中坜市",
+          },
+        ],
+      },
+      {
+        value: "719001",
+        label: "基隆市",
+      },
+      {
+        value: "719002",
+        label: "新竹市",
+      },
+      {
+        value: "719003",
+        label: "嘉义市",
+      },
+      {
+        value: "719004",
+        label: "新竹县",
+      },
+      {
+        value: "719005",
+        label: "宜兰县",
+      },
+      {
+        value: "719006",
+        label: "苗栗县",
+      },
+      {
+        value: "719007",
+        label: "彰化县",
+      },
+      {
+        value: "719008",
+        label: "云林县",
+      },
+      {
+        value: "719009",
+        label: "南投县",
+      },
+      {
+        value: "719010",
+        label: "嘉义县",
+      },
+      {
+        value: "719011",
+        label: "屏东县",
+      },
+      {
+        value: "719012",
+        label: "台东县",
+      },
+      {
+        value: "719013",
+        label: "花莲县",
+      },
+      {
+        value: "719014",
+        label: "澎湖县",
+      },
+    ],
+  },
+  {
+    value: "810000",
+    label: "香港",
+    children: [
+      {
+        value: "810000",
+        label: "香港",
+        children: [
+          {
+            value: "810101",
+            label: "中西区",
+          },
+          {
+            value: "810102",
+            label: "东区",
+          },
+          {
+            value: "810103",
+            label: "九龙城区",
+          },
+          {
+            value: "810104",
+            label: "观塘区",
+          },
+          {
+            value: "810105",
+            label: "南区",
+          },
+          {
+            value: "810106",
+            label: "深水埗区",
+          },
+          {
+            value: "810107",
+            label: "湾仔区",
+          },
+          {
+            value: "810108",
+            label: "黄大仙区",
+          },
+          {
+            value: "810109",
+            label: "油尖旺区",
+          },
+          {
+            value: "810110",
+            label: "离岛区",
+          },
+          {
+            value: "810111",
+            label: "葵青区",
+          },
+          {
+            value: "810112",
+            label: "北区",
+          },
+          {
+            value: "810113",
+            label: "西贡区",
+          },
+          {
+            value: "810114",
+            label: "沙田区",
+          },
+          {
+            value: "810115",
+            label: "屯门区",
+          },
+          {
+            value: "810116",
+            label: "大埔区",
+          },
+          {
+            value: "810117",
+            label: "荃湾区",
+          },
+          {
+            value: "810118",
+            label: "元朗区",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: "820000",
+    label: "澳门",
+    children: [
+      {
+        value: "820000",
+        label: "澳门",
+        children: [
+          {
+            value: "820001",
+            label: "花王堂区",
+          },
+          {
+            value: "820002",
+            label: "望德堂区",
+          },
+          {
+            value: "820003",
+            label: "风顺堂区",
+          },
+          {
+            value: "820004",
+            label: "圣方济各堂区",
+          },
+          {
+            value: "820005",
+            label: "嘉模堂区",
+          },
+          {
+            value: "820006",
+            label: "大堂区",
+          },
+          {
+            value: "820007",
+            label: "路氹填海区",
+          },
+          {
+            value: "820008",
+            label: "花地玛堂区",
+          },
+          {
+            value: "820010",
+            label: "澳门特别行政区直辖",
           },
         ],
       },
