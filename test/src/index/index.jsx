@@ -19,6 +19,11 @@ const pageConfig = [
   { path: "city-select", title: "CitySelect城市选择器", enable: true },
   { path: "date-picker", title: "DatePicker日期时间选择器", enable: true },
   { path: "region-picker", title: "RegionPicker省市区选择器", enable: true },
+  {
+    path: "map-location-selection",
+    title: "MapLocationSelection地图选址",
+    enable: true,
+  },
 ];
 
 export default function Index() {

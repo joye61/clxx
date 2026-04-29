@@ -1,6 +1,6 @@
 {
   "name": "clxx",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Basic JS library for mobile devices",
   "main": "./build/index.js",
   "module": "./build/index.js",
@@ -8,7 +8,7 @@
     "example": "example"
   },
   "scripts": {
-    "start": "tsc -w --pretty",
+    "dev": "tsc -w --pretty",
     "build": "rimraf ./build && tsc",
     "pub": "npm run build && npm publish"
   },

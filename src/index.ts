@@ -64,3 +64,11 @@ export { CarouselNotice } from './CarouselNotice';
 export { CitySelect, showCitySelect } from './CitySelect';
 export { DatePicker, showDatePicker } from './DatePicker';
 export { RegionPicker, showRegionPicker } from './RegionPicker';
+export {
+  MapLocationSelection,
+  showMapLocationSelection,
+} from './MapLocationSelection';
+export type {
+  MapLocationSelectionProps,
+  SelectedLocation,
+} from './MapLocationSelection';
