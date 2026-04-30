@@ -18,6 +18,7 @@ export { defaultScroll } from './utils/defaultScroll';
 export { is } from './utils/is';
 export { waitFor, waitUntil } from './utils/wait';
 export { normalizeUnit, splitValue } from './utils/cssUtil';
+export { r } from './utils/rem';
 export { createApp, history, getHistory } from './utils/createApp';
 export { createPortalDOM } from './utils/dom';
 

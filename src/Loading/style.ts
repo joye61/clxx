@@ -1,4 +1,5 @@
 import { Interpolation, keyframes, Theme } from "@emotion/react";
+import { r } from "../utils/rem";
 
 export const LoadingShow = keyframes`
   from {
@@ -20,13 +21,13 @@ export const LoadingHide = keyframes`
 export const style: Record<string, Interpolation<Theme>> = {
   boxCommon: {
     backgroundColor: `rgba(0, 0, 0, .72)`,
-    borderRadius: '.2rem',
+    borderRadius: r(20),
     backdropFilter: 'blur(20px) saturate(160%)',
     WebkitBackdropFilter: 'blur(20px) saturate(160%)',
   },
   box: {
-    width: '1.6rem',
-    height: '1.6rem',
+    width: r(160),
+    height: r(160),
   },
   boxShow: {
     animation: `${LoadingShow} 200ms`,
@@ -35,13 +36,13 @@ export const style: Record<string, Interpolation<Theme>> = {
     animation: `${LoadingHide} 200ms`,
   },
   boxWithExtra: {
-    padding: '.3rem',
+    padding: r(30),
   },
   hint: {
     color: "#ffffff",
     whiteSpace: "nowrap",
-    fontSize: '.28rem',
-    marginLeft: '.2rem',
+    fontSize: r(28),
+    marginLeft: r(20),
     fontWeight: 500,
   },
 };

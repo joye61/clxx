@@ -2,6 +2,7 @@ import { css, Interpolation, Theme } from "@emotion/react";
 import { HTMLAttributes, useMemo } from "react";
 import * as CSS from "csstype";
 import { normalizeUnit } from "../utils/cssUtil";
+import { r } from "../utils/rem";
 import { barFadeKeyframes } from "./style";
 
 export interface IndicatorProps extends HTMLAttributes<HTMLDivElement> {
@@ -50,7 +51,7 @@ export function Indicator(props: IndicatorProps) {
       { fontSize: 0, display: "inline-block", lineHeight: 0 },
       size !== undefined
         ? { width: normalizeUnit(size), height: normalizeUnit(size) }
-        : { width: ".4rem", height: ".4rem" },
+        : { width: r(40), height: r(40) },
     ],
     [size],
   );

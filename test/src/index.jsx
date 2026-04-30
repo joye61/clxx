@@ -7,6 +7,7 @@ createApp({
   target: "#root",
   // maxDocWidth: 10000,
   maxWidth: 750,
+  // designWidth: 375,
   async render(pathname) {
     const module = await import(`./${pathname}/index.jsx`);
     const Page = module.default;

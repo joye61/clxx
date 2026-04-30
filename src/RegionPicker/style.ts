@@ -1,6 +1,7 @@
 import { css, Interpolation, Theme } from "@emotion/react";
 import { darken } from "../utils/color";
 import { fontStack } from "../utils/theme";
+import { r } from "../utils/rem";
 
 // 与 CitySelect 一致的设计变量（带线条风格）
 const textPrimary = "#1f2328";
@@ -19,7 +20,7 @@ export function createStyle(
   rounded: boolean = true,
 ): RegionPickerStyle {
   const primaryActive = darken(primary, 0.15);
-  const sheetRadius = rounded ? ".24rem" : "0";
+  const sheetRadius = rounded ? r(24) : "0";
   return {
     // 内容容器：动画/遮罩/全屏由 Dialog 提供，这里只保留视觉与排版
     sheet: css({
@@ -40,27 +41,27 @@ export function createStyle(
     // 标题栏：底部 hairline 与列表区分；按钮中等字重
     header: css({
       flexShrink: 0,
-      height: ".92rem",
+      height: r(92),
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "0 .16rem",
+      padding: `0 ${r(16)}`,
       borderBottom: `1px solid ${border}`,
     }),
     title: css({
       flex: 1,
       textAlign: "center",
-      fontSize: ".3rem",
+      fontSize: r(30),
       fontWeight: 600,
       color: textPrimary,
-      letterSpacing: ".01rem",
+      letterSpacing: r(1),
     }),
     btn: css({
-      minWidth: "1.1rem",
-      padding: "0 .08rem",
-      fontSize: ".28rem",
+      minWidth: r(110),
+      padding: `0 ${r(8)}`,
+      fontSize: r(28),
       fontWeight: 400,
-      lineHeight: ".92rem",
+      lineHeight: r(92),
       cursor: "pointer",
       transition: "opacity .15s, color .15s",
     }),
@@ -87,8 +88,8 @@ export function createStyle(
       flexShrink: 0,
       display: "flex",
       alignItems: "stretch",
-      height: ".8rem",
-      padding: "0 .16rem",
+      height: r(80),
+      padding: `0 ${r(16)}`,
       backgroundColor: bgSubtle,
       borderBottom: `1px solid ${border}`,
     }),
@@ -98,8 +99,8 @@ export function createStyle(
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "0 .08rem",
-      fontSize: ".26rem",
+      padding: `0 ${r(8)}`,
+      fontSize: r(26),
       color: textSecondary,
       position: "relative",
       cursor: "pointer",
@@ -107,7 +108,7 @@ export function createStyle(
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      letterSpacing: ".01rem",
+      letterSpacing: r(1),
     }),
     tabPlaceholder: css({
       color: textTertiary,
@@ -119,18 +120,18 @@ export function createStyle(
         content: '""',
         position: "absolute",
         left: "50%",
-        bottom: ".06rem",
+        bottom: r(6),
         transform: "translateX(-50%)",
-        width: ".32rem",
-        height: ".04rem",
+        width: r(32),
+        height: r(4),
         backgroundColor: primary,
-        borderRadius: ".02rem",
+        borderRadius: r(2),
       },
     }),
     // 选项列表：固定高度避免跳变
     list: css({
       flexShrink: 0,
-      height: "5.28rem",
+      height: r(528),
       overflowY: "auto",
       overflowX: "hidden",
       WebkitOverflowScrolling: "touch",
@@ -140,11 +141,11 @@ export function createStyle(
     // 列表项：底部 hairline 分隔（CitySelect 风），按下浅灰底
     listItem: css({
       position: "relative",
-      height: ".88rem",
+      height: r(88),
       display: "flex",
       alignItems: "center",
-      padding: "0 .3rem",
-      fontSize: ".3rem",
+      padding: `0 ${r(30)}`,
+      fontSize: r(30),
       color: textPrimary,
       backgroundColor: bgPage,
       borderBottom: `1px solid ${border}`,
@@ -159,7 +160,7 @@ export function createStyle(
       whiteSpace: "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis",
-      letterSpacing: ".01rem",
+      letterSpacing: r(1),
     }),
     listItemSelected: css({
       color: primary,
@@ -167,28 +168,28 @@ export function createStyle(
     }),
     // 对勾
     checkIcon: css({
-      width: ".32rem",
-      height: ".32rem",
+      width: r(32),
+      height: r(32),
       flexShrink: 0,
-      marginLeft: ".16rem",
+      marginLeft: r(16),
       position: "relative",
       "&::after": {
         content: '""',
         position: "absolute",
-        left: ".06rem",
-        top: ".04rem",
-        width: ".1rem",
-        height: ".2rem",
+        left: r(6),
+        top: r(4),
+        width: r(10),
+        height: r(20),
         border: `solid ${primary}`,
-        borderWidth: "0 .03rem .03rem 0",
+        borderWidth: `0 ${r(3)} ${r(3)} 0`,
         transform: "rotate(45deg)",
       },
     }),
     // 空数据占位
     empty: css({
-      padding: ".6rem 0",
+      padding: `${r(60)} 0`,
       textAlign: "center",
-      fontSize: ".26rem",
+      fontSize: r(26),
       color: textTertiary,
     }),
   };

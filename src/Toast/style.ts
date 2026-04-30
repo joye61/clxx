@@ -1,6 +1,7 @@
 import { css, keyframes } from "@emotion/react";
 import { Keyframes } from "@emotion/serialize";
 import { fontStack } from "../utils/theme";
+import { r } from "../utils/rem";
 
 const easing = "cubic-bezier(.22,.61,.36,1)";
 
@@ -101,7 +102,7 @@ export const style = {
     left: "50%",
     transform: "translateX(-50%)",
     zIndex: 9999,
-    maxWidth: "6rem",
+    maxWidth: r(600),
     pointerEvents: "none",
     fontFamily: fontStack,
     WebkitFontSmoothing: "antialiased",
@@ -119,12 +120,12 @@ export const style = {
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     lineHeight: 1.5,
-    fontSize: ".28rem",
+    fontSize: r(28),
     fontWeight: 400,
-    letterSpacing: ".01rem",
+    letterSpacing: r(1),
     textAlign: "center",
-    padding: ".2rem .32rem",
-    boxShadow: "0 .12rem .32rem rgba(0,0,0,.18)",
+    padding: `${r(20)} ${r(32)}`,
+    boxShadow: `0 ${r(12)} ${r(32)} rgba(0,0,0,.18)`,
     backdropFilter: "blur(20px) saturate(160%)",
     WebkitBackdropFilter: "blur(20px) saturate(160%)",
   }),

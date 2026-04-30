@@ -1,4 +1,5 @@
 import { Interpolation, keyframes, Theme } from "@emotion/react";
+import { r } from "../utils/rem";
 
 // translate 走百分比；fill-mode: forwards 保证动画结束后定格在 -50%，
 // 与 React 的 setState 提交顺序解耦，杜绝"动画结束帧"回弹到 0 造成的闪烁
@@ -15,7 +16,7 @@ export const style: Record<string, Interpolation<Theme>> = {
   box: {
     position: "relative",
     overflow: "hidden",
-    height: ".8rem",
+    height: r(80),
   },
   wrapper: {
     position: "absolute",

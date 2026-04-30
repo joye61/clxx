@@ -1,6 +1,7 @@
 import { css, Interpolation, Theme } from "@emotion/react";
 import { darken } from "../utils/color";
 import { fontStack, numberFontStack } from "../utils/theme";
+import { r } from "../utils/rem";
 
 // 与 CitySelect 一致的设计变量（带线条风格）
 const textPrimary = "#1f2328";
@@ -10,8 +11,8 @@ const bgPage = "#ffffff";
 const bgSubtle = "#f5f6f8";
 const border = "#e5e7eb";
 
-// 可见行数 = 5，单元高度 = .8rem
-export const ITEM_HEIGHT_REM = 0.8;
+// 可见行数 = 5，单元高度 = 80px @ 750 设计稿
+export const ITEM_HEIGHT_PX = 80;
 export const VISIBLE_ROWS = 5;
 
 export type DatePickerStyle = Record<string, Interpolation<Theme>>;
@@ -21,8 +22,8 @@ export function createStyle(
   rounded: boolean = true,
 ): DatePickerStyle {
   const primaryActive = darken(primary, 0.15);
-  const sheetRadius = rounded ? ".24rem" : "0";
-  const indicatorRadius = rounded ? ".12rem" : "0";
+  const sheetRadius = rounded ? r(24) : "0";
+  const indicatorRadius = rounded ? r(12) : "0";
   return {
     // 内容容器：动画/全屏/居中由 Dialog 提供，这里只保留视觉与排版
     sheet: css({
@@ -39,27 +40,27 @@ export function createStyle(
     }),
     // 标题栏：底部 hairline 与 body 区分
     header: css({
-      height: ".92rem",
+      height: r(92),
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: "0 .16rem",
+      padding: `0 ${r(16)}`,
       borderBottom: `1px solid ${border}`,
     }),
     title: css({
       flex: 1,
       textAlign: "center",
-      fontSize: ".3rem",
+      fontSize: r(30),
       fontWeight: 600,
       color: textPrimary,
-      letterSpacing: ".01rem",
+      letterSpacing: r(1),
     }),
     btn: css({
-      minWidth: "1.1rem",
-      padding: "0 .08rem",
-      fontSize: ".28rem",
+      minWidth: r(110),
+      padding: `0 ${r(8)}`,
+      fontSize: r(28),
       fontWeight: 400,
-      lineHeight: ".92rem",
+      lineHeight: r(92),
       cursor: "pointer",
       transition: "opacity .15s, color .15s",
     }),
@@ -77,16 +78,16 @@ export function createStyle(
     body: css({
       position: "relative",
       display: "flex",
-      height: `${ITEM_HEIGHT_REM * VISIBLE_ROWS}rem`,
-      padding: "0 .16rem .12rem",
+      height: r(ITEM_HEIGHT_PX * VISIBLE_ROWS),
+      padding: `0 ${r(16)} ${r(12)}`,
     }),
     // 选中条：浅灰底 + 上下 hairline，与 CitySelect 列表观感一致
     indicator: css({
       position: "absolute",
-      left: ".16rem",
-      right: ".16rem",
-      top: `${ITEM_HEIGHT_REM * 2}rem`,
-      height: `${ITEM_HEIGHT_REM}rem`,
+      left: r(16),
+      right: r(16),
+      top: r(ITEM_HEIGHT_PX * 2),
+      height: r(ITEM_HEIGHT_PX),
       pointerEvents: "none",
       backgroundColor: bgSubtle,
       borderTop: `1px solid ${border}`,
@@ -113,13 +114,13 @@ export function createStyle(
       willChange: "transform",
     }),
     item: css({
-      height: `${ITEM_HEIGHT_REM}rem`,
-      lineHeight: `${ITEM_HEIGHT_REM}rem`,
-      fontSize: ".32rem",
+      height: r(ITEM_HEIGHT_PX),
+      lineHeight: r(ITEM_HEIGHT_PX),
+      fontSize: r(32),
       fontWeight: 400,
       fontFamily: numberFontStack,
       fontVariantNumeric: "tabular-nums",
-      letterSpacing: ".01rem",
+      letterSpacing: r(1),
       textAlign: "center",
       color: textTertiary,
       transition: "color .18s ease",
@@ -129,7 +130,7 @@ export function createStyle(
       fontWeight: 600,
     }),
     spacer: css({
-      height: `${ITEM_HEIGHT_REM * 2}rem`,
+      height: r(ITEM_HEIGHT_PX * 2),
       pointerEvents: "none",
     }),
   };

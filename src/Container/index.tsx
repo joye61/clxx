@@ -130,6 +130,26 @@ export function Container(props: ContainerProps) {
     };
   }, []);
 
+  // --clxx-px：库内组件统一基于 750 设计稿做尺寸（用 utils/rem.ts 的 r() helper），
+  // 与用户的 designWidth 完全解耦。否则用户传 designWidth=375 时，库内写死的
+  // ".28rem"（按 750 设计稿出）会被 html fontSize 放大一倍，导致整个库视觉错位。
+  //
+  // 计算口径：1 个「750 设计稿 px」在当前视口下应该渲染成多少 css px：
+  //   --clxx-px = clamp(viewport, maxWidth) / 750
+  //   视口 750  → 1
+  //   视口 375  → 0.5
+  //   视口 1080 → 1.44
+  // r(28) = calc(28 * var(--clxx-px)) = 视口比例下的 28 设计稿 px。
+  const LIB_DESIGN_WIDTH = 750;
+  const clxxPx = useMemo(() => {
+    // 字号缩放修正同样要应用：浏览器把 html 字号放大 N 倍时，rem 字面量会跟着放大；
+    // --clxx-px 也必须 / scaleFactor 才能保持库内尺寸的稳定。
+    const raw = viewportWidth / LIB_DESIGN_WIDTH;
+    const fixed = scaleFactor === 1 ? raw : raw / scaleFactor;
+    // 4 位小数已远超 1 设备 px 精度，避免浮点串导致 css 变量频繁字符串变化
+    return Math.round(fixed * 10000) / 10000;
+  }, [viewportWidth, scaleFactor]);
+
   // 全局样式：fontSize 写入 html，rem 自动跟随
   // body 以 maxWidth 居中，保证 PC 端上页面不超过设计宽度，两侧留白
   // CSS 变量 --clxx-max-width 供 Overlay/Fixed 等使用 fixed 定位的组件读取
@@ -140,6 +160,7 @@ export function Container(props: ContainerProps) {
       {
         ":root": {
           "--clxx-max-width": hasMaxWidth ? `${maxWidth}px` : "100%",
+          "--clxx-px": `${clxxPx}px`,
         },
         "*": {
           boxSizing: "border-box" as const,
@@ -159,7 +180,7 @@ export function Container(props: ContainerProps) {
       },
       globalStyle,
     ],
-    [fontSize, maxWidth, hasMaxWidth, globalStyle],
+    [fontSize, maxWidth, hasMaxWidth, clxxPx, globalStyle],
   );
 
   return (

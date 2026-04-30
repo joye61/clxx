@@ -4,6 +4,7 @@ import { style, LoadingHide } from './style';
 import { Indicator, IndicatorProps } from '../Indicator';
 import { RowCenter } from '../Flex/Row';
 import { Overlay, OverlayProps } from '../Overlay';
+import { r } from '../utils/rem';
 
 export interface LoadingWrapperProps {
   // loading的状态
@@ -40,9 +41,9 @@ export function Wrapper(props: LoadingWrapperProps) {
     overlayProps = { ...overlayProps, ...overlay };
   }
 
-  // 指示器样式：默认 size .48rem，保证带文字 / 不带文字两态指示器大小一致
+  // 指示器样式：默认 size = 48px @ 750 设计稿，保证带文字 / 不带文字两态指示器大小一致
   let indicatorProps: IndicatorProps = {
-    size: '.48rem',
+    size: r(48),
     barWidth: 5,
     barHeight: 25,
     barCount: 14,

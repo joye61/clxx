@@ -1,5 +1,6 @@
 import { Interpolation, Theme } from "@emotion/react";
 import { fontStack } from "../utils/theme";
+import { r } from "../utils/rem";
 
 // 1px 硬边框（高清屏 hairline）
 const hairline = 1 / (typeof window !== "undefined" ? window.devicePixelRatio : 1);
@@ -14,21 +15,21 @@ export const style: Record<string, Interpolation<Theme>> = {
     position: "relative",
     overflow: "hidden",
     backgroundColor: "#ffffff",
-    borderRadius: ".28rem",
-    width: (750 * 0.78) / 100 + "rem",
+    borderRadius: r(28),
+    width: r(750 * 0.78),
     fontFamily: fontStack,
     color: textPrimary,
     WebkitFontSmoothing: "antialiased",
     MozOsxFontSmoothing: "grayscale",
-    boxShadow: "0 .2rem .6rem rgba(0,0,0,.18)",
+    boxShadow: `0 ${r(20)} ${r(60)} rgba(0,0,0,.18)`,
   },
 
   content: {
     position: "relative",
-    paddingTop: ".4rem",
-    paddingBottom: ".4rem",
-    paddingLeft: ".36rem",
-    paddingRight: ".36rem",
+    paddingTop: r(40),
+    paddingBottom: r(40),
+    paddingLeft: r(36),
+    paddingRight: r(36),
     "&:after,&::after": {
       content: "''",
       position: "absolute",
@@ -45,21 +46,21 @@ export const style: Record<string, Interpolation<Theme>> = {
     textAlign: "center",
     lineHeight: 1.45,
     color: textPrimary,
-    fontSize: ".34rem",
+    fontSize: r(34),
     fontWeight: 600,
-    letterSpacing: ".01rem",
+    letterSpacing: r(1),
   },
   desc: {
     textAlign: "center",
     lineHeight: 1.55,
     color: textSecondary,
-    fontSize: ".28rem",
-    marginTop: ".18rem",
+    fontSize: r(28),
+    marginTop: r(18),
     wordBreak: "break-word",
   },
   btnBox: {
     position: "relative",
-    height: ".92rem",
+    height: r(92),
   },
   btnBoxWithCancel: {
     "&:after,&::after": {
@@ -81,9 +82,9 @@ export const style: Record<string, Interpolation<Theme>> = {
     alignItems: "center",
     justifyContent: "center",
     userSelect: "none",
-    fontSize: ".32rem",
+    fontSize: r(32),
     fontWeight: 500,
-    letterSpacing: ".01rem",
+    letterSpacing: r(1),
     cursor: "pointer",
     transition: "background-color .12s",
   },

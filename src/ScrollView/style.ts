@@ -1,5 +1,6 @@
 import { css, keyframes } from "@emotion/react";
 import type { Interpolation, Theme } from "@emotion/react";
+import { r } from "../utils/rem";
 
 // 模仿 iOS「正在输入」气泡的三点呼吸节奏
 const dotPulse = keyframes`
@@ -23,12 +24,12 @@ export const style: Record<string, Interpolation<Theme>> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: ".12rem",
-    padding: ".24rem 0",
+    gap: r(12),
+    padding: `${r(24)} 0`,
   },
   loadingDot: css`
-    width: 0.12rem;
-    height: 0.12rem;
+    width: ${r(12)};
+    height: ${r(12)};
     border-radius: 50%;
     background: #c7c7cc;
     animation: ${dotPulse} 1.2s ease-in-out infinite both;
