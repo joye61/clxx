@@ -30,6 +30,19 @@ export interface MapLocationSelectionProps {
    * 会报 `JSONP load error` 后降级 JSAPI。配合同域 `fetch` 可稳定解析 `status/message`。
    */
   bmapReverseGeocodingProxy?: string;
+  /**
+   * 百度地点检索 WebAPI（`place/v2/search`）同域代理路径，仅 `provider="bmap"` 时生效。
+   *
+   * 开发示例（Vite）：`'/api/bmap-place'`，并在 `vite.config` 里把该路径代理到
+   * `https://api.map.baidu.com/place/v2/search`。
+   *
+   * 这条通道是搜「天安门」/「故宫」/「外滩」这类**远端唯一精确命中**的关键——
+   * 百度 LocalSearch 半径上限 100km，从上海搜不到 1075km 外的北京天安门，必须靠
+   * `place/v2/search?region=全国` 走全国检索。不配则走 JSONP 直连，鉴权要求与
+   * `bmapReverseGeocodingProxy` 一致（控制台开通 Place API + 浏览器端 AK + Referer
+   * 白名单）。
+   */
+  bmapPlaceSearchProxy?: string;
   // 主题色，默认蓝色 #2f7dff
   primary?: string;
   // 初始中心点 [lng, lat]，缺省时使用 provider 自身定位；再缺省时使用各自坐标系下的北京
@@ -60,6 +73,51 @@ function sortByDistance(items: POIItem[]): POIItem[] {
       (a.distance ?? Number.POSITIVE_INFINITY) -
       (b.distance ?? Number.POSITIVE_INFINITY),
   );
+}
+
+// 关键字搜索结果排序：「名称命中度分级 + 同档距离升序」。
+//
+// 为什么 keyword 模式不能用 sortByDistance：
+//   * 高德 SDK 对"虹桥火车站"会拆 token 做模糊匹配，"浦东虹桥花园"等仅含"虹桥"
+//     的近距离 POI 会大量挤入 4-9km 这一档，把真实"虹桥火车站"（28km 外的精确
+//     命中）一路压到很后面，用户在首屏完全看不到想搜的目标。
+//   * 百度数据库里站点出入口/商铺等以独立 POI 注册，按距离排虽然能进列表但顺序
+//     混乱（"上海近虹桥火车站民宿"5km 在前、"虹桥火车站东出口"17.8km 在后），
+//     用户得自行甄别。
+//   * 跨城市搜索（在上海搜"天安门"）时，本地若有任何"天安门XX 分店"等同名子串
+//     POI，单纯按距离排会把它顶到首位，把 1075km 外**真正的**北京天安门挤到末尾。
+//     微信"发送位置"的体感是远端唯一精确命中应该出现在顶部——靠 tier 0（精确等于）
+//     兜住这个语义。
+//
+// 命中等级：
+//   tier 0：name 完全等于 keyword（"天安门"=="天安门"、"虹桥火车站"=="虹桥火车站"）。
+//          即使 1000km 外也强制顶到列表首位——这是"用户搜的就是这个"的最强信号。
+//   tier 1：name 含完整 keyword 且非 tier 0（"天安门广场"、"虹桥火车站东出口"、
+//          "上海虹桥火车站民宿"等）。同档按距离升序，本地命中天然在远端命中之上。
+//   tier 2：name 不含但 address 含完整 keyword（街道地址里出现关键字的）。
+//   tier 3：其余仅 SDK 拆 token 命中的模糊匹配（"浦东虹桥花园"等）。
+function sortByKeywordRelevance(
+  items: POIItem[],
+  keyword: string,
+): POIItem[] {
+  const kw = keyword.trim();
+  if (!kw) return sortByDistance(items);
+  const tier = (item: POIItem): number => {
+    const name = item.name ?? "";
+    if (name === kw) return 0;
+    if (name.includes(kw)) return 1;
+    if ((item.address ?? "").includes(kw)) return 2;
+    return 3;
+  };
+  return [...items].sort((a, b) => {
+    const ta = tier(a);
+    const tb = tier(b);
+    if (ta !== tb) return ta - tb;
+    return (
+      (a.distance ?? Number.POSITIVE_INFINITY) -
+      (b.distance ?? Number.POSITIVE_INFINITY)
+    );
+  });
 }
 
 // 把 POI 列表的 distance 字段重写成「POI ↔ 地图中心 (centerPin)」。
@@ -96,6 +154,7 @@ function createProvider(props: MapLocationSelectionProps): MapProvider {
     return new BMapProvider({
       ak: props.bmapAk,
       reverseGeocodingProxy: props.bmapReverseGeocodingProxy,
+      placeSearchProxy: props.bmapPlaceSearchProxy,
     });
   }
   if (!props.amapKey) {
@@ -125,7 +184,7 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   // 周边 POI 列表：以地图当前中心为基准、按距离从近到远的精确 POI（楼宇 / 酒店 /
   // 学校 / 小区楼栋 等大类全开，详见 provider.amap.ts NEARBY_POI_TYPE）。
   // 拖图 / 点图 / 回到当前位置 / 列表翻页都通过 commitMapCenter / searchAroundMore
-  // 维护这一份。
+  // 维护这一份。**搜索框为空时**列表展示的就是它。
   const [poiList, setPoiList] = useState<POIItem[]>([]);
   // 用户在列表里点选的项 id；**只在用户主动点击时才有值**——拖图后默认 null
   // （列表全部不勾选），避免"系统默认选中 list[0]"被误以为是用户选择，从而把
@@ -134,6 +193,18 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
+  // 搜索关键字：清空时 tips 也回到 null，列表自动 fallback 到 poiList（centerPin 周边）。
+  const [keyword, setKeyword] = useState("");
+  // 中文 / 韩文 / 日文输入法 composing 状态：composition 期间不发起搜索，
+  // 避免每次按键都打一次接口（也避免拼音/候选词阶段的"半字符"被当成关键字）。
+  const [composing, setComposing] = useState(false);
+  // 搜索结果列表。
+  //   - null：当前是"周边模式"，UI 渲染 poiList；
+  //   - []  ：搜索完成但 0 命中（"未找到相关地点"提示）；
+  //   - [..]：搜索命中，UI 渲染搜索结果。
+  // 需要把"周边模式"和"搜索模式"严格区分，因为：1) 翻页只在周边模式生效；
+  // 2) 选中项点击后搜索模式要清搜索框、周边模式要保持列表稳定。
+  const [tips, setTips] = useState<POIItem[] | null>(null);
   // "定位中"：加载地图 SDK 或首次定位期间展示遮罩，阻断交互
   // （仅在地图尚未就绪 / 首次定位拿到结果之前出现；点击 locateBtn 重定位不再走这套）
   const [locating, setLocating] = useState(true);
@@ -203,6 +274,10 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   // commitMapCenter 抢占 seq：拖图 / 点击 / 回到当前位置连续触发时，旧的 fetchAround
   // 回调抵达后若不是最新一次直接丢弃，避免老结果回来覆盖新中心的 poiList。
   const commitSeqRef = useRef(0);
+  // 关键字搜索的抢占 seq。useEffect 中 debounce 后发起的请求若回来时 seq 已过期
+  // （用户继续输入 / 清空了搜索框）直接丢弃。与 provider 内部的 keywordSeq 配合
+  // 形成双层保护：组件层管 UI 应不应该接收，provider 层管 SDK 回调应不应该 resolve。
+  const keywordSeqRef = useRef(0);
 
   // ===== 周边搜索：纯数据获取（不写 setState）=====
   // 把 provider.searchAround 的结果做距离改写 + 排序，返回标准化 list。
@@ -271,11 +346,14 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   }, [fetchAround, hasMore]);
 
   // 翻页（onReachBottom）
+  // 搜索模式（tips !== null）禁用翻页：provider.searchByKeyword 不返回分页元数据，
+  // 翻页接口语义不一致，强行翻页会拿到错乱顺序的结果。
   const handleReachBottom = useCallback(() => {
     if (loadingMoreRef.current) return;
     if (!hasMore) return;
+    if (tips !== null) return;
     searchAroundMore();
-  }, [hasMore, searchAroundMore]);
+  }, [hasMore, searchAroundMore, tips]);
 
   // ===== 「地图中心已变」的统一回调 =====
   // 任何让中心发生变化的入口（拖图静止后、点击地图、回到当前位置、init）都收敛到这里：
@@ -542,18 +620,95 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ===== 关键字搜索（debounced）=====
+  // 用户在搜索框输入：以 centerRef 为参考点调 provider.searchByKeyword，
+  // 返回的 POI 经过距离重写 + **名称命中度优先排序**后写入 tips。
+  //
+  // 距离与排序口径（与 nearby 列表故意不同）：
+  //   * 距离统一改写成「POI ↔ centerPin」（与 nearby 列表一致），让搜索结果里
+  //     "30m 海底捞"和"180m 海底捞"的相对距离对用户更直观；
+  //   * 排序用 sortByKeywordRelevance（名称包含完整 keyword 优先 + 同档距离升序）
+  //     而非纯 sortByDistance——纯距离排会让"虹桥火车站"等远距离精确命中被
+  //     "浦东虹桥花园"等近距离 token 模糊命中挤出首屏，用户感觉"列表里没有
+  //     想搜的"。详见 sortByKeywordRelevance 头部注释。
+  //
+  // 防抖：250ms。每次按键产生新 seq，旧请求回来时 seq 不匹配直接丢弃；
+  // 清空 keyword（trim 后为空）会立刻把 tips 设回 null，无需等防抖到时。
+  // composing 期间（中文 / 日文输入法候选阶段）跳过，避免拼音字符被当成关键字。
+  useEffect(() => {
+    if (composing) return;
+    const kw = keyword.trim();
+    if (!kw) {
+      keywordSeqRef.current += 1;
+      setTips(null);
+      return;
+    }
+    const provider = providerRef.current;
+    const center = centerRef.current;
+    if (!provider || !center) return;
+    const seq = ++keywordSeqRef.current;
+    const timer = window.setTimeout(async () => {
+      let list: POIItem[] = [];
+      try {
+        list = await provider.searchByKeyword(center, kw, {
+          page: 1,
+          pageSize: safePageSize,
+          radius: searchRadius,
+        });
+      } catch (err) {
+        console.warn("[MapLocationSelection] searchByKeyword 失败：", err);
+        list = [];
+      }
+      if (seq !== keywordSeqRef.current) return;
+      const baseCenter = centerRef.current ?? center;
+      const rewritten = rewriteDistanceFromCenter(list, baseCenter);
+      setTips(sortByKeywordRelevance(rewritten, kw));
+    }, 250);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [keyword, composing, safePageSize, searchRadius]);
+
   // ===== 选择列表项（双向联动）=====
-  //   1. 切换选中态（selectedId）—— UI 视觉反馈，标记"用户主动认领了这条 POI"；
-  //   2. 让地图 centerPin 飞到该 POI 上——视觉上"用户选哪个，地图就指哪个"；
-  //   3. 把 POI 的 name/address 写入 pickedPoiRef，作为 handleConfirm 的 name 优先级
-  //      来源（POI 名称是楼栋/商铺级，比反查的"街道+门牌"对司机更友好）；
-  //   4. **后台触发新位置的 reverseGeocode**：flyMapTo 已经推进 commitSeqRef，
-  //      老的反查回调失效；这里发起新一次反查，让 handleConfirm 能拿到该 POI 经纬度
-  //      对应的官方省市区 / 详细 address 数据（POI 自身经常缺 province/city/district）。
-  // **不刷新列表 / 不调 commitMapCenter**：列表内容、当前选中态保持稳定，
-  // 避免"点 A → 飞过去 → moveend → 拉新列表 → selectedId 被重置"的回环。
+  //
+  // 两种模式行为不同（**用户需求显式约定**）：
+  //
+  // 1) 周边模式（tips === null）——保留 selectedId 视觉态、不刷新列表
+  //    * 切换选中态（selectedId）：UI 视觉反馈，标记"用户主动认领了这条 POI"；
+  //    * flyMapTo：地图 centerPin 飞到该 POI 上（"用户选哪个，地图就指哪个"），
+  //      但**不**调 commitMapCenter——列表保持稳定，避免"点 A → 飞过去 →
+  //      moveend → 拉新列表 → selectedId 被重置"的回环；
+  //    * 写 pickedPoiRef：作为 handleConfirm 的 name 优先级来源（POI 名通常是
+  //      楼栋/商铺级，比反查的"街道+门牌"对司机更友好）；
+  //    * 后台 reverseGeocode：flyMapTo 已推进 commitSeqRef，老反查作废；
+  //      这里发起新一次反查，让 handleConfirm 能拿到该 POI 经纬度对应的
+  //      官方省市区 / 详细 address。
+  //
+  // 2) 搜索模式（tips !== null）——清搜索 + 刷新到周边列表
+  //    * 用 moveTo（= setCenter + commitMapCenter）：centerPin 飞到 POI、列表
+  //      重新拉成"以新中心为基准的周边列表"；
+  //    * setKeyword("") + setTips(null)：搜索 effect 清理（keywordSeqRef 抢占
+  //      作废任何在飞的搜索请求），UI 回到周边模式；
+  //    * **不主动 setSelectedId**：commitMapCenter 会把 selectedId 清掉
+  //      （周边列表初始无选中态，符合"默认地址列表没有选中"的需求）。被点的 POI
+  //      此时已是 centerPin，会出现在新周边列表的最前面；
+  //    * 仍写 pickedPoiRef（用 moveTo 后最新的 seq）：让 handleConfirm 可优先
+  //      使用 POI 名（"海底捞 浦东店"等楼栋/商铺级），比反查的"中山路 100 号"
+  //      对司机更友好。
   const handlePickItem = useCallback(
     (item: POIItem) => {
+      if (tips !== null) {
+        setKeyword("");
+        setTips(null);
+        moveTo(item.location.lng, item.location.lat);
+        const seq = commitSeqRef.current;
+        pickedPoiRef.current = {
+          seq,
+          name: item.name,
+          address: item.address,
+        };
+        return;
+      }
       setSelectedId(item.id);
       flyMapTo(item.location.lng, item.location.lat);
       const seq = commitSeqRef.current;
@@ -574,7 +729,7 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
         reverseCacheRef.current = { ...rg, seq };
       });
     },
-    [flyMapTo],
+    [tips, moveTo, flyMapTo],
   );
 
   // ===== 「确定」按钮 =====
@@ -695,14 +850,23 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     onClose?.();
   }, [onSelect, onClose]);
 
+  // 列表渲染数据源：搜索模式优先，否则用周边列表。
+  // tips === null 即"周边模式"（centerPin 周边）；tips !== null 即"搜索模式"。
+  const list = tips ?? poiList;
+  const isTipsMode = tips !== null;
+
   const renderListContent = () => {
     if (errorMsg) return <div css={style.empty}>{errorMsg}</div>;
-    if (poiList.length === 0) {
-      return <div css={style.empty}>暂无附近地点</div>;
+    if (list.length === 0) {
+      return (
+        <div css={style.empty}>
+          {isTipsMode ? "未找到相关地点" : "暂无附近地点"}
+        </div>
+      );
     }
     return (
       <>
-        {poiList.map((item) => {
+        {list.map((item) => {
           const active = selectedId === item.id;
           return (
             <Clickable
@@ -738,7 +902,7 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
             </Clickable>
           );
         })}
-        {!hasMore && poiList.length > 0 && (
+        {!isTipsMode && !hasMore && list.length > 0 && (
           <div css={style.listEnd}>没有更多了</div>
         )}
       </>
@@ -813,18 +977,59 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
         )}
       </div>
       <div css={[style.bottom, style.bottomRelative]}>
+        {/* 搜索框：清空时列表自动 fallback 到 centerPin 周边列表（见 keyword effect）。
+            locating 期间整体禁用，保证首次定位前用户拿不到错位的搜索结果。 */}
+        <div css={[style.searchBox, locating && style.searchDisabled]}>
+          <div css={style.searchInner}>
+            <svg viewBox="0 0 1024 1024" css={style.searchIcon}>
+              <path d="M896 870.4l-128-128c55.467-68.267 89.6-149.333 89.6-238.933 0-98.134-38.4-192-110.933-264.534-149.334-149.333-384-149.333-533.334-4.266-145.066 145.066-145.066 384 0 529.066 72.534 72.534 166.4 110.934 264.534 110.934 89.6 0 174.933-29.867 238.933-89.6l128 128c4.267 4.266 12.8 8.533 21.333 8.533s17.067-4.267 21.334-8.533c17.066-8.534 17.066-29.867 8.533-42.667zM260.267 721.067c-119.467-123.734-119.467-320 0-439.467 59.733-59.733 140.8-89.6 217.6-89.6 81.066 0 157.866 29.867 217.6 89.6 59.733 59.733 89.6 136.533 89.6 217.6 0 81.067-34.134 162.133-89.6 217.6-55.467 59.733-132.267 93.867-217.6 93.867-81.067 0-157.867-34.134-217.6-89.6z" />
+            </svg>
+            <input
+              css={style.searchInput}
+              placeholder={locating ? "定位中，请稍候" : "搜索地点"}
+              value={keyword}
+              disabled={locating}
+              onChange={(e) => setKeyword(e.target.value)}
+              onCompositionStart={() => setComposing(true)}
+              onCompositionEnd={(e) => {
+                setComposing(false);
+                // composition 结束时把最终字符同步到 state，避免被 setComposing 后的
+                // 一次 batch 漏掉（onCompositionEnd 与 onChange 触发顺序在不同浏览器
+                // 下不一致，显式 set 可保证最终态一定写入）。
+                setKeyword(e.currentTarget.value);
+              }}
+            />
+            {keyword && !locating && (
+              <span
+                css={style.searchClear}
+                onClick={() => {
+                  setKeyword("");
+                  setTips(null);
+                }}
+              >
+                <svg viewBox="0 0 1024 1024" css={style.searchClearIcon}>
+                  <path d="M520.533333 464.008533l-155.409066-155.477333c-18.8416-18.773333-42.427733-14.1312-56.558934 0-18.8416 18.8416-14.097067 42.427733 0 56.558933l150.766934 150.7328-155.511467 155.4432c-18.8416 18.8416-14.097067 42.427733 0 56.558934 18.875733 18.773333 42.461867 14.097067 56.593067 0l150.7328-150.766934 150.698666 150.766934c18.8416 18.773333 42.427733 14.097067 56.5248 0 18.875733-18.875733 14.1312-42.461867 0-56.558934l-150.7328-150.766933 150.7328-150.698667c18.875733-18.8416 14.1312-42.427733 0-56.5248-18.8416-18.875733-42.427733-14.1312-56.5248 0l-146.0224 146.0224 4.7104 4.7104z m353.28 409.838934c-202.513067 202.513067-527.598933 197.8368-725.435733 0-197.870933-197.870933-197.802667-527.598933 0-725.469867 197.7344-197.8368 527.5648-197.8368 725.435733 0 197.8368 197.870933 202.513067 522.9568 0 725.469867z" />
+                </svg>
+              </span>
+            )}
+          </div>
+        </div>
+
         <div css={style.listArea}>
           <ScrollView
             height="100%"
             onReachBottom={handleReachBottom}
             reachBottomThreshold={80}
-            // 错误 / 空 / 已加载完毕：不展示底部 loading
-            showLoading={!errorMsg && hasMore && poiList.length > 0}
+            // 错误 / 空 / 已加载完毕 / 搜索模式：不展示底部 loading
+            // 搜索模式不分页（searchByKeyword 单页返回），底部 loading 没有意义
+            showLoading={
+              !isTipsMode && !errorMsg && hasMore && poiList.length > 0
+            }
           >
             {renderListContent()}
           </ScrollView>
         </div>
-        {/* 定位中：盖在底部列表上，阻断所有交互（地址列表会在定位完成后整体刷新） */}
+        {/* 定位中：盖在底部搜索 + 列表上，阻断所有交互（地址列表会在定位完成后整体刷新） */}
         {locating && <div css={style.bottomLockedMask} />}
       </div>
     </div>

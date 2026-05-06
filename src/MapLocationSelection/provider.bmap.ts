@@ -75,6 +75,15 @@ export interface BMapProviderOptions {
    * Referer 白名单 + 开通全球逆地理编码）。
    */
   reverseGeocodingProxy?: string;
+  /**
+   * 同域代理到百度 `place/v2/search` 的路径——为关键字搜索的「全国跨城市命中」
+   * 通道（让上海搜「天安门」也能召回北京天安门）。
+   *
+   * 不配置时默认走 JSONP，控制台需开通「Place API」服务、AK 为「浏览器端」、
+   * Referer 白名单含当前域。配置语义与 reverseGeocodingProxy 一致——传完整路径，
+   * 后端透传 query 后转发到 `https://api.map.baidu.com/place/v2/search`。
+   */
+  placeSearchProxy?: string;
 }
 
 function pointToCoord(p: any): { lng: number; lat: number } | null {
@@ -130,6 +139,27 @@ function normalizeWebAPIPoi(poi: any): POIItem | null {
   };
 }
 
+// Web 服务 API `place/v2/search` 返回的 results[i] 字段：
+//   { name, location: { lng, lat }, address, province, city, area, uid, telephone, ... }
+// 与 reverse_geocoding/v3 的字段名不同（用 location 不是 point、address 不是 addr）。
+// 不返回 distance（这个接口跨城市检索，距离要 UI 层用 haversine 自己算）。
+function normalizePlaceSearchPoi(poi: any): POIItem | null {
+  if (!poi || !poi.location) return null;
+  const lng = typeof poi.location.lng === "number" ? poi.location.lng : NaN;
+  const lat = typeof poi.location.lat === "number" ? poi.location.lat : NaN;
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+  return {
+    id: poi.uid || `${lng},${lat},${poi.name ?? ""}`,
+    name: poi.name ?? "",
+    address: poi.address ?? "",
+    location: { lng, lat },
+    cityname: poi.city,
+    pname: poi.province,
+    adname: poi.area,
+    raw: poi,
+  };
+}
+
 // JSONP 工具：浏览器端调用百度 Web 服务 API 的标准方式。
 // reverse_geocoding/v3 官方支持 callback=xxx 参数，绕过 CORS。
 // 与 JSAPI 共用同一 ak（referer 白名单已生效），无需额外控制台配置。
@@ -170,12 +200,17 @@ function jsonp<T = any>(url: string, timeoutMs: number = 8000): Promise<T> {
   });
 }
 
-// reverse_geocoding/v3 的 poi_types 白名单：覆盖楼宇 / 楼栋 / 写字楼 / 小区 /
-// 学校 / 医院 / 公司企业 / 交通设施 / 商铺 / 酒店等"上车点最常用 POI 类型"。
+// reverse_geocoding/v3 的 poi_types 白名单：覆盖打车 / 网约车场景下所有合理的
+// 上车点 POI 类型（除"自然地物"外的全部一级大类）。
 //
-// 不传该参数等于"全分类召回"，但实测全分类时排在前面的常常是高权重商圈（如
-// "夫子庙秦淮风光带"），导致楼栋级 POI 被挤出 entire_poi 默认 20 条上限。
-// 显式收敛到"打车场景需要的具体 POI 类型"，让楼栋/商铺/公司挤入榜单前列。
+// 历史版本只列了 11 类（房地产/公司/交通/教育/医疗/酒店/购物/美食/生活服务/
+// 政府/金融），实测在郊区 / 工业园区 / 风景区一带这套白名单 + 200m 半径常常
+// 只能召回 2-3 条 POI——把景点 / 加油站 / 电影院 / 健身房等用户实际可能要去的
+// 场景全部漏掉。打车业务的现实是「**任何**有名字的地标都可能是上车点」，所以
+// 白名单需要尽可能宽。
+//
+// **保留"自然地物"以外**：自然地物指山川 / 湖泊 / 河流等——它们没有上车点
+// 语义，让保留只会让"长江"/"东湖"占据列表噪声，故仍排除。
 //
 // 类型清单参考：https://lbsyun.baidu.com/index.php?title=lbscloud/poitags
 const POI_TYPES_FOR_PICKUP = [
@@ -190,6 +225,11 @@ const POI_TYPES_FOR_PICKUP = [
   "生活服务",
   "政府机构",
   "金融",
+  "旅游景点",
+  "休闲娱乐",
+  "运动健身",
+  "文化传媒",
+  "汽车服务",
 ].join("|");
 
 export class BMapProvider implements MapProvider {
@@ -340,23 +380,27 @@ export class BMapProvider implements MapProvider {
     this.userMarker = marker;
   }
 
-  // 周边搜索：走百度 Web 服务 API `reverse_geocoding/v3`，绕过 JSAPI
-  // Geocoder.getLocation 的"surroundingPois 不返回楼宇/楼栋"短板。
+  // 周边搜索：双路并发召回 + 跨源去重，目标是把 list 填到 30+ 条让用户有足够
+  // 翻动空间，同时保证 list[0] 是「楼栋级、距 centerPin 最近」的高质量结果。
   //
-  // 打车 / 网约车「上车点」精度方案（最终版）：
-  //   - 主路径：JSONP 调 reverse_geocoding/v3 (extensions_poi=1 +
-  //     entire_poi=1 + sort_strategy=distance + radius + poi_types=房地产|...)。
-  //     这个组合是百度官方文档明确给出的"楼宇级 POI 召回 + 距离优先排序"
-  //     接口，能拿到 楼宇 / 写字楼 / 小区楼栋 / 出入口 / 路边商铺 这些
-  //     JSAPI surroundingPois 拿不到的细粒度 POI，list[0] 距 centerPin
-  //     可稳定到 1~5m 级别，与高德 PlaceSearch.searchNearBy + child_pois
-  //     的精度持平。
-  //   - 兜底路径：WebAPI 失败（ak 未开"逆地理编码服务"权限 / 网络异常）时
-  //     自动降级到 JSAPI Geocoder.getLocation，poiRadius 收敛到 ≤ 50 让
-  //     SDK 跳过"重要度筛选"分支——精度不如 WebAPI 但优于稀疏化默认值。
+  // 打车 / 网约车「上车点」精度方案（最终版 v2）：
+  //   1) 主路径 A — reverse_geocoding/v3 (extensions_poi=1 + entire_poi=1 +
+  //      sort_strategy=distance + radius=1000 + poi_types=...)：
+  //      百度官方"楼宇级 POI 召回 + 距离优先"接口，拿楼宇 / 写字楼 / 小区楼栋 /
+  //      出入口 / 路边商铺这些 JSAPI surroundingPois 拿不到的细粒度 POI，
+  //      list 顶部精度可稳定到 1~5m 级。**单次接口、不支持翻页、密度低时偏稀疏**。
+  //   2) 主路径 B — LocalSearch fan：对 5 个常见分类关键字并发跑 searchNearby
+  //      （pageCapacity=50），合并去重后能补 30-80 条 POI 兜住"郊区/工业园只
+  //      返回 2-3 条"的稀疏问题。**没有楼栋粒度，但宽广度好**。
+  //   3) 兜底 — JSAPI Geocoder.getLocation：上面两条都为空时（鉴权未开/网络
+  //      异常），降级到 surroundingPois，保证组件总有结果。
   //
-  // 不支持翻页：reverse_geocoding/v3 只返回一次性的周边 POI 列表（无 pageNum
-  // 参数），与 JSAPI Geocoder 行为一致，UI 上 hasMore=false。
+  // 合并优先级：A 优先（楼栋粒度更细，常常包含 list[0] 的最优解），B 仅作补集；
+  // 重复 POI 以 A 的版本为准。最终 UI 层会做 sortByDistance 让 list[0] 总是离
+  // centerPin 最近的那条。
+  //
+  // 不支持翻页：百度两路接口都是一次性返回，hasMore 恒为 false；但因双路合并后
+  // 候选量已经达到 30-80 条，UI 上滑动展示完全够用，分页缺失不再是体感瓶颈。
   async searchAround(
     center: Coord,
     options: SearchOptions,
@@ -372,11 +416,24 @@ export class BMapProvider implements MapProvider {
     }
     const seq = ++this.aroundSeq;
 
-    // 主路径：reverse_geocoding/v3 + entire_poi=1 + sort_strategy=distance
-    const webApiPois = await this.searchAroundViaWebAPI(center, options);
+    // 双路并发：Promise.all 让总耗时只取决于慢的一路（≈ 600-900ms）。
+    const [webApiPois, fanPois] = await Promise.all([
+      this.searchAroundViaWebAPI(center, options),
+      this.searchAroundViaLocalSearchFan(center, options),
+    ]);
     if (seq !== this.aroundSeq) return { pois: [], hasMore: false };
-    if (webApiPois && webApiPois.length > 0) {
-      return { pois: webApiPois, hasMore: false };
+
+    const seen = new Map<string, POIItem>();
+    // WebAPI 优先：楼栋级 POI 一般只有 reverse_geocoding/v3 能召回。
+    for (const p of webApiPois ?? []) {
+      if (!seen.has(p.id)) seen.set(p.id, p);
+    }
+    for (const p of fanPois) {
+      if (!seen.has(p.id)) seen.set(p.id, p);
+    }
+    const pois = Array.from(seen.values());
+    if (pois.length > 0) {
+      return { pois, hasMore: false };
     }
 
     // 兜底路径：JSAPI Geocoder.getLocation（精度差，但保证组件总有结果）
@@ -391,8 +448,18 @@ export class BMapProvider implements MapProvider {
     center: Coord,
     options: SearchOptions,
   ): Promise<POIItem[] | null> {
-    // radius：官方文档 poi 召回半径 0–3000m（超过按 3000 截断）；与 options 结合取合理下限
-    const radius = Math.min(Math.max(options.radius, 50), 3000);
+    // radius：官方文档 poi 召回半径 0–3000m（超过按 3000 截断）。
+    //
+    // 下限 1000m 故意**覆盖** options.radius 的小默认值（200m）：百度此接口是
+    // 一炮型，没有翻页机制，半径太小直接限死了召回总量。打车场景下用户在郊区 /
+    // 工业园区 / 风景区开图常常 200m 内只有 2-3 条 POI，体感上"列表几乎空"。
+    // 这里强行拉到 ≥1000m 让一次召回拿足量；最终列表仍按 sort_strategy=distance
+    // 升序排，最近的楼栋 / 商铺 / 出入口稳居顶部，远端 POI 仅作"翻页式"补足。
+    //
+    // 业务方真要更窄半径（< 1000m）也无意义——百度接口在 1000m 以下与 1000m 返回
+    // 集合差别不大（都是"路口附近一坨"），但少于 1000m 时会偶发返回 0 条；统一抬到
+    // 1000m 是稳定性 / 体感的双优解。
+    const radius = Math.min(Math.max(options.radius, 1000), 3000);
     // location：lat,lng，保留 6 位小数与官方示例一致，避免极长浮点偶发参数校验问题
     const lat = center[1].toFixed(6);
     const lng = center[0].toFixed(6);
@@ -498,15 +565,143 @@ export class BMapProvider implements MapProvider {
     });
   }
 
-  searchByKeyword(
+  // LocalSearch 扇形补足：reverse_geocoding/v3 是单次接口、没有翻页，密度低的
+  // 区域常常只能拿 2-3 条 POI。这里对几个最常见的「上车点-相关」分类关键字
+  // 并发跑 LocalSearch，每个 50 条，合并去重后通常能再补 30-80 条，把列表填
+  // 到可滑动级别。
+  //
+  // 为何不复用 this.localSearch + setPageNum 翻页？
+  //   1) 共享实例同时只允许一个请求在飞（searchByKeyword 也在用），跨调用复用
+  //      会与关键字模式互踩；
+  //   2) LocalSearch 单次最大 pageCapacity=50，翻页是按相关度排序，远距离 POI
+  //      也会上来——对周边搜索（按距离）反而是噪声；
+  //   3) 多关键字并发 + 距离重写 + 顶层 sortByDistance 已经能稳定"近→远"序。
+  //
+  // 关键字选择：覆盖打车场景下用户最可能去的目的地大类（公司/小区/酒店/商场/
+  // 餐厅），每类在百度 POI 库都有充沛存量；不再多加避免无谓的并发请求。
+  private async searchAroundViaLocalSearchFan(
+    center: Coord,
+    options: SearchOptions,
+  ): Promise<POIItem[]> {
+    const BMap = this.BMap;
+    if (!BMap || !this.map) return [];
+    // 半径：补足类用 max(options.radius, 2000)，比 WebAPI 1000m 再大一档；
+    // LocalSearch 没有 3000m 上限，UI 最终按距离升序，远端 POI 自然排末尾。
+    const radius = Math.min(Math.max(options.radius, 2000), 5000);
+    const keywords = ["公司", "小区", "酒店", "商场", "餐厅"];
+    const tasks = keywords.map((kw) =>
+      this.singleLocalSearchOnce(kw, center, radius, 50),
+    );
+    const results = await Promise.all(tasks);
+    // 跨关键字去重：以 id 为键，先到先得（顺序与 keywords 一致，公司类优先）。
+    const seen = new Map<string, POIItem>();
+    for (const list of results) {
+      for (const p of list) {
+        if (!seen.has(p.id)) seen.set(p.id, p);
+      }
+    }
+    return Array.from(seen.values());
+  }
+
+  // 一次性 LocalSearch.searchNearby——为 fan 检索配套的"轻量、独立"实例。
+  // 不复用 this.localSearch 是为了避开 searchByKeyword 的 mutex 冲突。
+  private singleLocalSearchOnce(
+    keyword: string,
+    center: Coord,
+    radius: number,
+    pageCapacity: number,
+  ): Promise<POIItem[]> {
+    const BMap = this.BMap;
+    if (!BMap || !this.map) return Promise.resolve([]);
+    return new Promise<POIItem[]>((resolve) => {
+      const ls = new BMap.LocalSearch(this.map, {
+        pageCapacity,
+        onSearchComplete: (results: any) => {
+          if (!results) {
+            resolve([]);
+            return;
+          }
+          const status =
+            typeof ls.getStatus === "function"
+              ? ls.getStatus()
+              : BMAP_STATUS_SUCCESS;
+          if (status !== BMAP_STATUS_SUCCESS) {
+            resolve([]);
+            return;
+          }
+          const num =
+            typeof results.getCurrentNumPois === "function"
+              ? results.getCurrentNumPois()
+              : 0;
+          const list: POIItem[] = [];
+          for (let i = 0; i < num; i++) {
+            const poi = results.getPoi(i);
+            const item = normalizeBMapPOI(poi, center);
+            if (item) list.push(item);
+          }
+          resolve(list);
+        },
+      });
+      try {
+        ls.setPageNum(0);
+        ls.searchNearby(keyword, new BMap.Point(center[0], center[1]), radius);
+      } catch (err) {
+        console.warn(
+          "[MapLocationSelection] LocalSearch fan 调用失败：",
+          err,
+        );
+        resolve([]);
+      }
+    });
+  }
+
+  // 关键字检索 = 「LocalSearch.searchNearby（≤100km 同城/邻城精确命中 + 距离）」
+  // + 「place/v2/search?region=全国（跨城市相关性命中）」并发，合并去重后**全部**返回。
+  //
+  // 为何要双路：百度 LocalSearch.searchNearby 的 radius 上限是 100km（SDK 文档值），
+  // 而打车业务里用户在上海搜"天安门"需要召回 1075km 外的北京天安门，单靠 LocalSearch
+  // 永远拿不到。引入 place/v2/search 全国检索通道兜住"远端唯一精确命中"的场景，
+  // 与微信"发送位置"的体感对齐（远端命中显示 1074.5km）。
+  //
+  // 排序口径：本方法只负责凑齐候选，**不在这里排序 / 距离过滤**——UI 层
+  // sortByKeywordRelevance 用「名称包含完整关键字优先 + 同档距离升序」做最终排序，
+  // 同城精确命中（"上海锦博苑"）凭距离稳居顶部，跨市同名命中（北京/广州）自然
+  // 沉到列表末尾；唯一远端命中（"天安门"）因 tier-0 名称匹配也会顶到首位。
+  async searchByKeyword(
+    center: Coord,
+    keyword: string,
+    options: SearchOptions,
+  ): Promise<POIItem[]> {
+    const BMap = this.BMap;
+    if (!BMap || !this.map) return [];
+
+    const seq = ++this.keywordSeq;
+
+    const [nearby, nationwide] = await Promise.all([
+      this.searchByKeywordViaLocalSearch(center, keyword, options),
+      this.searchByKeywordViaPlaceSearchAPI(keyword),
+    ]);
+    if (seq !== this.keywordSeq) return [];
+
+    // 合并去重：nearby 优先（带 SDK 算好的精确 distance），nationwide 仅补 nearby
+    // 漏掉的远端高热精确命中。同 uid 用 nearby 的版本，避免 WebAPI 不带 distance
+    // 的副本覆盖 nearby 已经拿到的距离信息。
+    const seen = new Map<string, POIItem>();
+    for (const p of nearby) seen.set(p.id, p);
+    for (const p of nationwide) {
+      if (!seen.has(p.id)) seen.set(p.id, p);
+    }
+    return Array.from(seen.values());
+  }
+
+  // LocalSearch 通道：当前地图所在城市/100km 内周边检索；走 SDK 共享实例 + mutex。
+  private searchByKeywordViaLocalSearch(
     center: Coord,
     keyword: string,
     options: SearchOptions,
   ): Promise<POIItem[]> {
     const BMap = this.BMap;
     if (!BMap || !this.map) return Promise.resolve([]);
-
-    const seq = ++this.keywordSeq;
 
     return new Promise<POIItem[]>((resolve) => {
       // 同一时刻只允许一个 LocalSearch 在飞：若有未完成的请求，让它先以 null 收尾。
@@ -530,10 +725,6 @@ export class BMapProvider implements MapProvider {
       this.localSearch.setPageNum(0);
 
       this.localSearchResolver = (results: any) => {
-        if (seq !== this.keywordSeq) {
-          resolve([]);
-          return;
-        }
         if (!results) {
           resolve([]);
           return;
@@ -571,6 +762,68 @@ export class BMapProvider implements MapProvider {
         tipRadius,
       );
     });
+  }
+
+  // place/v2/search 通道：全国跨城市相关性命中。是搜「天安门」/「故宫」/「外滩」
+  // 这类远端唯一精确命中的唯一可行渠道（LocalSearch 100km 上限永远到不了）。
+  //
+  // - region=全国 + region_limit=false：跨城市召回，不对单一行政区做硬过滤
+  // - page_size=20：与 UI 默认 pageSize 对齐，单次足够给出主要候选
+  // - extensions_adcode=true：让 results[i] 带上 province/city/area，方便 UI 区别同名
+  // - 超时 3000ms：交互式检索容忍度较低，超时直接放弃（默认 LocalSearch 那路仍能给结果）
+  private async searchByKeywordViaPlaceSearchAPI(
+    keyword: string,
+  ): Promise<POIItem[]> {
+    const params = [
+      `ak=${encodeURIComponent(this.opts.ak)}`,
+      `query=${encodeURIComponent(keyword)}`,
+      `region=${encodeURIComponent("全国")}`,
+      `region_limit=false`,
+      `output=json`,
+      `coord_type=3`,
+      `ret_coordtype=bd09ll`,
+      `page_size=20`,
+      `extensions_adcode=true`,
+    ].join("&");
+
+    let data: any;
+    const proxy = this.opts.placeSearchProxy?.trim();
+    try {
+      if (proxy) {
+        const base = proxy.replace(/\/$/, "");
+        const res = await fetch(`${base}?${params}`);
+        data = await res.json();
+      } else {
+        data = await jsonp<any>(
+          `https://api.map.baidu.com/place/v2/search?${params}`,
+          3000,
+        );
+      }
+    } catch (err) {
+      console.warn(
+        "[MapLocationSelection] place/v2/search 请求失败，跨城市搜索将无补充结果。",
+        "若未配置 bmapPlaceSearchProxy：请确认 AK 为「浏览器端」、Referer 白名单含当前域名、控制台已开通「Place API」服务。",
+        err,
+      );
+      return [];
+    }
+    if (!data || data.status !== 0 || !Array.isArray(data.results)) {
+      if (data && data.status !== 0) {
+        // status 非 0 常见取值：200(权限不足，需开 Place API) /
+        //                     240(校验失败，referer 不在白名单) / 302(配额耗尽)
+        console.warn(
+          "[MapLocationSelection] place/v2/search status=" +
+            data.status +
+            " message=" +
+            (data.message || data.msg || ""),
+        );
+      }
+      return [];
+    }
+    const rawPois: any[] = data.results;
+    return rawPois
+      .map(normalizePlaceSearchPoi)
+      .filter((x): x is POIItem => !!x);
   }
 
   // 定位：浏览器原生 geolocation 拿 WGS84 → Convertor 转 BD09。

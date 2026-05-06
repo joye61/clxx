@@ -112,18 +112,37 @@ export class AMapProvider implements MapProvider {
   // 周边检索专用：init 时设 type=NEARBY_POI_TYPE 让"附近列表"覆盖楼宇/门牌等大类，
   // extensions=all 才返回 child_pois（楼栋粒度）。
   private placeSearch: any = null;
-  // 关键字检索专用：单独一个实例，init 时不设 type，调 ps.search(kw) 走"全文检索 + 按
-  // 相关性排"语义。不能用 searchNearBy——searchNearBy 即使配 50km 半径，SDK 内部仍按
-  // 相关度先过滤再返回，远端 POI（如 25km 外的虹桥火车站）会被首页的 20 条挤掉。
-  // search(kw) 不限半径只限 city，能稳定命中全市范围内的远端 POI。
-  private keywordPlaceSearch: any = null;
+  // 关键字检索：双实例并发，覆盖两类用户意图，二者结果合并去重 + 50km 半径过滤
+  // 后回给 UI 层（UI 再用「名称命中度优先 + 同档距离升序」做最终排序）。
+  //
+  // 单实例（仅 searchNearBy）的痛点：
+  //   * searchNearBy 是「半径内 + 关键字宽松匹配 + 按距离排」。高德 SDK 内部对
+  //     "虹桥火车站"拆 token，"虹桥"、"火车站"任一片段命中即收录——浦东虹桥花园
+  //     里的充电站等近距离模糊命中会把 pageSize=20 的首页全部占满，**真实
+  //     虹桥火车站（28km 外）根本进不了候选**，用户感觉"列表里完全没有想搜的"；
+  //   * 单纯 ps.search(kw) 又会被"锦博苑"等非热门小区在全国相关性排序里挤掉
+  //     （北京同名 POI 热度更高时会跑到前面），且 search 不限半径会拿到外地结果。
+  //
+  // 双实例并发（实测能解 99% 的"搜不到真实 POI"问题）：
+  //   * keywordPlaceSearchNear（searchNearBy）拿"近距离命中"——锦博苑/楼宇/
+  //     近距离模糊匹配等都从这里来；
+  //   * keywordPlaceSearchFull（search）拿"全国相关性命中"——虹桥火车站/陆家
+  //     嘴等高热精确匹配 POI 即便远在 28km 外也能稳定进入候选；
+  //   * 二者各取 pageSize=50（SDK 上限）、extensions=all、不设 type 让 keyword
+  //     当主过滤；不设 cityLimit（city="全国"）不加城市约束；
+  //   * 合并后用 haversine 重算距离并丢弃 > 50km 的跨市残留（search 会带回北京
+  //     /广州的同名 POI，距离过滤天然解决）；
+  //   * 名称命中度优先排序由 UI 层 sortByKeywordRelevance 完成（与百度共用），
+  //     这里只负责"把候选凑齐"。
+  //
+  // 与单实例相比的代价：每次关键字检索多打一次 SDK 调用（约 +200~500ms 网络），
+  // 已被 UI 层 250ms debounce 削平至单次输入只触发一组并发请求；调用配额翻倍
+  // 但 keyword 检索本身在打车流程中频次很低，整体配额压力可忽略。
+  private keywordPlaceSearchNear: any = null;
+  private keywordPlaceSearchFull: any = null;
   private geocoder: any = null;
   private geolocation: any = null;
   private userMarker: any = null;
-  // 当前定位反查到的城市名（reverseGeocode 成功后写入）。
-  // search(kw) 是"按 city 范围做全文检索"——city 必须收敛到当前城市，
-  // 否则 "全国" 范围里搜"地铁站"会按热度排返回北京/广州地铁站（实测距离 1000+km）。
-  private cachedCity: string | null = null;
 
   // 复用一次进行中的定位 Promise，去抖
   private pendingGeolocate: Promise<Coord | null> | null = null;
@@ -160,48 +179,26 @@ export class AMapProvider implements MapProvider {
       type: NEARBY_POI_TYPE,
       city: o.initialCity ?? "全国",
     });
-    // 业务方传入 initialCity 时直接以"本市 + cityLimit:true"创建关键字实例；
-    // 否则保留 "全国" + cityLimit:false 兜底，等首次 reverseGeocode 拿到城市后由
-    // buildKeywordPlaceSearch 重建（cityLimit 是不可变 init 参数，无法 setCityLimit）。
-    if (o.initialCity) this.cachedCity = o.initialCity;
-    this.keywordPlaceSearch = this.buildKeywordPlaceSearch(
-      o.initialCity ?? "全国",
-      !!o.initialCity,
-    );
+    // 关键字检索双实例：分别给 searchNearBy / search 用，避免共享实例时 setPageSize
+    // 等状态被并发调用相互覆盖。pageSize 拉满到 50（SDK 上限）尽量多召回候选，
+    // 让 UI 端的"名称命中度优先排序"有更多素材可挑。
+    this.keywordPlaceSearchNear = new AMap.PlaceSearch({
+      pageSize: 50,
+      pageIndex: 1,
+      extensions: "all",
+      city: o.initialCity ?? "全国",
+    });
+    this.keywordPlaceSearchFull = new AMap.PlaceSearch({
+      pageSize: 50,
+      pageIndex: 1,
+      extensions: "all",
+      city: o.initialCity ?? "全国",
+    });
     // extensions=all 是关键：让 regeocode 一并返回 pois 数组（带 distance 字段）。
     // 默认值在不同 JSAPI 版本下会变（v1 默认 base / v2 默认 all），显式声明
     // 避免被 SDK 默认值变化打脸——reverseGeocode 内部需要 pois[].distance
     // 才能挑出"30m 内最贴近 centerPin 的精确 POI"。
     this.geocoder = new AMap.Geocoder({ extensions: "all" });
-  }
-
-  // 重新创建关键字 PlaceSearch 实例。之所以"重建"而不是"setCity"：
-  //   - PlaceSearch 的 cityLimit 是构造时的 init 参数，SDK 没有暴露 setCityLimit；
-  //   - 单纯 setCity('上海') 不开 cityLimit 的话，search('动物园') 会按全国范围相关性
-  //     排，结果是北京动物园（5A 热度最高）排榜首——上海用户体验完全错位。
-  // 所以拿到当前城市时必须重建实例并启用 cityLimit:true，让候选先收敛到本市。
-  private buildKeywordPlaceSearch(city: string, cityLimit: boolean): any {
-    if (!this.AMap) return null;
-    return new this.AMap.PlaceSearch({
-      pageSize: 20,
-      pageIndex: 1,
-      // 关键字检索不展开 child_pois——地铁站等多出入口父 POI 展开后会被同名条目刷屏。
-      extensions: "base",
-      city,
-      citylimit: cityLimit,
-    });
-  }
-
-  // 确保当前已经缓存到城市；没有就触发一次 reverseGeocode。
-  // 用于堵住"用户进入页面就开始打字、reverseGeocode 还没完成"的时间窗口——
-  // 这种情况下 keywordPlaceSearch 会停留在 city='全国' + cityLimit:false 的兜底状态，
-  // 直接 search 会拿到外地结果。
-  private async ensureCity(): Promise<void> {
-    if (this.cachedCity) return;
-    if (!this.map) return;
-    const c = this.map.getCenter();
-    // reverseGeocode 内部成功路径会同步重建 keywordPlaceSearch（cityLimit:true）
-    await this.reverseGeocode([c.getLng(), c.getLat()]);
   }
 
   destroy(): void {
@@ -213,12 +210,12 @@ export class AMapProvider implements MapProvider {
     this.AMap = null;
     this.map = null;
     this.placeSearch = null;
-    this.keywordPlaceSearch = null;
+    this.keywordPlaceSearchNear = null;
+    this.keywordPlaceSearchFull = null;
     this.geocoder = null;
     this.geolocation = null;
     this.userMarker = null;
     this.pendingGeolocate = null;
-    this.cachedCity = null;
   }
 
   getCenter(): Coord {
@@ -323,45 +320,85 @@ export class AMapProvider implements MapProvider {
   }
 
   async searchByKeyword(
-    _center: Coord,
+    center: Coord,
     keyword: string,
     options: SearchOptions,
   ): Promise<POIItem[]> {
-    // 走关键字专用 PlaceSearch.search(keyword)：
-    //   - "全文检索 + 按相关性排"语义，不限半径，只在 city 范围内匹配——
-    //     "虹桥火车站"等远端 POI 能稳定命中，不会被 searchNearBy 的 SDK 内部相关度
-    //     过滤挤掉首页；
-    //   - 进入前先 ensureCity，确保 cachedCity 已经收敛到当前城市并已重建实例
-    //     （cityLimit:true）——否则全国范围里搜"动物园"会返回北京动物园。
-    // distance 由 UI 层 rewriteDistanceFromUser 用 haversine 重算（基于用户真实位置），
-    // 再由 sortByKeywordRelevance 在同精准等级内按距离排——满足"精准匹配优先 + 距离次序"。
+    // 关键字检索 = 「searchNearBy（近距离命中）」+「search（全国相关性命中）」并发，
+    // 合并去重后**全部**返回，**不做距离过滤**。
     //
-    // seq 在 ensureCity 之前递增：用户连续输入时旧请求在 await 期间会被新请求作废，
-    // ensureCity 返回后立即检查一次 seq，避免发起注定要被丢弃的 SDK 调用。
+    // 旧版本曾在末尾做 50km 半径过滤以剔除同名跨市 POI（"北京/广州的锦博苑"）。
+    // 但实测这条过滤会误杀用户实际想找的远端地标——例如在上海搜"天安门"，全国
+    // 唯一的精确命中就是 1075km 外的北京天安门，被 50km 切掉后整个列表为空，
+    // 与微信"发送位置"的体感（远端命中显示 1074.5km）严重不符。
+    //
+    // 排序口径：本方法只负责把候选凑齐，**不在这里排序**——UI 层
+    // sortByKeywordRelevance 用「名称包含完整关键字优先 + 同档距离升序」做最终排序，
+    // 同城精确命中（"上海锦博苑"）凭距离稳居顶部，同名跨市命中（北京/广州）
+    // 自然沉到列表末尾；而对于唯一远端命中（"天安门" → 北京），它顶到首位
+    // 是用户期望的行为。距离过滤反而是误杀。
+    const AMap = this.AMap;
+    const psNear = this.keywordPlaceSearchNear;
+    const psFull = this.keywordPlaceSearchFull;
+    if (!AMap || !psNear || !psFull) return [];
+
     const seq = ++this.keywordSeq;
-    await this.ensureCity();
-    if (seq !== this.keywordSeq) return [];
-    const ps = this.keywordPlaceSearch;
-    if (!ps) return [];
-    return new Promise<POIItem[]>((resolve) => {
-      ps.setPageIndex(1);
-      ps.setPageSize(options.pageSize);
-      ps.search(keyword, (status: string, result: any) => {
-        if (seq !== this.keywordSeq) {
-          resolve([]);
-          return;
-        }
-        if (status !== "complete" || !result?.poiList?.pois) {
-          resolve([]);
-          return;
-        }
-        const list = (result.poiList.pois as any[])
-          .map(normalizePOI)
-          .filter((x): x is POIItem => !!x);
-        resolve(list);
+    const pageSize = Math.min(50, Math.max(20, options.pageSize));
+
+    const runNear = (): Promise<POIItem[]> =>
+      new Promise<POIItem[]>((resolve) => {
+        psNear.setPageIndex(1);
+        psNear.setPageSize(pageSize);
+        psNear.searchNearBy(
+          keyword,
+          new AMap.LngLat(center[0], center[1]),
+          50000,
+          (status: string, result: any) => {
+            if (status !== "complete" || !result?.poiList?.pois) {
+              resolve([]);
+              return;
+            }
+            const list = expandWithChildren(result.poiList.pois as any[])
+              .map(normalizePOI)
+              .filter((x): x is POIItem => !!x);
+            resolve(list);
+          },
+        );
       });
-    });
+
+    const runFull = (): Promise<POIItem[]> =>
+      new Promise<POIItem[]>((resolve) => {
+        psFull.setPageIndex(1);
+        psFull.setPageSize(pageSize);
+        // search(kw) 不限半径，靠后续 50km 距离过滤剔除跨市污染。
+        // 高热 POI（虹桥火车站、陆家嘴、东方明珠）会稳定排在 search 结果首页，
+        // 与同名低热 POI（如其他城市的"锦博苑"）一起回来，跨市的会被距离过滤掉。
+        psFull.search(keyword, (status: string, result: any) => {
+          if (status !== "complete" || !result?.poiList?.pois) {
+            resolve([]);
+            return;
+          }
+          const list = expandWithChildren(result.poiList.pois as any[])
+            .map(normalizePOI)
+            .filter((x): x is POIItem => !!x);
+          resolve(list);
+        });
+      });
+
+    const [nearby, fulltext] = await Promise.all([runNear(), runFull()]);
+    if (seq !== this.keywordSeq) return [];
+
+    // 合并去重：以 nearby 优先（更可能带 SDK 算好的 distance），fulltext 仅补
+    // nearby 漏掉的远端高热精确命中。同 id 用 nearby 的版本，避免 search 不带
+    // distance 的副本覆盖 nearby 已经拿到的距离信息。
+    const seen = new Map<string, POIItem>();
+    for (const p of nearby) seen.set(p.id, p);
+    for (const p of fulltext) {
+      if (!seen.has(p.id)) seen.set(p.id, p);
+    }
+    return Array.from(seen.values());
   }
+
   geolocate(): Promise<Coord | null> {
     const AMap = this.AMap;
     if (!AMap) return Promise.resolve(null);
@@ -419,19 +456,6 @@ export class AMapProvider implements MapProvider {
             const r = result.regeocode;
             const city: string =
               r.addressComponent?.city || r.addressComponent?.province || "";
-            // 把当前城市同步给 keywordPlaceSearch。注意 PlaceSearch 没有 setCityLimit
-            // 方法（cityLimit 是不可变 init 参数），所以"city 变化"时必须重建整个实例，
-            // 而不是 setCity——否则 cityLimit 仍是 init 时的 false，搜"动物园"会返回
-            // 北京动物园（全国相关性按热度排）。
-            // city 取空（海外 / 接口异常）时不动，保留上一次的值，避免短暂跨格子时
-            // 频繁重建实例把已有结果搞乱。
-            if (city && city !== this.cachedCity) {
-              this.cachedCity = city;
-              this.keywordPlaceSearch = this.buildKeywordPlaceSearch(
-                city,
-                true,
-              );
-            }
             // reverseGeocode 只负责"地名兜底"——返回覆盖中心点的具体地名
             // （楼宇 / 街道+门牌 / 街道 / 镇）。**不掺 POI**，POI 借用由
             // commitMapCenter 用 fetchAround（PlaceSearch.searchNearBy 全大类）

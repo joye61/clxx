@@ -271,6 +271,66 @@ export function createStyle(primary: string): MapLocStyle {
       flexDirection: "column",
       backgroundColor: bgPage,
     }),
+
+    // 搜索区域：贴在下半屏顶部，与 listArea 垂直堆叠。
+    // 视觉规格沿用历史版本：白底卡片 + 圆角灰底输入条 + 左侧放大镜 + 右侧清除 X。
+    // 之所以让搜索框独立于地图浮层（而非顶部 topBar），是因为打车场景下用户多数情况
+    // 是先拖图选位置，搜索仅作为兜底入口；放在列表上方更符合视觉重心。
+    searchBox: css({
+      padding: `${r(24)} ${r(30)}`,
+      borderBottom: `1px solid ${border}`,
+    }),
+    searchInner: css({
+      display: "flex",
+      alignItems: "center",
+      height: r(72),
+      backgroundColor: bgSubtle,
+      borderRadius: r(36),
+      padding: `0 ${r(24)}`,
+    }),
+    searchIcon: css({
+      width: r(32),
+      height: r(32),
+      fill: textTertiary,
+      marginRight: r(15),
+      flexShrink: 0,
+    }),
+    searchInput: css({
+      flex: 1,
+      minWidth: 0,
+      height: "100%",
+      fontSize: r(28),
+      lineHeight: r(72),
+      color: textPrimary,
+      fontFamily: "inherit",
+      border: "none",
+      outline: "none",
+      backgroundColor: "transparent",
+      padding: 0,
+      "&::placeholder": {
+        color: textTertiary,
+      },
+    }),
+    searchClear: css({
+      width: r(34),
+      height: r(34),
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexShrink: 0,
+      cursor: "pointer",
+    }),
+    searchClearIcon: css({
+      width: r(34),
+      height: r(34),
+      display: "block",
+      fill: textTertiary,
+    }),
+    // 定位中：搜索框降色阶（输入框本身已 disabled，这里让外观也对齐）
+    searchDisabled: css({
+      opacity: 0.55,
+    }),
+
     // 列表区域容器（高度 = bottom 剩余空间）
     listArea: css({
       flex: 1,

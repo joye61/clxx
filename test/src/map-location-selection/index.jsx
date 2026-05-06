@@ -62,6 +62,7 @@ export default function Index() {
             provider: "bmap",
             bmapAk: BMAP_AK,
             bmapReverseGeocodingProxy: "/api/bmap-rgeo",
+            bmapPlaceSearchProxy: "/api/bmap-place",
             onSelect: reportSelected,
             onClose: () => {
               console.log("关闭了地图选址（百度）");
@@ -78,6 +79,7 @@ export default function Index() {
             provider: "bmap",
             bmapAk: BMAP_AK,
             bmapReverseGeocodingProxy: "/api/bmap-rgeo",
+            bmapPlaceSearchProxy: "/api/bmap-place",
             // BD09 上海人民广场
             initialCenter: [121.479675, 31.236397],
             primary: "#07c160",
