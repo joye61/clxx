@@ -68,8 +68,10 @@ export { RegionPicker, showRegionPicker } from './RegionPicker';
 export {
   MapLocationSelection,
   showMapLocationSelection,
+  getLocation,
 } from './MapLocationSelection';
 export type {
   MapLocationSelectionProps,
   SelectedLocation,
+  GetLocationOptions,
 } from './MapLocationSelection';

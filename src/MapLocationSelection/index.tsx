@@ -1,48 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { showDialog } from "../Dialog";
 import { Clickable } from "../Clickable";
-import { ScrollView } from "../ScrollView";
+import { ScrollView, type ScrollViewHandle } from "../ScrollView";
 import { createStyle, DEFAULT_PRIMARY } from "./style";
 import { haversineMeters, type POIItem, type SelectedLocation } from "./types";
-import type { MapProvider, MapProviderType } from "./provider";
+import type { MapProvider } from "./provider";
 import type { ReverseGeocodeResult } from "./provider";
-import { AMapProvider } from "./provider.amap";
-import { BMapProvider } from "./provider.bmap";
+import {
+  createProvider,
+  type CreateProviderOptions,
+} from "./createProvider";
+import { buildSelectedLocation } from "./buildSelectedLocation";
 
 export type { SelectedLocation } from "./types";
+export { getLocation, type GetLocationOptions } from "./getLocation";
 
-export interface MapLocationSelectionProps {
-  // 选择地图实现，默认 "amap"。"amap" 必须传 amapKey；"bmap" 必须传 bmapAk。
-  provider?: MapProviderType;
-  // 高德 Web 端 Key（provider="amap" 时必填）
-  amapKey?: string;
-  // 高德安全密钥（生产建议使用代理 serviceHost）
-  securityJsCode?: string;
-  // 百度 Web 端 ak（provider="bmap" 时必填）
-  bmapAk?: string;
-  /**
-   * 百度逆地理 WebAPI（`reverse_geocoding/v3`）同域代理路径，仅 `provider="bmap"` 时生效。
-   *
-   * 开发示例（Vite）：`'/api/bmap-rgeo'`，并在 `vite.config` 里把该路径代理到
-   * `https://api.map.baidu.com/reverse_geocoding/v3`。
-   *
-   * 不配则组件用 JSONP 直连百度；**鉴权失败时百度常返回裸 JSON**，无法用 `<script>` 执行，
-   * 会报 `JSONP load error` 后降级 JSAPI。配合同域 `fetch` 可稳定解析 `status/message`。
-   */
-  bmapReverseGeocodingProxy?: string;
-  /**
-   * 百度地点检索 WebAPI（`place/v2/search`）同域代理路径，仅 `provider="bmap"` 时生效。
-   *
-   * 开发示例（Vite）：`'/api/bmap-place'`，并在 `vite.config` 里把该路径代理到
-   * `https://api.map.baidu.com/place/v2/search`。
-   *
-   * 这条通道是搜「天安门」/「故宫」/「外滩」这类**远端唯一精确命中**的关键——
-   * 百度 LocalSearch 半径上限 100km，从上海搜不到 1075km 外的北京天安门，必须靠
-   * `place/v2/search?region=全国` 走全国检索。不配则走 JSONP 直连，鉴权要求与
-   * `bmapReverseGeocodingProxy` 一致（控制台开通 Place API + 浏览器端 AK + Referer
-   * 白名单）。
-   */
-  bmapPlaceSearchProxy?: string;
+// provider / amapKey / securityJsCode / bmapAk 字段全部由 CreateProviderOptions
+// 提供（与独立函数 getLocation 共享同一组配置 + 校验逻辑），UI 专属字段在
+// 这里继续追加。
+export interface MapLocationSelectionProps extends CreateProviderOptions {
   // 主题色，默认蓝色 #2f7dff
   primary?: string;
   // 初始中心点 [lng, lat]，缺省时使用 provider 自身定位；再缺省时使用各自坐标系下的北京
@@ -60,6 +36,17 @@ export interface MapLocationSelectionProps {
   searchRadius?: number;
   // 单页 POI 数量，默认 20，最大 50
   pageSize?: number;
+  // 是否允许「IP 定位兜底」。默认 false。
+  //
+  // 浏览器 H5 定位（GPS / WiFi）失败 / 拒绝时，高德 / 百度 SDK 内部都会
+  // **自动 fallback** 到 IP 定位（城市级精度，accuracy 通常 ≥ 5000m）。
+  //
+  // - **false（默认）**：组件检测到 IP 兜底结果时丢弃，「自动定位」与「回到
+  //   当前位置」按钮的体验等价于"H5 失败 = 定位失败"。适合打车 / 外卖等
+  //   "必须拿到精确位置"的业务，避免把 5km 误差塞给业务方；
+  // - **true**：接受 IP 兜底（用户拒绝 GPS 时仍能拿到城市级位置），适合
+  //   "有大致位置就行"的城市级业务（门店推荐、广告投放等）。
+  allowIpFallback?: boolean;
   // 关闭（取消、确定后均会触发）
   onClose?: () => void;
   // 用户点击「确定」时回调，参数 = 列表当前选中项（默认是列表第一项）
@@ -145,26 +132,15 @@ function rewriteDistanceFromCenter(
   }));
 }
 
-function createProvider(props: MapLocationSelectionProps): MapProvider {
-  const type = props.provider ?? "amap";
-  if (type === "bmap") {
-    if (!props.bmapAk) {
-      throw new Error("[MapLocationSelection] provider=bmap 时 bmapAk 必填");
-    }
-    return new BMapProvider({
-      ak: props.bmapAk,
-      reverseGeocodingProxy: props.bmapReverseGeocodingProxy,
-      placeSearchProxy: props.bmapPlaceSearchProxy,
-    });
-  }
-  if (!props.amapKey) {
-    throw new Error("[MapLocationSelection] provider=amap 时 amapKey 必填");
-  }
-  return new AMapProvider({
-    amapKey: props.amapKey,
-    securityJsCode: props.securityJsCode,
-  });
-}
+// 列表头部「当前位置」虚拟项的固定 id。
+//
+// 与真实 POI 的 id 解耦：真实 POI id 来自 SDK（高德 amap_poi_xxx、百度 b0_xxx
+// 等格式），不会撞这个保留前缀，可放心做 === 比对。用途：
+//   * list 渲染：识别"这条是当前位置项"→ 强制 active=true；
+//   * handlePickItem：识别"用户点了当前位置项"→ no-op（已经选中，无需操作）；
+//   * onSelect 路径不需要识别它——handleConfirm 走 centerRef + reverseCache，
+//     从不读列表项 id，CURRENT_LOCATION_ID 永远不会进入回调输出。
+const CURRENT_LOCATION_ID = "__current_location__";
 
 export function MapLocationSelection(props: MapLocationSelectionProps) {
   const {
@@ -173,6 +149,7 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     initialCity,
     searchRadius = 200,
     pageSize = 20,
+    allowIpFallback = false,
     onClose,
     onSelect,
   } = props;
@@ -210,12 +187,48 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   const [locating, setLocating] = useState(true);
   // 「回到当前位置」按钮自身的轻量 loading：仅按钮显示 spinner，地图与列表保持可交互
   const [btnLocating, setBtnLocating] = useState(false);
+  // 列表加载中：commitMapCenter 拉周边 / keyword effect 拉搜索结果**进入飞行中**时
+  // 为 true，结果回写完成切回 false。**仅控制列表区半透明遮罩**，不阻断搜索框输入
+  // （keyword 搜索期间用户可继续编辑关键字，新一次 effect 会接管 loading）。
+  // 翻页（searchAroundMore）不动这个状态——翻页用 ScrollView 自身底部 spinner。
+  const [listLoading, setListLoading] = useState(false);
   // 地图中心 pin 动画状态：'idle' | 'lifted' | 'drop'
   const [pinPhase, setPinPhase] = useState<"idle" | "lifted" | "drop">("idle");
   const dropTimerRef = useRef<number | null>(null);
+  // 「列表头部当前位置项」重算触发器。
+  //
+  // 当前位置项的数据源（centerRef / commitSeqRef / reverseCacheRef）都是 ref，
+  // ref 变化不会触发 React 重渲染——bumpCurrentItem 推这个 state 让派生的
+  // currentItem useMemo 重算。poiList（用于 nearestPoi 兜底）本身是 state，
+  // 自动触发依赖它的 useMemo，不需要 bump。
+  //
+  // 触发时机：commitMapCenter 入口（centerRef 变更）+ commitMapCenter 内
+  // rgPromise.then（reverseCacheRef 写入）。其他路径（拖图触发的 moveend、
+  // 程序化定位 moveTo 等）最终都会走到 commitMapCenter，无需单独 bump。
+  const [currentItemVersion, setCurrentItemVersion] = useState(0);
+  const bumpCurrentItem = useCallback(() => {
+    setCurrentItemVersion((v) => v + 1);
+  }, []);
+
+  // 用户真实 GPS 定位坐标（[lng, lat]），仅在两个时机更新：
+  //   1) 组件初始化时的自动 geolocate 成功；
+  //   2) 用户点"回到当前位置"按钮 handleLocate 成功。
+  // 用途：列表项的距离展示（"距离我多远"），以及当前位置项的 distance
+  // （centerPin ↔ 用户真实位置）。
+  // 为什么是 state 不是 ref：列表渲染需要这个值参与 displayDistance 计算，
+  // ref 变化不会触发重渲染；state 在用户回到当前位置后能立即让所有距离值刷新。
+  // null 表示 GPS 不可用 / 被拒 / 未授权——此时 displayDistance 退化到
+  // item.distance（即 POI ↔ centerPin），保持原行为。
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null,
+  );
 
   // ===== refs =====
   const mapElRef = useRef<HTMLDivElement>(null);
+  // 列表 ScrollView 命令式句柄：每次列表"全量刷新"（commit / 搜索）后调
+  // scrollToTop 把滚动位置回到顶部，与微信 / 高德 App 拉新列表时的体感对齐。
+  // 翻页（searchAroundMore）追加场景**不**调，避免把用户拉到顶。
+  const scrollViewRef = useRef<ScrollViewHandle>(null);
   // provider 是稳定引用：在 useEffect 内一次性创建并 init，组件卸载时销毁
   const providerRef = useRef<MapProvider | null>(null);
   // 标记"当前的 setCenter 是程序触发"，避免 moveend 形成回环（程序化移动期间
@@ -251,6 +264,12 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     name: string;
     address: string;
   } | null>(null);
+  // poiList 的 ref 镜像：handleConfirm 在「地图选址、未点列表」时要从最近 POI
+  // 取 name/address 兜底（解决 reverseGeocode fallback 到"陆家嘴街道""高桥镇"等
+  // 粗粒度 township 的体验问题），但 useCallback 不想把 poiList state 加到依赖
+  // 里（避免每次列表更新都重建 handleConfirm）。用 ref 镜像保证读到最新值且
+  // 闭包稳定。
+  const poiListRef = useRef<POIItem[]>([]);
   // 翻页：当前 page、当前正在查询的 page、当前中心、加载锁
   const pageIndexRef = useRef(1);
   const searchCenterRef = useRef<[number, number] | null>(null);
@@ -269,11 +288,19 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   // pin 动画状态的最新值，以供事件回调读取
   const pinPhaseRef = useRef<"idle" | "lifted" | "drop">("idle");
   pinPhaseRef.current = pinPhase;
+  // poiList ref 镜像：每次渲染同步一次，保证 handleConfirm 能读到最新列表。
+  // 配合上方 poiListRef 的声明使用。直接用赋值而非 useEffect——render 期赋值
+  // ref 在 React 里是被允许的（且立即生效，无需等 commit 阶段）。
+  poiListRef.current = poiList;
   // 拆除绑在 mapEl 上的 pointer 事件监听
   const cleanupPointerRef = useRef<(() => void) | null>(null);
   // commitMapCenter 抢占 seq：拖图 / 点击 / 回到当前位置连续触发时，旧的 fetchAround
   // 回调抵达后若不是最新一次直接丢弃，避免老结果回来覆盖新中心的 poiList。
   const commitSeqRef = useRef(0);
+  // handleConfirm 的互斥锁：用户在 reverseGeocode 网络等待中再次点击确定时，
+  // 防止 onSelect 被多次回调（业务侧重复处理订单）。一次进入即"成立"，不解锁——
+  // onClose 后组件销毁，互斥锁随组件 unmount 一起被回收。
+  const confirmingRef = useRef(false);
   // 关键字搜索的抢占 seq。useEffect 中 debounce 后发起的请求若回来时 seq 已过期
   // （用户继续输入 / 清空了搜索框）直接丢弃。与 provider 内部的 keywordSeq 配合
   // 形成双层保护：组件层管 UI 应不应该接收，provider 层管 SDK 回调应不应该 resolve。
@@ -378,6 +405,21 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
       pageIndexRef.current = 1;
       searchCenterRef.current = [lng, lat];
 
+      // 触发列表头部当前位置项重算：center / commitSeqRef 已新——旧 reverseCache
+      // 因 seq 不匹配会被识别为 stale，currentItem useMemo 立刻给到「占位形态」
+      // （仅有经纬度兜底）；rgPromise 回来后再 bump 一次覆写真值。
+      bumpCurrentItem();
+
+      // **进入加载态**：列表区半透明遮罩 + spinner 即刻显示。
+      //
+      // 抢占式 seq 下的 loading 复位策略：
+      //   - 早退分支（seq 已被新 seq 覆盖）**不复位** loading，因为新 seq 进入时
+      //     已经又 setListLoading(true) 了一次，最终最后一次成功的会复位；
+      //   - 当前 seq 走完正常 setPoiList 分支后才 setListLoading(false)；
+      //   - fetchAround 内部已 try/catch 异常并返回 { ok: false }，外层不会抛——
+      //     所以 loading 一定会到一次复位（不会卡死）。
+      setListLoading(true);
+
       // 后台并发发起反向地理编码，把 promise 存起来供 handleConfirm 复用。
       // .catch 收住异常避免「未处理的 rejection」warning（reverseGeocode 失败时返回 null）。
       const rgPromise = provider.reverseGeocode([lng, lat]).catch(() => null);
@@ -386,6 +428,9 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
         if (seq !== commitSeqRef.current) return; // 已被新 seq 作废
         if (!rg) return;
         reverseCacheRef.current = { ...rg, seq };
+        // 反查回来后再 bump：currentItem useMemo 用真值（含真实地名 / 详细
+        // address）覆写之前的占位形态。
+        bumpCurrentItem();
       });
 
       const aroundRes = await fetchAround(lng, lat, 1);
@@ -409,8 +454,13 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
           setErrorMsg(aroundRes.error);
         }
       }
+      setListLoading(false);
+      // 列表全量刷新后回到顶部：与微信 / 高德 App 拉新列表的体感对齐。
+      // requestAnimationFrame 确保在 React commit 之后执行——这一帧 ScrollView
+      // 的 DOM 已经渲染了新内容，scrollTop=0 恰好让用户看到 list[0]。
+      requestAnimationFrame(() => scrollViewRef.current?.scrollToTop());
     },
-    [fetchAround],
+    [fetchAround, bumpCurrentItem],
   );
   commitMapCenterRef.current = commitMapCenter;
 
@@ -457,14 +507,18 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     if (!provider) return;
     setBtnLocating(true);
     try {
-      const pos = await provider.geolocate();
+      const pos = await provider.geolocate({ allowIpFallback });
       if (!pos) return;
       provider.upsertUserMarker(pos);
+      // 更新真实 GPS 坐标 → 让列表所有项 + 当前位置项的距离展示按"距离我"刷新。
+      // 此时 centerPin 也会通过 moveTo → commitMapCenter 同步到 pos，所以
+      // 当前位置项的距离会变为 0m（真正"重合时为 0"）。
+      setUserLocation(pos);
       moveTo(pos[0], pos[1], 16);
     } finally {
       setBtnLocating(false);
     }
-  }, [btnLocating, moveTo]);
+  }, [btnLocating, moveTo, allowIpFallback]);
 
   // ===== 初始化地图（仅一次）=====
   useEffect(() => {
@@ -570,27 +624,52 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
           mapEl?.removeEventListener("pointercancel", onPointerUp);
         };
 
-        // 立刻基于初始中心做一次 commit：填充 poiList + 默认选中 list[0]，
-        // 同时后台触发 reverseGeocode 写入 reverseCacheRef，让用户哪怕第一时间
-        // 直接点确定也能拿到 centerPin 对应的真实地名（坐标永远以 centerRef 为准）。
-        commitMapCenterRef.current(c0[0], c0[1]);
-
-        // 关遮罩时机：
-        //   - 未提供 initialCenter：先做一次精准定位再关，避免"地图先出现、定位后跳"
-        //     的画面割裂；
-        //   - 提供了 initialCenter：地图就绪即关，不再发起阻塞性定位。
-        if (!initialCenter) {
-          const pos = await providerRef.current?.geolocate();
+        // 首次 commit 策略（v2，修复"百度首次进入列表跑到 1000+ km 之外"）：
+        //
+        // 老方案：无脑先用 c0（initialCenter 或 provider 内置 fallback = 北京）
+        // commit 一次，再 await geolocate → setCenter → commit 一次。问题在于：
+        //   - 用户没传 initialCenter 时 c0 = 北京 fallback，第一次 fan-out 立刻
+        //     用北京中心拉周边；
+        //   - 如果 geolocate 失败 / 被拒 / 极慢（典型场景：移动端无 HTTPS、用户拒绝
+        //     授权、移动数据定位 5-10s 才回），第二次 commit 不发生或迟到——
+        //     用户视觉上看到列表是北京 POI（与实际位置可能 1000+ km 之差）；
+        //   - 即便 geolocate 成功，那 5-10s 中间态也会先闪出错误 POI 列表。
+        //
+        // 新方案：
+        //   * 提供了 initialCenter：c0 就是用户期望的中心，立刻 commit；
+        //   * 没提供 initialCenter：**不立刻 commit fallback**，而是先 await
+        //     geolocate 拿真值再 commit；geolocate 失败才用 fallback 兜底 commit。
+        //     locating 遮罩本来就盖到 setLocating(false) 之前，列表区被挡住，
+        //     用户视觉上不会看到"先北京后上海"的中间错误态。
+        //
+        // 这条策略下，初次进入百度地图（无 initialCenter）的体验是：
+        //   遮罩盖住 → geolocate (1-3s) → setCenter 到真实位置 → commit 一次 → 关遮罩
+        //   全过程只有一次 fan-out，列表初始即为正确中心的周边。
+        if (initialCenter) {
+          commitMapCenterRef.current(c0[0], c0[1]);
+          setLocating(false);
+        } else {
+          const pos = await providerRef.current?.geolocate({
+            allowIpFallback,
+          });
           if (cancelled) return;
           if (pos) {
             providerRef.current?.upsertUserMarker(pos);
+            // 记下真实 GPS 坐标——列表项的距离展示口径需要它（POI ↔ 用户真实位置）。
+            // 此时 centerPin 也会被 setCenter 到 pos，所以当前位置项 distance = 0。
+            setUserLocation(pos);
             programmaticMoveRef.current = true;
             providerRef.current?.setCenter(pos, 16);
             commitMapCenterRef.current(pos[0], pos[1]);
+          } else {
+            // geolocate 失败 / 被拒：用 c0（fallback 中心）兜底 commit 一次，
+            // 让组件至少能渲染出列表与 reverseGeocode 结果，业务方拿到的是
+            // fallback 经纬度——比"列表永远空 + 确定按钮无效"体验好。
+            commitMapCenterRef.current(c0[0], c0[1]);
           }
+          if (cancelled) return;
+          setLocating(false);
         }
-        if (cancelled) return;
-        setLocating(false);
       } catch (err: any) {
         if (cancelled) return;
         console.warn("[MapLocationSelection] init 失败：", err);
@@ -639,8 +718,11 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     if (composing) return;
     const kw = keyword.trim();
     if (!kw) {
+      // keyword 清空回到周边模式：tips 设 null 让 UI 立即切回 poiList（中间无
+      // 中间态闪烁）；listLoading 也复位——keyword 清空不需要 loading 反馈。
       keywordSeqRef.current += 1;
       setTips(null);
+      setListLoading(false);
       return;
     }
     const provider = providerRef.current;
@@ -648,6 +730,9 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     if (!provider || !center) return;
     const seq = ++keywordSeqRef.current;
     const timer = window.setTimeout(async () => {
+      // **进入加载态**：在防抖到时**之后**才 set loading，避免每打一个字都闪
+      // 一次 spinner（用户拼字阶段不应有 loading 反馈）。
+      setListLoading(true);
       let list: POIItem[] = [];
       try {
         list = await provider.searchByKeyword(center, kw, {
@@ -663,6 +748,9 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
       const baseCenter = centerRef.current ?? center;
       const rewritten = rewriteDistanceFromCenter(list, baseCenter);
       setTips(sortByKeywordRelevance(rewritten, kw));
+      setListLoading(false);
+      // 搜索结果刷新后回到顶部：与周边模式刷新口径对齐。
+      requestAnimationFrame(() => scrollViewRef.current?.scrollToTop());
     }, 250);
     return () => {
       window.clearTimeout(timer);
@@ -697,6 +785,11 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   //      对司机更友好。
   const handlePickItem = useCallback(
     (item: POIItem) => {
+      // 用户点了表头的「当前位置」虚拟项——它已经永远处于 active 态，且就是
+      // centerPin 自己，flyMapTo 没有意义；setSelectedId(CURRENT_LOCATION_ID)
+      // 反而会把"用户没点过列表"的语义打破，导致下一次重渲染时该项消失。
+      // 直接 no-op 是最干净的处理。
+      if (item.id === CURRENT_LOCATION_ID) return;
       if (tips !== null) {
         setKeyword("");
         setTips(null);
@@ -747,18 +840,16 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
   //   2) 缓存未到 + reversePendingRef 还在飞 → await 它（已发起的请求别浪费）；
   //   3) 都没有（极端：刚拖完图立刻点确定，pending 已被新 seq 清掉）→ 现发起一次。
   //
-  // 字段合并（确保 name + address + 省市区永远完整）：
-  //   * name：用户主动点的 POI（pickedPoiRef）→ 反查 name → 行政区划 → 经纬度兜底；
-  //          (POI 名称通常是"楼栋/商铺/出入口"级别，比反查"街道+门牌"对司机更友好)
-  //   * address：反查 address（最权威，含省市区+街道+门牌）→ POI address →
-  //              行政区划文本兜底 → 经纬度兜底；
-  //          反查 address 缺省市区前缀时（如只有"中山路 100 号"）→ 自动在前面拼接
-  //          "省市区"上下文，让司机看到完整的层级；
-  //   * province / city / district：永远以反查结果为准（POI 经常缺这些字段）。
-  //
-  // 兜底链最尾端（反查彻底失败、无网/海外/服务异常）：用经纬度字符串 + POI 已有
-  // 字段拼接，保证 name + address 永远不为空，业务方拿到的数据永远可读。
+  // 字段合并完整规则参见 buildSelectedLocation 注释——本函数只负责「拿到
+  // geo + 候选 POI」这两份输入，拼装逻辑由 helper 统一承接，避免与列表头
+  // 「当前位置」虚拟项 / 独立的 getLocation() 函数式 API 出现实现差异。
   const handleConfirm = useCallback(async () => {
+    // 重复点击保护：网络慢时 reverseGeocode 可能 await 几百毫秒，期间用户多次
+    // 点确定按钮，会进入多次 handleConfirm 并多次回调 onSelect——业务侧可能
+    // 因此重复创建订单。一次进入即锁住，进入第二次直接 return。
+    if (confirmingRef.current) return;
+    confirmingRef.current = true;
+
     const center = centerRef.current;
     if (!center) {
       onClose?.();
@@ -794,65 +885,107 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     const userPickedPoi =
       picked && picked.seq === currentSeq ? picked : null;
 
-    let name =
-      userPickedPoi?.name?.trim() || geo?.name?.trim() || "";
-    let address =
-      geo?.address?.trim() || userPickedPoi?.address?.trim() || "";
-    const province = geo?.province?.trim() || undefined;
-    const city = geo?.city?.trim() || undefined;
-    const district = geo?.district?.trim() || undefined;
-
-    // 行政区划文本：直辖市的 city===province 时去重，避免"上海市上海市浦东新区"
-    const adminText = [
-      province,
-      city && city !== province ? city : "",
-      district,
-    ]
-      .filter((s): s is string => !!s && s.length > 0)
-      .join("");
-
-    if (!address) {
-      // address 缺失：用行政区划兜底；连行政区划都没有则用经纬度
-      address =
-        adminText ||
-        `经纬度 ${center[0].toFixed(6)},${center[1].toFixed(6)}`;
-    } else if (
-      adminText &&
-      !address.startsWith(adminText) &&
-      !address.includes(adminText)
-    ) {
-      // address 已有但缺省市区前缀（如只返回"中山路 100 号"）→ 在前面补上"省市区"，
-      // 例如：上海市浦东新区 + 中山路 100 号 = "上海市浦东新区中山路 100 号"。
-      // 双重检查 startsWith / includes：高德 formattedAddress 有时已经
-      // 内嵌省市区前缀，这时不能重复拼接。
-      address = `${adminText}${address}`;
-    }
-
-    if (!name) {
-      // name 缺失：取最细粒度的有值行政区划做名称（区 → 市 → 省）；
-      // 全无则用经纬度字符串兜底。
-      name =
-        district ||
-        city ||
-        province ||
-        `位置 ${center[0].toFixed(6)},${center[1].toFixed(6)}`;
-    }
-
-    onSelect?.({
-      name,
-      address,
-      longitude: center[0],
-      latitude: center[1],
-      city,
-      province,
-      district,
+    // 拼装 SelectedLocation：与 currentItem useMemo / getLocation() 共用
+    // buildSelectedLocation。candidatePoi = poiListRef[0]（仅在 userPickedPoi
+    // 为空时被 helper 内部按 80m 阈值采纳），让「未点列表 → 直接确定」也能拿
+    // 到楼栋/出入口级 name，规避 reverseGeocode fallback 到"街道镇"粗粒度。
+    //
+    // **经纬度依旧来自 centerRef，不切到 POI 经纬度**——保持"地图选什么
+    // 就是什么"的契约，POI 仅供 name/address 文本兜底。
+    const sel = buildSelectedLocation(center, geo, {
+      pickedPoi: userPickedPoi
+        ? { name: userPickedPoi.name, address: userPickedPoi.address }
+        : undefined,
+      candidatePoi: poiListRef.current[0] ?? null,
     });
+
+    // onSelect 是业务方传入的回调，**有可能抛错**（业务代码 bug、错误的 props 等）。
+    // 用 try/catch 兜住保证 onClose 一定会被调到，让组件能正常关闭——否则
+    // 出错时弹窗会卡在打开状态，互斥锁也卡住。
+    try {
+      onSelect?.(sel);
+    } catch (err) {
+      console.warn("[MapLocationSelection] onSelect 抛错：", err);
+    }
     onClose?.();
   }, [onSelect, onClose]);
 
-  // 列表渲染数据源：搜索模式优先，否则用周边列表。
-  // tips === null 即"周边模式"（centerPin 周边）；tips !== null 即"搜索模式"。
-  const list = tips ?? poiList;
+  // ===== 列表头部「当前位置」虚拟项 =====
+  //
+  // 与 handleConfirm 的「未主动点 POI」分支同源——都通过 buildSelectedLocation
+  // 拼装，让用户在列表里看到的"当前位置"就等于此刻按确定会提交的内容。
+  // 共享 helper 后**不再需要 STAY-IN-SYNC 双源同步**——任何字段优先级 / 兜底
+  // 调整只需改 buildSelectedLocation 一处。
+  //
+  // 与 handleConfirm 的差异（有意为之）：
+  //   * picked 不参与：当前位置项的语义是"centerPin 自己"，与"用户主动选 POI"
+  //     的 picked 维度互斥——picked !== null 时 selectedId !== null，currentItem
+  //     不会被插入列表（见下方 list 合成），picked.name 自然不会影响 currentItem；
+  //   * useMemo 读 poiList 用 React state；handleConfirm 读 poiListRef——两者
+  //     在 React render 一致性下值相同，只是读写口径不同。
+  const currentItem = useMemo<POIItem | null>(() => {
+    void currentItemVersion;
+    const center = centerRef.current;
+    if (!center) return null;
+
+    const cache = reverseCacheRef.current;
+    const currentSeq = commitSeqRef.current;
+    const geo = cache && cache.seq === currentSeq ? cache : null;
+
+    const sel = buildSelectedLocation(center, geo, {
+      candidatePoi: poiList[0] ?? null,
+    });
+
+    // distance 字段语义：
+    //   * 列表所有项的 distance 展示口径 = "POI ↔ 用户真实 GPS 位置"，重合时
+    //     才为 0m（详见 list 渲染处的 displayDistance 注释）。
+    //   * 当前位置项的 location 就是 centerPin，所以这里 distance =
+    //     "centerPin ↔ userLocation"——userLocation 未知（GPS 拒绝）时退化为 0。
+    //   * 列表渲染时不直接读这个 distance 字段，而是用 displayDistance 现场算
+    //     （读 currentItem.location 与 userLocation）。这里写值是为了语义一致 +
+    //     兜底（万一 displayDistance 路径有改动，retest 时数据仍合理）。
+    const distance = userLocation
+      ? haversineMeters(center[0], center[1], userLocation[0], userLocation[1])
+      : 0;
+
+    return {
+      id: CURRENT_LOCATION_ID,
+      name: sel.name,
+      address: sel.address,
+      location: { lng: center[0], lat: center[1] },
+      distance,
+      raw: geo,
+    };
+  }, [currentItemVersion, poiList, userLocation]);
+
+  // 列表渲染数据源：
+  //   * 搜索模式（tips !== null）：直接用 tips（搜索结果），不插入 currentItem——
+  //     用户搜索的意图是"找别处的地名"，此刻 centerPin 处的"当前位置"对结果
+  //     筛选无意义；
+  //   * 周边模式 + 用户没点过列表（selectedId === null）：把 currentItem 插到
+  //     表头——这是"默认状态下的当前选择"；
+  //   * 周边模式 + 用户点过列表（selectedId !== null）：**不插入** currentItem，
+  //     避免 currentItem 与用户已选的 POI 在视觉上同时存在两条很相近的项。
+  //     当前位置由用户已选的 POI 实际承载（active 高亮在那条上）。
+  // 同名去重：currentItem 的 name 走 nearestPoi 兜底（80m 阈值内借用
+  // poiList[0] 的名字，规避 reverseGeocode 在没楼宇位置 fallback 到 township
+  // 粗粒度的"南码头路街道"问题）——这必然导致 currentItem.name 与 poiList[0].name
+  // 一致。这种情况下 poiList[0] 从展示列表里去掉，避免「当前位置 0m + 同名 36m」
+  // 两条几乎一样的项；currentItem 既已替它显示，且 distance=0m 是 centerPin
+  // 真值，比 poiList[0] 的几十米距离更精确。
+  // hasMore / 翻页行为不受影响——slice 只动展示数据，poiList 本身不变。
+  const list = useMemo<POIItem[]>(() => {
+    if (tips !== null) return tips;
+    if (selectedId === null && currentItem) {
+      const firstName = poiList[0]?.name?.trim() ?? "";
+      const currentName = currentItem.name?.trim() ?? "";
+      if (firstName && firstName === currentName) {
+        return [currentItem, ...poiList.slice(1)];
+      }
+      return [currentItem, ...poiList];
+    }
+    return poiList;
+  }, [tips, currentItem, poiList, selectedId]);
   const isTipsMode = tips !== null;
 
   const renderListContent = () => {
@@ -867,7 +1000,10 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
     return (
       <>
         {list.map((item) => {
-          const active = selectedId === item.id;
+          // 当前位置项**始终** active（用户需求："唯一区别是当前位置一定是
+          // 选中状态"）；其他项保持原有 selectedId === item.id 判定。
+          const active =
+            item.id === CURRENT_LOCATION_ID || selectedId === item.id;
           return (
             <Clickable
               key={item.id}
@@ -879,11 +1015,30 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
                   {item.name || "未命名地点"}
                 </div>
                 {(() => {
+                  // 距离展示口径：「POI ↔ 用户真实 GPS 位置」（"距离我多远"）。
+                  // 仅当 userLocation 已知时按这个口径展示——重合时为 0m，符合
+                  // 用户对"距离"二字的直觉认知（与微信发送位置 / 美团 / 滴滴等
+                  // 主流产品对齐）。userLocation 未知（GPS 被拒 / 不可用）时退
+                  // 化到 item.distance（即 POI ↔ centerPin），保持原有行为。
+                  // 注意：列表内部排序仍按 item.distance（POI ↔ centerPin）升
+                  // 序，所以拖图到远处选址时可能出现「显示 50km 排在 30km 前」
+                  // 的视觉错位——这是排序口径（按 centerPin 找最近的 POI 给用
+                  // 户参考）与展示口径（让用户读懂数字）有意分离的代价，已与
+                  // 用户确认接受。
+                  const displayDistance =
+                    userLocation && item.location
+                      ? haversineMeters(
+                          item.location.lng,
+                          item.location.lat,
+                          userLocation[0],
+                          userLocation[1],
+                        )
+                      : item.distance;
                   const distText =
-                    typeof item.distance === "number"
-                      ? item.distance < 1000
-                        ? `${Math.round(item.distance)}m`
-                        : `${(item.distance / 1000).toFixed(1)}km`
+                    typeof displayDistance === "number"
+                      ? displayDistance < 1000
+                        ? `${Math.round(displayDistance)}m`
+                        : `${(displayDistance / 1000).toFixed(1)}km`
                       : "";
                   const addrText = item.address?.trim() ?? "";
                   if (!distText && !addrText) return null;
@@ -1017,6 +1172,7 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
 
         <div css={style.listArea}>
           <ScrollView
+            ref={scrollViewRef}
             height="100%"
             onReachBottom={handleReachBottom}
             reachBottomThreshold={80}
@@ -1028,6 +1184,14 @@ export function MapLocationSelection(props: MapLocationSelectionProps) {
           >
             {renderListContent()}
           </ScrollView>
+          {/* 列表数据加载中：半透明遮罩 + spinner，仅盖在 listArea 上不影响搜索框输入。
+              locating 期间外层 bottomLockedMask 会以 zIndex=9 盖在最上层，
+              此遮罩 zIndex=4 自然被遮住，不会出现"双层遮罩"视觉。 */}
+          {listLoading && (
+            <div css={style.listLoadingMask}>
+              <div css={style.spinner} />
+            </div>
+          )}
         </div>
         {/* 定位中：盖在底部搜索 + 列表上，阻断所有交互（地址列表会在定位完成后整体刷新） */}
         {locating && <div css={style.bottomLockedMask} />}

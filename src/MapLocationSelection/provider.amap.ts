@@ -6,8 +6,9 @@
 // 全部内聚在这里，UI 层完全不再 import "AMap*"。
 
 import { loadAMap, type AMapNamespace } from "./loader.amap";
-import { type Coord, type POIItem } from "./types";
+import { type Coord, type POIItem, haversineMeters } from "./types";
 import {
+  type GeolocateOptions,
   type MapProvider,
   type MapProviderInitOptions,
   type SearchAroundResult,
@@ -18,9 +19,43 @@ import { createUserMarkerDom } from "./userMarker";
 
 const DEFAULT_FALLBACK_CENTER_GCJ02: Coord = [116.397428, 39.90923]; // 北京
 
+// IP 定位判定阈值：accuracy ≥ 此值视为 IP 兜底（城市级精度）。
+// 室内 H5/WiFi 定位精度再差也很少超过 2km，5km 完全是城市级 IP 才有的精度，
+// 与百度端 isIpLikeBmapAccuracy 阈值保持一致。
+const IP_LOCATION_ACCURACY_THRESHOLD_M = 5000;
+
+// 高德 IP 兜底事后判定。
+//
+// 字段优先级：
+//   1) result.location_type：高德 SDK 内部字段，'ip' / 'cgi' 表示非 GPS。
+//      官方文档未在公开 API 表中列出，但实际运行时存在（v2.0 至今稳定）；
+//   2) accuracy 阈值兜底：location_type 缺省 / 字段名变更时仍能识别。
+function isIpLikeAmapResult(result: any): boolean {
+  const t = (result?.location_type ?? "").toString().toLowerCase();
+  if (t === "ip" || t === "cgi") return true;
+  const acc = Number(result?.accuracy);
+  return Number.isFinite(acc) && acc >= IP_LOCATION_ACCURACY_THRESHOLD_M;
+}
+
 // 高德 PlaceSearch 在 keyword 为空时，必须依靠 type 才会返回附近 POI。
-// 这里把所有大类编码全部打开，确保「楼宇 / 门牌地址 / 室内设施」也能被检索到，
-// 否则附近列表会只到“小区”这一级，丢掉具体的楼栋。
+// 这里把所有大类编码全部打开，确保「楼栋 / 门牌地址 / 室内设施 / 公共厕所
+// 等」全部召回，否则附近列表会只到“小区”这一级，丢掉具体的楼栋 / 加油站
+// 厕所 / 商场内店铺等子粒度 POI。
+//
+// 高德官方 24 个一级大类对照（**全部打开**，配合 extensions=all + child_pois
+// 可达"楼栋/楼层/出入口/公厕"等子 POI 极细粒度）：
+//   010000 汽车服务（加油站、充电站）   020000 汽车销售
+//   030000 汽车维修                    040000 摩托车服务
+//   050000 餐饮服务                    060000 购物服务
+//   070000 生活服务                    080000 体育休闲
+//   090000 医疗保健                    100000 住宿服务（酒店）
+//   110000 风景名胜                    120000 商务住宅（小区/楼栋）
+//   130000 政府机构                    140000 科教文化
+//   150000 交通设施（地铁站/出入口）    160000 金融保险
+//   170000 公司企业（写字楼）           180000 道路附属设施
+//   190000 地名地址（门牌/村庄）        200000 公共设施（公厕/邮筒/报刊亭）
+//   220000 室内设施（楼层/出入口/电梯） 970000 通行设施
+//   990000 事件活动
 const NEARBY_POI_TYPE = [
   "010000",
   "020000",
@@ -151,33 +186,41 @@ export class AMapProvider implements MapProvider {
   private aroundSeq = 0;
   private keywordSeq = 0;
 
+  // ===== 跨城 flyTo 状态（v2 新增）=====
+  // 高德 JSAPI 没有原生 flyTo（百度有 map.flyTo），setZoomAndCenter 默认只是
+  // "直线平移 + 同步缩放"，跨城（如上海点北京天安门，距离 1000+ km）时，途中
+  // 以高 zoom 沿途经过大量瓦片，瓦片下载量爆炸 + 地图长时间空白。
+  // 这里手动模拟 Mapbox flyTo 风格的"先缩小 → 平移 → 再放大"三段式动画，
+  // 让中间段在低 zoom（5-8 级）下平移，瓦片密度极低，请求量与空白时间都收敛。
+  // flying = true 期间 SDK 触发的 movestart / moveend 都被 on() wrapper 屏蔽——
+  // 让上层 programmaticMoveRef 单次 flag 设计无需感知内部多段动画细节。
+  private flying = false;
+  private flyToTimers: number[] = [];
+
   constructor(opts: AMapProviderOptions) {
     this.opts = opts;
   }
 
-  async init(o: MapProviderInitOptions): Promise<void> {
+  // 加载 SDK + 创建所有 service 类（Geocoder / PlaceSearch ×3 / Geolocation
+  // 单例延迟到 geolocate 内部按需创建）。
+  // init() 在本方法之后创建 Map；initHeadless() 到此为止（getLocation 用）。
+  // 抽出来共用是因为两条路径下 service 类的构造完全相同。
+  private async initServices(initialCity?: string): Promise<AMapNamespace> {
     const AMap = await loadAMap({
       key: this.opts.amapKey,
       securityJsCode: this.opts.securityJsCode,
       plugins: ["AMap.Geocoder", "AMap.PlaceSearch", "AMap.Geolocation"],
     });
     this.AMap = AMap;
-    const center = o.initialCenter ?? DEFAULT_FALLBACK_CENTER_GCJ02;
-    const zoom = o.initialZoom ?? 16;
-    this.map = new AMap.Map(o.container, {
-      viewMode: "2D",
-      zoom,
-      center,
-      showLabel: true,
-    });
+    const city = initialCity ?? "全国";
     this.placeSearch = new AMap.PlaceSearch({
       pageSize: 20,
       pageIndex: 1,
       // extensions=all 才会返回 child_pois（楼栋等子 POI），
-      // 否则即便 type 命中“商务住宅”也只到小区粒度。
+      // 否则即便 type 命中"商务住宅"也只到小区粒度。
       extensions: "all",
       type: NEARBY_POI_TYPE,
-      city: o.initialCity ?? "全国",
+      city,
     });
     // 关键字检索双实例：分别给 searchNearBy / search 用，避免共享实例时 setPageSize
     // 等状态被并发调用相互覆盖。pageSize 拉满到 50（SDK 上限）尽量多召回候选，
@@ -186,22 +229,48 @@ export class AMapProvider implements MapProvider {
       pageSize: 50,
       pageIndex: 1,
       extensions: "all",
-      city: o.initialCity ?? "全国",
+      city,
     });
     this.keywordPlaceSearchFull = new AMap.PlaceSearch({
       pageSize: 50,
       pageIndex: 1,
       extensions: "all",
-      city: o.initialCity ?? "全国",
+      city,
     });
     // extensions=all 是关键：让 regeocode 一并返回 pois 数组（带 distance 字段）。
     // 默认值在不同 JSAPI 版本下会变（v1 默认 base / v2 默认 all），显式声明
     // 避免被 SDK 默认值变化打脸——reverseGeocode 内部需要 pois[].distance
     // 才能挑出"30m 内最贴近 centerPin 的精确 POI"。
     this.geocoder = new AMap.Geocoder({ extensions: "all" });
+    return AMap;
+  }
+
+  async init(o: MapProviderInitOptions): Promise<void> {
+    const AMap = await this.initServices(o.initialCity);
+    const center = o.initialCenter ?? DEFAULT_FALLBACK_CENTER_GCJ02;
+    const zoom = o.initialZoom ?? 16;
+    this.map = new AMap.Map(o.container, {
+      viewMode: "2D",
+      zoom,
+      center,
+      showLabel: true,
+    });
+  }
+
+  // headless：仅 service 类，不创建 Map 实例 → 不挂容器 / 不下载瓦片 /
+  // 不渲染。详见 MapProvider.initHeadless 接口注释。
+  async initHeadless(
+    opts?: Pick<MapProviderInitOptions, "initialCity">,
+  ): Promise<void> {
+    await this.initServices(opts?.initialCity);
   }
 
   destroy(): void {
+    // 先清 flyTo 的 setTimeout，避免段 2 / 段 3 在地图已销毁后仍尝试调用
+    // this.map.setCenter / setZoom 抛 NPE。
+    this.flyToTimers.forEach((id) => window.clearTimeout(id));
+    this.flyToTimers = [];
+    this.flying = false;
     try {
       if (this.map) this.map.destroy();
     } catch {
@@ -223,12 +292,98 @@ export class AMapProvider implements MapProvider {
     return [c.getLng(), c.getLat()];
   }
 
+  // 短距离：保持原 setZoomAndCenter / setCenter 行为（一段直线平移）。
+  // 跨城（>= 50km）：走 flyTo 三段式动画——先缩小到能一屏看到起终点的 zoom、
+  // 在低 zoom 下平移、再放大到目标 zoom。可大幅降低瓦片请求量与地图空白时间，
+  // 体感与百度 BMapGL.Map.flyTo / 微信"发送位置"跨城跳转一致。
   setCenter(center: Coord, zoom?: number): void {
-    if (typeof zoom === "number") {
-      this.map.setZoomAndCenter(zoom, [center[0], center[1]]);
-    } else {
-      this.map.setCenter([center[0], center[1]]);
+    if (!this.map) return;
+    const c = this.map.getCenter();
+    const distanceM = haversineMeters(
+      c.getLng(),
+      c.getLat(),
+      center[0],
+      center[1],
+    );
+
+    // 50km 阈值兼顾"市内跨区"与"跨城"：
+    //   * 市内拖图 / 列表点选附近 POI 距离普遍 < 30km，不应触发"先缩小再放大"
+    //     的鸟瞰动画（反而显得卡顿绕路）；
+    //   * 50km 以上基本是"省内跨市"或"跨省"，瓦片直线穿越的成本足够高，三段式
+    //     动画的体感收益开始回正。
+    const SHORT_RANGE_M = 50_000;
+    if (distanceM < SHORT_RANGE_M) {
+      if (typeof zoom === "number") {
+        this.map.setZoomAndCenter(zoom, [center[0], center[1]]);
+      } else {
+        this.map.setCenter([center[0], center[1]]);
+      }
+      return;
     }
+
+    // zoom 缺省时取当前 zoom 作为目标——保持调用方"不传 zoom = 不改 zoom"的语义。
+    const targetZoom = typeof zoom === "number" ? zoom : this.map.getZoom();
+    this.flyTo([center[0], center[1]], targetZoom, distanceM);
+  }
+
+  // 三段式 flyTo（手动模拟，因为高德 JSAPI 2.0 没有原生 flyTo 接口）。
+  //
+  // 时序（总耗时 ≈ 990ms，与百度 flyTo 体感对齐）：
+  //   t=0     setZoomAndCenter(midZoom, current, 250)  // 段 1：原地缩小
+  //   t=270   setCenter(target, 350)                   // 段 2：低 zoom 平移
+  //   t=640   flying=false → setZoom(targetZoom, 350)  // 段 3：放大到目标
+  //   t=990   段 3 动画结束 → 真实 moveend 上抛 → 上层正常 commit + drop pin
+  //
+  // midZoom 选择策略：距离越远越缩小，让平移阶段瓦片密度尽可能低。
+  //   1000km+  → zoom 5（全国一屏）
+  //   500-1000 → zoom 6
+  //   200-500  → zoom 7
+  //   50-200   → zoom 8（省内跨市）
+  //
+  // 段 1 / 段 2 触发的 SDK moveend 被 on() wrapper 按 this.flying 屏蔽；段 3
+  // 启动前清掉 flying，让段 3 自然产生的 moveend 正常上抛——上层
+  // programmaticMoveRef 设计是"单次消费"，只期待一次 moveend。
+  //
+  // 取消语义：连续 setCenter 时新调用先清掉旧的 flyToTimers，由新一轮 flyTo
+  // 接管——避免多次连续点击跨城 POI 时段动画堆叠到错乱位置。
+  private flyTo(
+    target: [number, number],
+    targetZoom: number,
+    distanceM: number,
+  ): void {
+    if (!this.map) return;
+
+    this.flyToTimers.forEach((id) => window.clearTimeout(id));
+    this.flyToTimers = [];
+
+    let midZoom = 8;
+    if (distanceM >= 1_000_000) midZoom = 5;
+    else if (distanceM >= 500_000) midZoom = 6;
+    else if (distanceM >= 200_000) midZoom = 7;
+
+    const c = this.map.getCenter();
+    const currentLng = c.getLng();
+    const currentLat = c.getLat();
+
+    this.flying = true;
+
+    this.map.setZoomAndCenter(midZoom, [currentLng, currentLat], false, 250);
+
+    this.flyToTimers.push(
+      window.setTimeout(() => {
+        if (!this.map) return;
+        this.map.setCenter([target[0], target[1]], false, 350);
+      }, 270),
+    );
+
+    this.flyToTimers.push(
+      window.setTimeout(() => {
+        if (!this.map) return;
+        // 段 3 启动前先解屏：本段自然结束触发的 moveend 会到达上层。
+        this.flying = false;
+        this.map.setZoom(targetZoom, false, 350);
+      }, 640),
+    );
   }
 
   upsertUserMarker(center: Coord): void {
@@ -370,9 +525,12 @@ export class AMapProvider implements MapProvider {
       new Promise<POIItem[]>((resolve) => {
         psFull.setPageIndex(1);
         psFull.setPageSize(pageSize);
-        // search(kw) 不限半径，靠后续 50km 距离过滤剔除跨市污染。
-        // 高热 POI（虹桥火车站、陆家嘴、东方明珠）会稳定排在 search 结果首页，
-        // 与同名低热 POI（如其他城市的"锦博苑"）一起回来，跨市的会被距离过滤掉。
+        // search(kw) 不限半径、不限城市：高热 POI（虹桥火车站 / 陆家嘴 / 东方明珠
+        // 等）会稳定排在 search 结果首页，**远端唯一精确命中也会被召回**——
+        // 例如在上海搜"天安门"，能拿到 1075km 外的北京天安门，跟微信"发送
+        // 位置"的体感一致。与 runNear 合并去重后**全部**返回，不在 provider
+        // 层做距离过滤；UI 层 sortByKeywordRelevance 会按"名称命中度分级 +
+        // 同档距离升序"排序，跨城远端命中自然排在同城精确命中之后。
         psFull.search(keyword, (status: string, result: any) => {
           if (status !== "complete" || !result?.poiList?.pois) {
             resolve([]);
@@ -399,19 +557,33 @@ export class AMapProvider implements MapProvider {
     return Array.from(seen.values());
   }
 
-  geolocate(): Promise<Coord | null> {
+  // 定位：AMap.Geolocation.getCurrentPosition（官方推荐方式）。
+  //
+  // ⚠️ IP 兜底事后判定（与 noIpLocate 取舍）：
+  //   高德 v1.4 提供过 `noIpLocate` 构造参数，但 v2 下已不再可靠（部分版本静默
+  //   忽略），且业务层希望"是否允许 IP 兜底"做成**调用时**的开关而非"实例级"
+  //   配置（同一个 provider 实例下不同调用可以选择不同策略）。所以这里**不再
+  //   传 noIpLocate**，统一走"拿到 result 后看 location_type / accuracy 事后判定"
+  //   的路径——既兼容所有 SDK 版本，也支持调用时灵活切换。
+  //
+  // 判定规则（详见 isIpLikeAmapResult）：
+  //   * result.location_type === 'ip' / 'cgi' → 视为 IP 定位
+  //   * accuracy ≥ 5000m → 兜底视为 IP（5km 阈值远超室内 H5 误差上限）
+  geolocate(options?: GeolocateOptions): Promise<Coord | null> {
     const AMap = this.AMap;
     if (!AMap) return Promise.resolve(null);
 
+    // in-flight 复用：避免连续点击触发多次 GPS 弹权限框。同一 provider 实例
+    // 上不会出现"a 调用 allowIpFallback=true、b 调用 allowIpFallback=false"
+    // 的并发——业务方一次决策，全程一致——所以此处不区分 options 复用即可。
     if (this.pendingGeolocate) return this.pendingGeolocate;
 
     if (!this.geolocation) {
       this.geolocation = new AMap.Geolocation({
-        // 关键：高精度 + 强制 GCJ02 转换 + 禁用 IP 兜底（IP 定位粒度极差）
         enableHighAccuracy: true,
         timeout: 10000,
+        // convert: true 让 SDK 把原始 WGS84 转成 GCJ02，与 provider 坐标系自洽。
         convert: true,
-        noIpLocate: 1,
         // 关闭高德自带 UI，由组件接管
         showButton: false,
         showMarker: false,
@@ -421,12 +593,12 @@ export class AMapProvider implements MapProvider {
       });
     }
 
+    const allowIp = options?.allowIpFallback === true;
+
     const promise = new Promise<Coord | null>((resolve) => {
       this.geolocation.getCurrentPosition(
         (status: string, result: any) => {
-          if (status === "complete" && result?.position) {
-            resolve([result.position.getLng(), result.position.getLat()]);
-          } else {
+          if (status !== "complete" || !result?.position) {
             console.warn(
               "[MapLocationSelection] AMap Geolocation 失败，请确认 https/localhost 环境与授权。status=",
               status,
@@ -434,7 +606,20 @@ export class AMapProvider implements MapProvider {
               result,
             );
             resolve(null);
+            return;
           }
+          if (!allowIp && isIpLikeAmapResult(result)) {
+            console.warn(
+              "[MapLocationSelection] AMap Geolocation 命中 IP 兜底（location_type=",
+              result.location_type,
+              "accuracy=",
+              result.accuracy,
+              "）但 allowIpFallback=false，已丢弃返回 null。",
+            );
+            resolve(null);
+            return;
+          }
+          resolve([result.position.getLng(), result.position.getLat()]);
         },
       );
     }).finally(() => {
@@ -502,12 +687,18 @@ export class AMapProvider implements MapProvider {
             // name / address 落到同一候选时会完全重复，让 address 留空（描述行
             // 只显示距离），跟周边 POI 项 "address 为空" 的渲染分支保持一致。
             const address = addressRaw === name ? "" : addressRaw;
+            // 高德 r.addressComponent.adcode 是 6 位国标区县码（如 310115），
+            // 与 GB/T 2260 完全对齐。直辖市 / 不设区地级市的 corner case 由
+            // UI 层 splitAdcode 处理（参考 SelectedLocation.provinceCode 注释）。
+            const adcodeRaw = (ac.adcode ?? "").toString().trim();
+            const adcode = /^\d{6}$/.test(adcodeRaw) ? adcodeRaw : undefined;
             resolve({
               name,
               address,
               province: r.addressComponent?.province,
               city: city || undefined,
               district: r.addressComponent?.district,
+              adcode,
             });
           } else {
             resolve(null);
@@ -529,7 +720,13 @@ export class AMapProvider implements MapProvider {
         handler(lng, lat);
       });
     } else if (event === "movestart" || event === "moveend") {
-      this.map.on(event, () => handler());
+      // flying = true 期间（段 1 / 段 2 进行中）SDK 触发的 movestart / moveend
+      // 都被吞掉——上层 programmaticMoveRef 是单次消费设计，只期望一次 moveend。
+      // 段 3 启动前 flying 已被清为 false，段 3 的 movestart / moveend 正常上抛。
+      this.map.on(event, () => {
+        if (this.flying) return;
+        handler();
+      });
     }
   }
 }

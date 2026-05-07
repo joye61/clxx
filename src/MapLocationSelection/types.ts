@@ -40,6 +40,25 @@ export interface SelectedLocation {
   province?: string;
   // 区/县
   district?: string;
+  // 6 位国标 GB/T 2260 行政区划码——三级各自一份。
+  //
+  // 由 SDK 返回的 adcode 切分推导：
+  //   - provinceCode：前 2 位 + "0000"（如 310000 = 上海市）
+  //   - cityCode：前 4 位 + "00"（如 310100 = 上海市市辖区）
+  //   - districtCode：完整 6 位（如 310115 = 浦东新区，等于 SDK 原 adcode）
+  //
+  // 都来自高德 / 百度 SDK 的 reverseGeocode addressComponent.adcode 字段，
+  // 不依赖任何外部映射表。
+  //
+  // Corner case：
+  //   - 不设区的地级市（东莞 441900、中山 442000、嘉峪关 620200 等）：
+  //     cityCode === districtCode，是国标允许的预期结果；
+  //   - 直辖市：cityCode 是市辖区码（如 110100），不是 110000；provinceCode
+  //     才是 110000；
+  //   - SDK 未返回 adcode（极少数老版本 BMapGL）时三个字段都是 undefined。
+  provinceCode?: string;
+  cityCode?: string;
+  districtCode?: string;
   // 原始 POI（如果是从列表中选择）
   raw?: unknown;
 }

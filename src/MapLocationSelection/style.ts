@@ -85,6 +85,21 @@ export function createStyle(primary: string): MapLocStyle {
     mapContainer: css({
       width: "100%",
       height: "100%",
+      // 必须显式 touch-action: none，让地图 SDK 接收完整的 touch 事件链
+      // （单指拖动、双指捏合缩放、双击放大），由 SDK 内部实现这些手势。
+      //
+      // 为什么必须显式设：clxx 的 Container 在 <html> 上设了
+      // touch-action: manipulation（= pan-x pan-y pinch-zoom），意思是
+      // "单指 pan 和双指 pinch-zoom 都交给浏览器处理"。touch-action 在事件
+      // 处理时是从触发元素到 root 逐级应用 OR 限制——任何祖先设了限制，
+      // 后代就受限，导致：
+      //   * 移动端用户双指捏合地图，浏览器优先 capture 去尝试缩放整个页面
+      //     （viewport 未禁用 user-scalable 时）；
+      //   * 地图 SDK 完全收不到 pinch 事件，**双指缩放失效**——典型现象就是
+      //     "在地图上捏不动"。
+      // 子元素显式 touch-action: none 会覆盖祖先的 manipulation，把所有 touch
+      // 事件交回给元素自己处理。这是地图组件的标准做法。
+      touchAction: "none",
     }),
 
     // 居中、不动的定位 pin
@@ -332,7 +347,9 @@ export function createStyle(primary: string): MapLocStyle {
     }),
 
     // 列表区域容器（高度 = bottom 剩余空间）
+    // position:relative 让 listLoadingMask 能用 absolute inset:0 精确盖住列表
     listArea: css({
+      position: "relative",
       flex: 1,
       minHeight: 0,
     }),
@@ -433,6 +450,26 @@ export function createStyle(primary: string): MapLocStyle {
       backgroundColor: "rgba(255,255,255,0.45)",
       zIndex: 9,
       cursor: "not-allowed",
+    }),
+    // 列表加载中：仅盖在 listArea 上的半透明遮罩 + 居中 spinner。
+    //
+    // 与 bottomLockedMask 的区别：
+    //   - bottomLockedMask 盖整个 bottom 区域（含搜索框），只在首次定位中触发；
+    //   - listLoadingMask 仅盖列表区，搜索框保持可输入——keyword 搜索期间用户可
+    //     继续打字修改关键字，不应被列表 loading 遮罩拦住交互。
+    //
+    // zIndex=4 比 ScrollView 高、比 bottomLockedMask(9) / locatingMask(8) 低——
+    // 这样首次定位中的全屏遮罩仍能盖在列表 loading 之上（避免视觉双层叠加）。
+    listLoadingMask: css({
+      position: "absolute",
+      inset: 0,
+      backgroundColor: "rgba(255,255,255,0.62)",
+      WebkitBackdropFilter: "blur(2px)",
+      backdropFilter: "blur(2px)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 4,
     }),
     // 底部容器需要相对定位，遮罩才能盖住
     bottomRelative: css({
